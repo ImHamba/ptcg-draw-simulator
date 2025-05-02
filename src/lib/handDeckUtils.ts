@@ -1,0 +1,156 @@
+import { basicPokemonFilter } from './cardFilters'
+import {
+  conditionalListItem,
+  getRandomInt,
+  isSameCard,
+  sum,
+  type CardFilter,
+  type MultiPokeCard,
+  type PokeCard,
+} from './utils'
+
+export type MultiCardWithCumuCount = MultiPokeCard & { cumuCount: number }
+
+export const drawFromDeck = (
+  hand: MultiPokeCard[],
+  deck: MultiPokeCard[],
+  filter?: CardFilter,
+): { newHand: MultiPokeCard[]; newDeck: MultiPokeCard[] } => {
+  // pick a random number within the size of the deck
+
+  // calculate cumulative counts of cards through the deck
+  const deckWithCumuCounts = deck.reduce((acc, card) => {
+    const includeCard = filter?.(card) ?? true
+    const previousCount = acc.at(-1)?.cumuCount ?? 0
+
+    // if cumulative count only increments for included cards, then they won't
+    // be able to be selected later on
+    const cumuCount = previousCount + (includeCard ? card.count : 0)
+    return [...acc, { ...card, cumuCount: cumuCount }]
+  }, [] as MultiCardWithCumuCount[])
+
+  const deckSize = deckWithCumuCounts.at(-1)?.cumuCount ?? 0
+  const drawIndex = getRandomInt(deckSize)
+
+  // extract the card corresponding to the draw index and decrement the count of that card
+  const { drawnCard, newDeck } = deckWithCumuCounts.reduce(
+    (acc, card) => {
+      if (
+        acc.drawnCard === null &&
+        (acc.newDeck.at(-1)?.cumuCount ?? 0) <= drawIndex &&
+        drawIndex < card.cumuCount
+      ) {
+        const newCount = card.count - 1
+        return {
+          drawnCard: card,
+          newDeck: [
+            ...acc.newDeck,
+            // remove card from deck if count reaches 0
+            ...conditionalListItem({ ...card, count: newCount }, newCount > 0),
+          ],
+        }
+      }
+
+      return { drawnCard: acc.drawnCard, newDeck: [...acc.newDeck, card] }
+    },
+    {
+      drawnCard: null as PokeCard | null,
+      newDeck: [] as MultiCardWithCumuCount[],
+    },
+  )
+
+  if (!drawnCard) {
+    throw Error(
+      `Error drawing card from deck:\ndraw index: ${drawIndex}\ndeck: ${JSON.stringify(deck, null, 2)}`,
+    )
+  }
+
+  // increment the drawn card in hand if its already held, otherwise append it to the end
+  let cardAlreadyInHand = false
+  const incrementedHand = hand.map((handCard) => {
+    if (isSameCard(drawnCard, handCard)) {
+      cardAlreadyInHand = true
+      return { ...handCard, count: handCard.count + 1 }
+    }
+
+    return handCard
+  })
+
+  const newHand = cardAlreadyInHand
+    ? incrementedHand
+    : [...hand, { ...drawnCard, count: 1 }]
+
+  return { newDeck, newHand }
+}
+export const drawMany = (
+  hand: MultiPokeCard[],
+  deck: MultiPokeCard[],
+  numberOfCards: number = 1,
+  filter?: CardFilter,
+) => {
+  const arr: number[] = Array(numberOfCards).fill(0)
+  return arr.reduce(
+    ({ newHand, newDeck }, _) => {
+      return drawFromDeck(newHand, newDeck, filter)
+    },
+    {
+      newDeck: deck,
+      newHand: hand,
+    },
+  )
+}
+
+export const drawFirstHand = (deck: MultiPokeCard[]) => {
+  if (!deck.find(basicPokemonFilter)) {
+    throw Error('Tried to draw first hand from deck without basics.')
+  }
+
+  let newHand: MultiPokeCard[] = []
+  let newDeck: MultiPokeCard[] = deck
+
+  while (!newHand.some(basicPokemonFilter)) {
+    newHand = []
+
+    const drawResult = drawMany(newHand, deck, 5)
+    newHand = drawResult.newHand
+    newDeck = drawResult.newDeck
+  }
+
+  return { newHand, newDeck }
+}
+
+export const decrementCardInHand = (
+  hand: MultiPokeCard[],
+  condition: CardFilter,
+) => {
+  const cardToRemove = hand.find(condition)
+
+  if (!cardToRemove) {
+    return { newHand: hand }
+  }
+
+  const newHand =
+    cardToRemove.count <= 1
+      ? // remove card entirely if only 1 copy
+        hand.filter((card) => !condition(card))
+      : // if many of the card, decrement count
+        hand.map((card) =>
+          condition(card) ? { ...card, count: card.count - 1 } : card,
+        )
+
+  return { newHand }
+}
+
+export const sumCardCount = (cards: MultiPokeCard[], filter?: CardFilter) => {
+  const filteredCards = filter ? cards.filter(filter) : cards
+  return sum(filteredCards.map((card) => card.count))
+}
+
+export const drawBasic = (hand: MultiPokeCard[], deck: MultiPokeCard[]) =>
+  drawMany(
+    hand,
+    deck,
+    // draw 1 if the deck has it
+    Math.min(1, sumCardCount(deck, basicPokemonFilter)),
+    basicPokemonFilter,
+  )

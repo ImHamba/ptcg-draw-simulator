@@ -13,13 +13,14 @@ export type CardType =
   | 'pokeball'
   | 'other'
 
-export type Card = {
+export type PokeCard = {
   name?: string | undefined
   cardType: CardType
 }
-export type MultiCard = Card & {
+export type MultiPokeCard = PokeCard & {
   count: number
 }
+export type CardFilter = (card: PokeCard) => boolean
 
 /**
  * Sums numbers in a list
@@ -54,16 +55,13 @@ export const omitKeys = <T extends object, K extends keyof T>(
   ) as Omit<T, K>
 }
 
-export const isSameCard = (card1: Card, card2: Card) => {
+export const isSameCard = (card1: PokeCard, card2: PokeCard) => {
   return card1.cardType === card2.cardType && card1.name === card2.name
 }
 
-export const sumCardCount = (cards: MultiCard[]) =>
-  sum(cards.map((card) => card.count))
-
 export const checkHandMatchesDesiredHand = (
-  hand: MultiCard[],
-  desiredHand: MultiCard[],
+  hand: MultiPokeCard[],
+  desiredHand: MultiPokeCard[],
 ) =>
   // check that for every desired card, the hand contains at least that number of them
   desiredHand.every((desiredCard) => {
@@ -76,4 +74,29 @@ export const checkHandMatchesDesiredHand = (
  */
 export const getRandomInt = (max: number) => {
   return Math.floor(Math.random() * max)
+}
+
+export const conditionalListItem = <T>(
+  item: T | T[],
+  condition?: boolean,
+): T[] => {
+  const includeItem =
+    condition !== undefined ? condition : item !== null && item !== undefined
+
+  return includeItem ? (Array.isArray(item) ? item : [item]) : []
+}
+
+export type HandDeckStateChange = (...args: any[]) => {
+  newHand?: MultiPokeCard[]
+  newDeck?: MultiPokeCard[]
+}
+
+export type CardData = {
+  id: string
+  set_code: string
+  number: string
+  name: string
+  set_name: string
+  color: string
+  stage: string
 }

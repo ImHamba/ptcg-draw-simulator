@@ -1,127 +1,158 @@
 import { Button } from '@/components/ui/button'
-import { useEffect, useState } from 'react'
+import { Card } from '@/components/ui/card'
+import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+import { CARDS_API_URL } from '../cardData'
+import { usePokeball, useProfessorsResearch } from '../cardEffects'
+import { pokeballFilter, profResearchFilter } from '../cardFilters'
+import { drawFirstHand, drawFromDeck, sumCardCount } from '../handDeckUtils'
 import {
-  getRandomInt,
-  isSameCard,
-  sumCardCount,
-  type Card,
-  type MultiCard,
+  checkHandMatchesDesiredHand,
+  type CardData,
+  type HandDeckStateChange,
+  type MultiPokeCard,
 } from '../utils'
 
-type MultiCardWithCumuCount = MultiCard & { cumuCount: number }
+const initialDeck: MultiPokeCard[] = [
+  { name: 'charmander', count: 2, cardType: 'basicUserDefined' },
+  { count: 2, cardType: 'basicOther' },
+  { name: 'candy', count: 2, cardType: 'otherUserDefined' },
+  { name: 'charizard', count: 2, cardType: 'otherUserDefined' },
+  { name: 'professors Research', count: 2, cardType: 'professorsResearch' },
+  { name: 'pokeball', count: 2, cardType: 'pokeball' },
+  { cardType: 'other', count: 8 },
+]
+
+const initialHand: MultiPokeCard[] = [
+  // { name: 'charmander', count: 1, cardType: 'basicUserDefined' },
+  // { name: 'candy', count: 2, cardType: 'otherUserDefined' },
+  // { name: 'professors Research', count: 1, cardType: 'professorsResearch' },
+  // { name: 'pokeball', count: 1, cardType: 'pokeball' },
+]
 
 const HomePage = () => {
-  const [deck, setDeck] = useState<MultiCard[]>([
-    { name: 'charmander', count: 1, cardType: 'basicUserDefined' },
-    { count: 1, cardType: 'basicOther' },
-    { name: 'candy', count: 2, cardType: 'otherUserDefined' },
-    { name: 'charizard', count: 2, cardType: 'otherUserDefined' },
-    { name: 'professorsResearch', count: 1, cardType: 'professorsResearch' },
-    { name: 'pokeball', count: 1, cardType: 'pokeball' },
-  ])
+  const [deck, setDeck] = useState<MultiPokeCard[]>(initialDeck)
 
-  useEffect(() => {
-    setDeck([...deck, { cardType: 'other', count: 20 - sumCardCount(deck) }])
-  }, [])
+  const [hand, setHand] = useState<MultiPokeCard[]>(initialHand)
 
-  const [hand, setHand] = useState<MultiCard[]>([
-    { name: 'charmander', count: 1, cardType: 'basicUserDefined' },
-    { name: 'candy', count: 2, cardType: 'otherUserDefined' },
-    { name: 'professorsResearch', count: 1, cardType: 'professorsResearch' },
-    { name: 'pokeball', count: 1, cardType: 'pokeball' },
-  ])
-
-  const [desiredHand, setDesiredHand] = useState<MultiCard[]>([
+  const [desiredHand, setDesiredHand] = useState<MultiPokeCard[]>([
     { name: 'charmander', count: 1, cardType: 'basicUserDefined' },
     { name: 'candy', count: 1, cardType: 'otherUserDefined' },
     { name: 'charizard', count: 1, cardType: 'otherUserDefined' },
   ])
 
-  const drawFromDeck = (hand: MultiCard[], deck: MultiCard[]) => {
-    // pick a random number within the size of the deck
-    const deckSize = sumCardCount(deck)
-    const drawIndex = getRandomInt(deckSize)
-
-    // calculate cumulative counts of cards through the deck
-    const deckWithCumuCounts = deck.reduce((acc, item) => {
-      console.log('cnt', item.count)
-      return [
-        ...acc,
-        { ...item, cumuCount: (acc.at(-1)?.cumuCount ?? 0) + item.count },
-      ]
-    }, [] as MultiCardWithCumuCount[])
-
-    // extract the card corresponding to the draw index and decrement the count of that card
-    const { drawnCard, newDeck } = deckWithCumuCounts.reduce(
-      (acc, item) => {
-        console.log(
-          acc.newDeck.at(-1)?.cumuCount ?? 0,
-          drawIndex,
-          item.cumuCount,
-          acc.drawnCard === null &&
-            (acc.newDeck.at(-1)?.cumuCount ?? 0) <= drawIndex &&
-            drawIndex < item.cumuCount,
-        )
-        if (
-          acc.drawnCard === null &&
-          (acc.newDeck.at(-1)?.cumuCount ?? 0) <= drawIndex &&
-          drawIndex < item.cumuCount
-        ) {
-          return {
-            drawnCard: item,
-            newDeck: [...acc.newDeck, { ...item, count: item.count - 1 }],
-          }
+  const cardDataQuery = useQuery({
+    queryKey: ['cardData'],
+    queryFn: async () => {
+      return fetch(CARDS_API_URL).then((res) => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok')
         }
 
-        return { drawnCard: acc.drawnCard, newDeck: [...acc.newDeck, item] }
-      },
-      {
-        drawnCard: null as Card | null,
-        newDeck: [] as MultiCardWithCumuCount[],
-      },
-    )
+        return res.json()
+      })
+    },
+  })
 
-    if (!drawnCard) {
-      throw Error(
-        `Error drawing card from deck:\ndraw index: ${drawIndex}\ndeck: ${JSON.stringify(deck, null, 2)}`,
-      )
+  const cardData: CardData[] = cardDataQuery.data
+  const { isLoading, error } = cardDataQuery
+
+  console.log(cardData)
+
+  // returns a callable that wraps a hand/deck state changing function with state save
+  const saveHandDeckState =
+    (handDeckStateChangeFn: HandDeckStateChange, ...args: any[]) =>
+    () => {
+      const { newHand, newDeck } = handDeckStateChangeFn(...args)
+      newHand && setHand(newHand)
+      newDeck && setDeck(newDeck)
     }
 
+  const resetDeckAndHand = () => {
+    setDeck(initialDeck)
+    setHand(initialHand)
+  }
 
-    // increment the drawn card in hand if its already held, otherwise append it to the end
-    let cardAlreadyInHand = false
-    const incrementedHand = hand.map((handCard) => {
-      if (isSameCard(drawnCard, handCard)) {
-        cardAlreadyInHand = true
-        return { ...handCard, count: handCard.count + 1 }
-      }
-
-      return handCard
+  const renderCards = (cards: MultiPokeCard[], width: number = 5) =>
+    cards.map((card, i) => {
+      return (
+        <div className={`aspect-63/88 w-1/${width} p-1`} key={i}>
+          <Card className="full col-center text-center ">
+            <div>{card.name || card.cardType}</div>
+            <div>{card.count}</div>
+          </Card>
+        </div>
+      )
     })
 
-    const newHand = cardAlreadyInHand
-      ? incrementedHand
-      : [...hand, { ...drawnCard, count: 1 }]
-
-    return { newDeck, newHand }
-  }
-
-  const myfunc = () => {
-    const { newDeck, newHand } = drawFromDeck(hand, deck)
-
-    setDeck(newDeck)
-    setHand(newHand)
-  }
+  const handMatchesDesired = checkHandMatchesDesiredHand(hand, desiredHand)
+  const deckSize = sumCardCount(deck)
+  const handSize = sumCardCount(hand)
+  const hasPokeball = Boolean(hand.find(pokeballFilter))
+  const hasProfResearch = Boolean(hand.find(profResearchFilter))
 
   return (
-    <div className="text-center">
-      <Button
-        onClick={myfunc}
-        style={{ border: '1px red solid' }}
-        type="button"
-      >
-        abc
-      </Button>
+    <div className="flex-row justify-center p-10">
+      <div className="flex-col items-center w-full">
+        <div className="w-full row-center gap-10">
+          <div className="w-3/5 col-center gap-3">
+            <div className="text-2xl">Deck ({deckSize})</div>
+            <div className="w-full flex-row flex-wrap">
+              {renderCards(deck, 6)}
+            </div>
+          </div>
+          <div className="w-2/5 col-center gap-10">
+            <div className="w-full col-center gap-3">
+              <div className="text-2xl">Hand ({handSize})</div>
+              <div className="row-center gap-2 flex-wrap">
+                <Button
+                  onClick={saveHandDeckState(drawFromDeck, hand, deck)}
+                  disabled={deckSize == 0}
+                >
+                  Draw
+                </Button>
+                <Button
+                  onClick={saveHandDeckState(drawFirstHand, deck)}
+                  disabled={deckSize < 5 || handSize > 0}
+                >
+                  Draw First Hand
+                </Button>
+                <Button
+                  onClick={saveHandDeckState(usePokeball, hand, deck)}
+                  disabled={!hasPokeball}
+                >
+                  Use PokeBall
+                </Button>
+                <Button
+                  onClick={saveHandDeckState(useProfessorsResearch, hand, deck)}
+                  disabled={!hasProfResearch}
+                >
+                  Use Professor's Research
+                </Button>
+                <Button onClick={resetDeckAndHand} disabled={handSize == 0}>
+                  Reset
+                </Button>
+              </div>
+              <div className="w-full flex-row flex-wrap">
+                {renderCards(hand)}
+              </div>
+            </div>
+            <div className="w-full col-center gap-3">
+              <div className="text-2xl">Target Hands</div>
+              <div
+                className={
+                  handMatchesDesired ? 'text-green-300' : 'text-red-400'
+                }
+              >
+                {handMatchesDesired ? 'Matching!' : 'Not Matching'}
+              </div>
+              <div className="w-full flex-row flex-wrap">
+                {renderCards(desiredHand)}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
