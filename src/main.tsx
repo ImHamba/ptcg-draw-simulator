@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom/client'
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
+import { CARD_DATA_PROXY_URL } from './lib/cardData.ts'
 import reportWebVitals from './reportWebVitals.ts'
 import './styles.css'
 
@@ -28,22 +29,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+const localStoragePersister = createSyncStoragePersister({
+  storage: window.localStorage,
+})
+
+// hold data
+const cardDataCacheTime = 12 * 60 * 60 * 1000
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       // never refetch data during a particular session
-      staleTime: Infinity,
-      gcTime: Infinity,
+      staleTime: cardDataCacheTime,
+      gcTime: cardDataCacheTime,
       retry: false,
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
     },
   },
-})
-
-const localStoragePersister = createSyncStoragePersister({
-  storage: window.localStorage,
 })
 
 // Render the app
@@ -57,12 +58,13 @@ if (rootElement && !rootElement.innerHTML) {
         // only refetch data upon page load if the data is old enough
         persistOptions={{
           persister: localStoragePersister,
-          maxAge: 3600,
+          maxAge: cardDataCacheTime,
+          buster: CARD_DATA_PROXY_URL,
         }}
+        onSuccess={() => console.log('success')}
+        onError={() => console.log('error')}
       >
-        {/* <PersistGate> */}
         <RouterProvider router={router} />
-        {/* </PersistGate> */}
       </PersistQueryClientProvider>
     </StrictMode>,
   )

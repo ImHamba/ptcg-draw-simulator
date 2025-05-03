@@ -1,22 +1,22 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { CARD_IMG_API_URL } from './cardData'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export type CardType =
-  | 'basicUserDefined'
-  | 'basicOther'
-  | 'otherUserDefined'
-  | 'professorsResearch'
-  | 'pokeball'
-  | 'other'
+export type CardType = 'basicOther' | 'other'
 
-export type PokeCard = {
-  name?: string | undefined
-  cardType: CardType
-}
+export type PokeCard =
+  | {
+      cardType: CardType
+      data?: CardData
+    }
+  | {
+      cardType?: CardType
+      data: CardData
+    }
 export type MultiPokeCard = PokeCard & {
   count: number
 }
@@ -56,7 +56,7 @@ export const omitKeys = <T extends object, K extends keyof T>(
 }
 
 export const isSameCard = (card1: PokeCard, card2: PokeCard) => {
-  return card1.cardType === card2.cardType && card1.name === card2.name
+  return card1.cardType === card2.cardType && card1.data?.id === card2.data?.id
 }
 
 export const checkHandMatchesDesiredHand = (
@@ -88,6 +88,7 @@ export const conditionalListItem = <T>(
 
 export type HandDeckStateChange = (...args: any[]) => {
   newHand?: MultiPokeCard[]
+  newOriginalDeck?: MultiPokeCard[]
   newDeck?: MultiPokeCard[]
 }
 
@@ -99,4 +100,11 @@ export type CardData = {
   set_name: string
   color: string
   stage: string
+  dex: string
+}
+
+export const imageUrlFromCardData = (data: CardData) => {
+  // translation between dotgg and limitless set
+  const setCode = data.set_code === 'PROMO' ? 'P-A' : data.set_code
+  return `${CARD_IMG_API_URL}${setCode}/${setCode}_${data.number.padStart(3, '0')}_EN.webp`
 }

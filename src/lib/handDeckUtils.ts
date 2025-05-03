@@ -154,3 +154,7 @@ export const drawBasic = (hand: MultiPokeCard[], deck: MultiPokeCard[]) =>
     Math.min(1, sumCardCount(deck, basicPokemonFilter)),
     basicPokemonFilter,
   )
+
+export const addCardToDeck = (card: MultiPokeCard, deck: MultiPokeCard[]) => {
+  return { newDeck: [...deck, card] }
+}
