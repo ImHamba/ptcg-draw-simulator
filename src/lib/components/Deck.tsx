@@ -57,22 +57,27 @@ const Deck = ({ deck, originalDeck, cardData, saveHandDeckState }: Props) => {
   })
 
   return (
-    <>
+    <div className="col-center gap-3">
       <div className="text-2xl">Deck ({deckSize})</div>
       <div className="w-full flex-row flex-wrap">{renderCards(deck, 6)}</div>
-      <Button onClick={saveHandDeckState(resetOriginalDeck)}>Clear Deck</Button>
-      <Button
-        onClick={saveHandDeckState(addBasic)}
-        disabled={originalDeckWithoutOtherSize >= MAX_DECK_SIZE}
-      >
-        Add Basic
-      </Button>
+
+      <div className="row-center gap-2">
+        <Button onClick={saveHandDeckState(resetOriginalDeck)}>
+          Clear Deck
+        </Button>
+        <Button
+          onClick={saveHandDeckState(addBasic)}
+          disabled={originalDeckWithoutOtherSize >= MAX_DECK_SIZE}
+        >
+          Add Basic
+        </Button>
+      </div>
       <SearchSelect
         options={cardDataOptions}
-        className="w-100 border-black border-2"
+        className="mb-0 w-100 border-black border-2"
         onSelect={onCardSelect}
       />
-    </>
+    </div>
   )
 }
 

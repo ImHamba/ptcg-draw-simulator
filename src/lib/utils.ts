@@ -5,6 +5,7 @@ import {
   CARD_IMG_API_URL,
   DEFAULT_CARD_IMG_URL,
 } from './cardData'
+import type { TargetHands } from './handDeckUtils'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -60,7 +61,6 @@ export const omitKeys = <T extends object, K extends keyof T>(
 }
 
 export const isSameCard = (card1: PokeCard, card2: PokeCard) => {
-  console.log(card1, card2, card1.cardType, card2.cardType)
   return card1.cardType === card2.cardType && card1.data?.id === card2.data?.id
 }
 
@@ -73,6 +73,22 @@ export const checkHandMatchesTargetHand = (
     const handCard = hand.find((handCard) => isSameCard(handCard, targetCard))
     return (handCard?.count ?? 0) >= targetCard.count
   })
+
+export const checkHandMatchesTargetHands = (
+  hand: MultiPokeCard[],
+  targetHands: TargetHands,
+) => {
+  const entries: [string, boolean][] = Object.entries(targetHands).map(
+    ([targetHandId, targetHand]) => [
+      targetHandId,
+      checkHandMatchesTargetHand(hand, targetHand),
+    ],
+  )
+
+  const anyMatch = entries.some((entry) => entry[1])
+
+  return { targetHandMatches: Object.fromEntries(entries), anyMatch }
+}
 
 /**
  * returns random int from 0 to max-1
@@ -95,7 +111,7 @@ export type HandDeckStateChange = (...args: any[]) => {
   newHand?: MultiPokeCard[]
   newOriginalDeck?: MultiPokeCard[]
   newDeck?: MultiPokeCard[]
-  newTargetHand?: MultiPokeCard[]
+  newTargetHands?: TargetHands
 }
 
 export type SaveHandDeckState = <T extends HandDeckStateChange>(
@@ -136,3 +152,17 @@ export const imageUrlFromCard = (card: PokeCard) => {
 export const not = <T extends (...args: any[]) => boolean>(predicate: T) => {
   return (...args: Parameters<T>) => !predicate(...args)
 }
+
+/**
+ * Adds the corresponding keys of two objects together
+ */
+export const sumObjects = (
+  obj1: Record<string, number | boolean>,
+  obj2: Record<string, number | boolean>,
+) =>
+  Object.fromEntries(
+    Object.keys(obj1).map((key) => [
+      key,
+      Number(obj1[key]) + Number(obj2[key]),
+    ]),
+  )

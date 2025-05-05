@@ -1,5 +1,5 @@
 import { basicPokemonFilter, otherCardFilter } from './cardFilters'
-import { MAX_DECK_SIZE } from './constants'
+import { FIRST_HAND_SIZE, MAX_DECK_SIZE } from './constants'
 
 import {
   conditionalListItem,
@@ -18,7 +18,9 @@ export const drawFromDeck = (
   deck: MultiPokeCard[],
   filter?: CardFilter,
 ): { newHand: MultiPokeCard[]; newDeck: MultiPokeCard[] } => {
-  // pick a random number within the size of the deck
+  if (deck.length === 0) {
+    throw Error(`Tried to draw from empty deck.`)
+  }
 
   // calculate cumulative counts of cards through the deck
   const deckWithCumuCounts = deck.reduce((acc, card) => {
@@ -31,6 +33,7 @@ export const drawFromDeck = (
     return [...acc, { ...card, cumuCount: cumuCount }]
   }, [] as MultiCardWithCumuCount[])
 
+  // pick a random number within the size of the deck
   const deckSize = deckWithCumuCounts.at(-1)?.cumuCount ?? 0
   const drawIndex = getRandomInt(deckSize)
 
@@ -113,7 +116,7 @@ export const drawFirstHand = (deck: MultiPokeCard[]) => {
   while (!newHand.some(basicPokemonFilter)) {
     newHand = []
 
-    const drawResult = drawMany(newHand, deck, 5)
+    const drawResult = drawMany(newHand, deck, FIRST_HAND_SIZE)
     newHand = drawResult.newHand
     newDeck = drawResult.newDeck
   }
@@ -238,7 +241,14 @@ export const fillDeck = (
   return withoutOther
 }
 
-export const initialDeck: MultiPokeCard[] = fillDeck([])
+export const initialDeck: MultiPokeCard[] = fillDeck([
+  // { cardType: 'basicOther', count: 2 },
+])
+
+export type TargetHands = Record<string, MultiPokeCard[]>
+export const initialTargetHands: TargetHands = {
+  // test: [{ cardType: 'basicOther', count: 2 }],
+}
 
 export const initialHand: MultiPokeCard[] = []
 
@@ -270,11 +280,16 @@ export const resetAllAndAddCard = (
 
 export const addTargetCard = (
   card: PokeCard,
-  targetHand: MultiPokeCard[],
+  targetHandId: string,
+  existingTargetHands: TargetHands,
   numberToAdd = 1,
 ) => {
-  console.log('add', card)
+  const addTo = existingTargetHands[targetHandId] ?? []
+
   return {
-    newTargetHand: addCardToCardList(card, targetHand, numberToAdd),
+    newTargetHands: {
+      ...existingTargetHands,
+      [targetHandId]: addCardToCardList(card, addTo, numberToAdd),
+    },
   }
 }

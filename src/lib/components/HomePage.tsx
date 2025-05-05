@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { useState } from 'react'
 import { CARD_DATA_PROXY_URL } from '../cardData'
-import { initialDeck, initialHand } from '../handDeckUtils'
+import { initialDeck, initialHand, initialTargetHands } from '../handDeckUtils'
 import {
   type CardData,
   type MultiPokeCard,
@@ -10,7 +10,8 @@ import {
 } from '../utils'
 import Deck from './Deck'
 import Hand from './Hand'
-import TargetHands from './TargetHands'
+import Simulator from './Simulator'
+import TargetHandsPanel from './TargetHandsPanel'
 
 const HomePage = () => {
   // stores the original state of deck, updated by user adding cards to it
@@ -20,11 +21,7 @@ const HomePage = () => {
   const [deck, setDeck] = useState<MultiPokeCard[]>(originalDeck)
 
   const [hand, setHand] = useState<MultiPokeCard[]>(initialHand)
-  const [targetHand, setTargetHand] = useState<MultiPokeCard[]>([
-    // { name: 'charmander', count: 1, cardType: 'basicUserDefined' },
-    // { name: 'candy', count: 1, cardType: 'otherUserDefined' },
-    // { name: 'charizard', count: 1, cardType: 'otherUserDefined' },
-  ])
+  const [targetHands, setTargetHands] = useState(initialTargetHands)
 
   const cardDataQuery = useQuery({
     queryKey: ['cardData'],
@@ -46,43 +43,51 @@ const HomePage = () => {
   const saveHandDeckState: SaveHandDeckState =
     (handDeckStateChangeFn, ...args) =>
     () => {
-      const { newHand, newDeck, newOriginalDeck, newTargetHand } =
+      const { newHand, newDeck, newOriginalDeck, newTargetHands } =
         handDeckStateChangeFn(...args)
       newHand && setHand(newHand)
       newDeck && setDeck(newDeck)
       newOriginalDeck && setOriginalDeck(newOriginalDeck)
-      newTargetHand && setTargetHand(newTargetHand)
+      newTargetHands && setTargetHands(newTargetHands)
     }
 
   return (
-    <div className="flex-row justify-center p-10">
-      <div className="flex-col items-center w-full">
-        <div className="w-full row-center gap-10">
-          <div className="w-3/5 col-center gap-3">
-            <Deck
-              deck={deck}
-              originalDeck={originalDeck}
-              cardData={cardData}
-              saveHandDeckState={saveHandDeckState}
-            />
-          </div>
-          <div className="w-2/5 col-center gap-10">
-            <div className="w-full col-center gap-3">
-              <Hand
+    <div className="flex-row justify-center p-10 full">
+      <div className="flex-col items-center full">
+        <div className="full row-center gap-10">
+          <div className="w-1/2 h-full col-center gap-10 ">
+            <div className="h-1/2 w-full center">
+              <Deck
                 deck={deck}
                 originalDeck={originalDeck}
-                hand={hand}
+                cardData={cardData}
                 saveHandDeckState={saveHandDeckState}
               />
             </div>
-            <div className="w-full col-center gap-3">
-              <TargetHands
-                hand={hand}
-                targetHand={targetHand}
+            <div className="h-1/2 w-full">
+              <Simulator
+                targetHands={targetHands}
+                deck={deck}
                 originalDeck={originalDeck}
                 saveHandDeckState={saveHandDeckState}
               />
             </div>
+          </div>
+
+          <div className="w-1/2 h-full col-center gap-10">
+            <Hand
+              deck={deck}
+              originalDeck={originalDeck}
+              hand={hand}
+              saveHandDeckState={saveHandDeckState}
+            />
+
+            <TargetHandsPanel
+              hand={hand}
+              targetHands={targetHands}
+              originalDeck={originalDeck}
+              saveHandDeckState={saveHandDeckState}
+            />
           </div>
         </div>
       </div>

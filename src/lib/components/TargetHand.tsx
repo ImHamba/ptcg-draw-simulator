@@ -1,4 +1,5 @@
-import { addTargetCard } from '../handDeckUtils'
+import { v4 as uuidv4 } from 'uuid'
+import { addTargetCard, type TargetHands } from '../handDeckUtils'
 import { renderCards } from '../reactUtils'
 import {
   checkHandMatchesTargetHand,
@@ -9,18 +10,22 @@ import {
 import SearchSelect from './SearchSelect'
 
 type Props = {
-  targetHand: MultiPokeCard[]
+  targetHandId: string | null
+  targetHands: TargetHands
   hand: MultiPokeCard[]
   originalDeck: MultiPokeCard[]
   saveHandDeckState: SaveHandDeckState
 }
 
-const TargetHands = ({
+const TargetHand = ({
+  targetHandId,
   hand,
-  targetHand,
+  targetHands,
   originalDeck,
   saveHandDeckState,
 }: Props) => {
+  const targetHand = targetHandId ? targetHands[targetHandId] : []
+
   const handMatchesTarget = checkHandMatchesTargetHand(hand, targetHand)
 
   const options = originalDeck
@@ -52,24 +57,30 @@ const TargetHands = ({
     const cardIndex = parseInt(cardIndexStr)
     const card = originalDeck[cardIndex]
 
-    console.log('add')
-    saveHandDeckState(addTargetCard, card, targetHand)()
+    // either add it to current target hand id or if it doesnt exist yet, generate a random one
+    const addToTargetHandId = targetHandId ?? uuidv4()
+
+    saveHandDeckState(addTargetCard, card, addToTargetHandId, targetHands)()
   }
 
   return (
-    <>
-      <div className="text-2xl">Target Hands</div>
-      <div className={handMatchesTarget ? 'text-green-300' : 'text-red-400'}>
-        {handMatchesTarget ? 'Matching!' : 'Not Matching'}
+    <div className="pb-5 border-b-2">
+      {!targetHandId && <div className="text-xl mb-2">Add new target hand</div>}
+      <div className="w-full flex-row flex-wrap ">
+        {renderCards(targetHand, 8)}
       </div>
+      {targetHandId && (
+        <div className={handMatchesTarget ? 'text-green-300' : 'text-red-400'}>
+          {handMatchesTarget ? 'Matching!' : 'Not Matching'}
+        </div>
+      )}
       <SearchSelect
         options={options}
         className="w-100 border-black border-2"
         onSelect={onCardSelect}
       />
-      <div className="w-full flex-row flex-wrap">{renderCards(targetHand)}</div>
-    </>
+    </div>
   )
 }
 
-export default TargetHands
+export default TargetHand

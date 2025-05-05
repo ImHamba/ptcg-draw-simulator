@@ -24,7 +24,7 @@ const Hand = ({ deck, hand, originalDeck, saveHandDeckState }: Props) => {
   const hasProfResearch = Boolean(hand.find(profResearchFilter))
 
   return (
-    <>
+    <div className="w-full col-center gap-3">
       <div className="text-2xl">Hand ({handSize})</div>
       <div className="row-center gap-2 flex-wrap">
         <Button
@@ -58,8 +58,8 @@ const Hand = ({ deck, hand, originalDeck, saveHandDeckState }: Props) => {
           Reset
         </Button>
       </div>
-      <div className="w-full flex-row flex-wrap">{renderCards(hand)}</div>
-    </>
+      <div className="w-full flex-row flex-wrap">{renderCards(hand, 8)}</div>
+    </div>
   )
 }
 
