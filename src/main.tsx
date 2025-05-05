@@ -61,8 +61,6 @@ if (rootElement && !rootElement.innerHTML) {
           maxAge: cardDataCacheTime,
           buster: CARD_DATA_PROXY_URL,
         }}
-        onSuccess={() => console.log('success')}
-        onError={() => console.log('error')}
       >
         <RouterProvider router={router} />
       </PersistQueryClientProvider>

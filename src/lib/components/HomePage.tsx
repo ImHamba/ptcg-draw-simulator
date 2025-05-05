@@ -2,59 +2,28 @@ import { useQuery } from '@tanstack/react-query'
 
 import { useState } from 'react'
 import { CARD_DATA_PROXY_URL } from '../cardData'
+import { initialDeck, initialHand } from '../handDeckUtils'
 import {
   type CardData,
-  type HandDeckStateChange,
   type MultiPokeCard,
+  type SaveHandDeckState,
 } from '../utils'
 import Deck from './Deck'
 import Hand from './Hand'
 import TargetHands from './TargetHands'
 
-const initialDeck: MultiPokeCard[] = []
-const a = [
-  {
-    name: 'charmander',
-    count: 2,
-    cardType: 'basicUserDefined',
-    data: {
-      id: 'A2-184',
-      number: '184',
-      name: 'Mismagius ex',
-      set_code: 'A2',
-      set_name: 'abc',
-      color: 'Psychic',
-      dex: 'A2_2',
-      stage: 'Stage 1',
-    },
-  },
-  { count: 2, cardType: 'basicOther' },
-  { name: 'candy', count: 2, cardType: 'otherUserDefined' },
-  { name: 'charizard', count: 2, cardType: 'otherUserDefined' },
-  { name: 'professors Research', count: 2, cardType: 'professorsResearch' },
-  { name: 'pokeball', count: 2, cardType: 'pokeball' },
-  { cardType: 'other', count: 8 },
-]
-
-const initialHand: MultiPokeCard[] = [
-  // { name: 'charmander', count: 1, cardType: 'basicUserDefined' },
-  // { name: 'candy', count: 2, cardType: 'otherUserDefined' },
-  // { name: 'professors Research', count: 1, cardType: 'professorsResearch' },
-  // { name: 'pokeball', count: 1, cardType: 'pokeball' },
-]
-
 const HomePage = () => {
-  // stores current state of deck for hand draw simulation
-  const [deck, setDeck] = useState<MultiPokeCard[]>(initialDeck)
-
   // stores the original state of deck, updated by user adding cards to it
-  const [originalDeck, setOriginalDeck] = useState<MultiPokeCard[]>(deck)
+  const [originalDeck, setOriginalDeck] = useState<MultiPokeCard[]>(initialDeck)
+
+  // stores current state of deck for hand draw simulation
+  const [deck, setDeck] = useState<MultiPokeCard[]>(originalDeck)
 
   const [hand, setHand] = useState<MultiPokeCard[]>(initialHand)
-  const [desiredHand, setDesiredHand] = useState<MultiPokeCard[]>([
-    { name: 'charmander', count: 1, cardType: 'basicUserDefined' },
-    { name: 'candy', count: 1, cardType: 'otherUserDefined' },
-    { name: 'charizard', count: 1, cardType: 'otherUserDefined' },
+  const [targetHand, setTargetHand] = useState<MultiPokeCard[]>([
+    // { name: 'charmander', count: 1, cardType: 'basicUserDefined' },
+    // { name: 'candy', count: 1, cardType: 'otherUserDefined' },
+    // { name: 'charizard', count: 1, cardType: 'otherUserDefined' },
   ])
 
   const cardDataQuery = useQuery({
@@ -70,29 +39,20 @@ const HomePage = () => {
     },
   })
 
-  console.log(cardDataQuery)
-
   const cardData: CardData[] = cardDataQuery.data ?? []
   // const { isLoading, error } = cardDataQuery
 
   // returns a callable that wraps a hand/deck state changing function with state save
-  const saveHandDeckState =
-    (handDeckStateChangeFn: HandDeckStateChange, ...args: any[]) =>
+  const saveHandDeckState: SaveHandDeckState =
+    (handDeckStateChangeFn, ...args) =>
     () => {
-      const {
-        newHand,
-        newDeck,
-        newOriginalDeck,
-      } = handDeckStateChangeFn(...args)
+      const { newHand, newDeck, newOriginalDeck, newTargetHand } =
+        handDeckStateChangeFn(...args)
       newHand && setHand(newHand)
       newDeck && setDeck(newDeck)
       newOriginalDeck && setOriginalDeck(newOriginalDeck)
+      newTargetHand && setTargetHand(newTargetHand)
     }
-
-  const resetDeckAndHand = () => {
-    setDeck(initialDeck)
-    setHand(initialHand)
-  }
 
   return (
     <div className="flex-row justify-center p-10">
@@ -101,6 +61,7 @@ const HomePage = () => {
           <div className="w-3/5 col-center gap-3">
             <Deck
               deck={deck}
+              originalDeck={originalDeck}
               cardData={cardData}
               saveHandDeckState={saveHandDeckState}
             />
@@ -109,13 +70,18 @@ const HomePage = () => {
             <div className="w-full col-center gap-3">
               <Hand
                 deck={deck}
+                originalDeck={originalDeck}
                 hand={hand}
-                resetDeckAndHand={resetDeckAndHand}
                 saveHandDeckState={saveHandDeckState}
               />
             </div>
             <div className="w-full col-center gap-3">
-              <TargetHands hand={hand} desiredHand={desiredHand} />
+              <TargetHands
+                hand={hand}
+                targetHand={targetHand}
+                originalDeck={originalDeck}
+                saveHandDeckState={saveHandDeckState}
+              />
             </div>
           </div>
         </div>

@@ -1,5 +1,4 @@
-import { DEFAULT_CARD_IMG_URL } from './cardData'
-import { type MultiPokeCard, imageUrlFromCardData } from './utils'
+import { type MultiPokeCard, imageUrlFromCard } from './utils'
 
 export const renderCards = (cards: MultiPokeCard[], width: number = 5) =>
   cards.map((card, i) => {
@@ -18,11 +17,7 @@ export const renderCards = (cards: MultiPokeCard[], width: number = 5) =>
         <div className="aspect-367/512 ">
           <div className="full col-center text-center relative overflow-hidden p-0">
             <img
-              src={
-                card.data
-                  ? imageUrlFromCardData(card.data)
-                  : DEFAULT_CARD_IMG_URL
-              }
+              src={imageUrlFromCard(card)}
               className="absolute top-0 left-0 z-0"
             />
           </div>

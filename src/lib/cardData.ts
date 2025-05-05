@@ -1,12 +1,14 @@
 const CARD_SETS_API_URL = 'https://api.dotgg.gg/cgfw/getsets?game=pokepocket'
 
 const CORS_PROXY_URL = 'https://corsproxy.io/?url=' // 'https://api.cors.lol/?url='
-export const CARD_DATA_API_URL = 'https://api.dotgg.gg/cgfw/getcards?game=pokepocket'
+export const CARD_DATA_API_URL =
+  'https://api.dotgg.gg/cgfw/getcards?game=pokepocket'
 export const CARD_DATA_PROXY_URL = CORS_PROXY_URL + CARD_DATA_API_URL
 
 export const CARD_IMG_API_URL =
   'https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket/' //'https://static.dotgg.gg/pokepocket/card/'
 export const DEFAULT_CARD_IMG_URL = 'cardback.png'
+export const BASIC_CARD_IMG_URL = 'basic.png'
 
 // export const fakeCardData = [
 //   {

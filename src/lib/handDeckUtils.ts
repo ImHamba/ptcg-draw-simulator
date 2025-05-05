@@ -1,4 +1,6 @@
-import { basicPokemonFilter } from './cardFilters'
+import { basicPokemonFilter, otherCardFilter } from './cardFilters'
+import { MAX_DECK_SIZE } from './constants'
+
 import {
   conditionalListItem,
   getRandomInt,
@@ -155,6 +157,124 @@ export const drawBasic = (hand: MultiPokeCard[], deck: MultiPokeCard[]) =>
     basicPokemonFilter,
   )
 
-export const addCardToDeck = (card: MultiPokeCard, deck: MultiPokeCard[]) => {
-  return { newDeck: [...deck, card] }
+const addCardToCardList = (
+  card: PokeCard,
+  cardList: MultiPokeCard[],
+  numberToAdd: number,
+) => {
+  const cardListHasCardAlready = cardList.some((listCard) =>
+    isSameCard(listCard, card),
+  )
+
+  // if card already in card list, increment its count
+  if (cardListHasCardAlready) {
+    return cardList.map((listCard) =>
+      isSameCard(listCard, card)
+        ? { ...listCard, count: listCard.count + numberToAdd }
+        : listCard,
+    )
+  }
+
+  // otherwise add it
+  return [...cardList, { ...card, count: numberToAdd }]
+}
+
+export const addCardToDeck = (
+  card: PokeCard,
+  deck: MultiPokeCard[],
+  originalDeck: MultiPokeCard[],
+  numberToAdd = 1,
+) => {
+  return {
+    newOriginalDeck: fillDeck(
+      addCardToCardList(card, originalDeck, numberToAdd),
+    ),
+    newDeck: fillDeck(
+      addCardToCardList(card, deck, numberToAdd),
+      sumCardCount(deck),
+    ),
+  }
+}
+
+export const fillDeck = (
+  deck: MultiPokeCard[],
+  targetSize = MAX_DECK_SIZE,
+): MultiPokeCard[] => {
+  const withoutOther = deck.filter((card) => !otherCardFilter(card))
+  const sizeWithoutOther = sumCardCount(withoutOther)
+
+  // if increasing size, add Other cards
+  if (sizeWithoutOther < targetSize) {
+    const newDeck: MultiPokeCard[] = [
+      ...withoutOther,
+      {
+        cardType: 'other',
+        count: targetSize - sizeWithoutOther,
+      },
+    ]
+
+    return newDeck
+  }
+  // if reducing size, remove Other cards
+  else if (sizeWithoutOther > targetSize) {
+    const other = deck.find(otherCardFilter)
+    if (!other) {
+      throw Error(
+        'Can not resize deck without Other cards to smaller target size.',
+      )
+    }
+
+    const newDeck: MultiPokeCard[] = [
+      ...withoutOther,
+      {
+        ...other,
+        count: other.count - (sizeWithoutOther - targetSize),
+      },
+    ]
+
+    return newDeck
+  }
+
+  return withoutOther
+}
+
+export const initialDeck: MultiPokeCard[] = fillDeck([])
+
+export const initialHand: MultiPokeCard[] = []
+
+export const resetDeckAndHand = (originalDeck: MultiPokeCard[]) => {
+  return {
+    newDeck: originalDeck,
+    newHand: initialHand,
+  }
+}
+
+export const resetOriginalDeck = () => {
+  return {
+    newDeck: initialDeck,
+    newHand: initialHand,
+    newOriginalDeck: initialDeck,
+  }
+}
+
+export const resetAllAndAddCard = (
+  card: PokeCard,
+  originalDeck: MultiPokeCard[],
+) => {
+  const { newHand, newDeck } = resetDeckAndHand(originalDeck)
+  return {
+    ...addCardToDeck(card, newDeck, originalDeck),
+    newHand: newHand,
+  }
+}
+
+export const addTargetCard = (
+  card: PokeCard,
+  targetHand: MultiPokeCard[],
+  numberToAdd = 1,
+) => {
+  console.log('add', card)
+  return {
+    newTargetHand: addCardToCardList(card, targetHand, numberToAdd),
+  }
 }

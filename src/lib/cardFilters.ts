@@ -9,3 +9,5 @@ export const pokeballFilter: CardFilter = (card) =>
 
 export const profResearchFilter: CardFilter = (card) =>
   card.data?.id === PROFESSORS_RESEARCH_ID
+
+export const otherCardFilter: CardFilter = (card) => card.cardType === 'other'

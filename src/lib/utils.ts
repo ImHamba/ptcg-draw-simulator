@@ -1,6 +1,10 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { CARD_IMG_API_URL } from './cardData'
+import {
+  BASIC_CARD_IMG_URL,
+  CARD_IMG_API_URL,
+  DEFAULT_CARD_IMG_URL,
+} from './cardData'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -56,17 +60,18 @@ export const omitKeys = <T extends object, K extends keyof T>(
 }
 
 export const isSameCard = (card1: PokeCard, card2: PokeCard) => {
+  console.log(card1, card2, card1.cardType, card2.cardType)
   return card1.cardType === card2.cardType && card1.data?.id === card2.data?.id
 }
 
-export const checkHandMatchesDesiredHand = (
+export const checkHandMatchesTargetHand = (
   hand: MultiPokeCard[],
-  desiredHand: MultiPokeCard[],
+  targetHand: MultiPokeCard[],
 ) =>
-  // check that for every desired card, the hand contains at least that number of them
-  desiredHand.every((desiredCard) => {
-    const handCard = hand.find((handCard) => isSameCard(handCard, desiredCard))
-    return (handCard?.count ?? 0) >= desiredCard.count
+  // check that for every target card, the hand contains at least that number of them
+  targetHand.every((targetCard) => {
+    const handCard = hand.find((handCard) => isSameCard(handCard, targetCard))
+    return (handCard?.count ?? 0) >= targetCard.count
   })
 
 /**
@@ -90,7 +95,13 @@ export type HandDeckStateChange = (...args: any[]) => {
   newHand?: MultiPokeCard[]
   newOriginalDeck?: MultiPokeCard[]
   newDeck?: MultiPokeCard[]
+  newTargetHand?: MultiPokeCard[]
 }
+
+export type SaveHandDeckState = <T extends HandDeckStateChange>(
+  handDeckStateChangeFn: T,
+  ...args: Parameters<T>
+) => () => void
 
 export type CardData = {
   id: string
@@ -103,8 +114,25 @@ export type CardData = {
   dex: string
 }
 
-export const imageUrlFromCardData = (data: CardData) => {
+export const imageUrlFromCard = (card: PokeCard) => {
+  const data = card.data
+
+  if (card.cardType === 'basicOther') {
+    return BASIC_CARD_IMG_URL
+  }
+
+  if (!data || card.cardType === 'other') {
+    return DEFAULT_CARD_IMG_URL
+  }
+
   // translation between dotgg and limitless set
   const setCode = data.set_code === 'PROMO' ? 'P-A' : data.set_code
   return `${CARD_IMG_API_URL}${setCode}/${setCode}_${data.number.padStart(3, '0')}_EN.webp`
+}
+
+/**
+ * inverts a predicate
+ */
+export const not = <T extends (...args: any[]) => boolean>(predicate: T) => {
+  return (...args: Parameters<T>) => !predicate(...args)
 }

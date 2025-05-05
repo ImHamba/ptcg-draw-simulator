@@ -1,21 +1,23 @@
 import { Button } from '@/components/ui/button'
 import { usePokeball, useProfessorsResearch } from '../cardEffects'
 import { pokeballFilter, profResearchFilter } from '../cardFilters'
-import { drawFirstHand, drawFromDeck, sumCardCount } from '../handDeckUtils'
+import {
+  drawFirstHand,
+  drawFromDeck,
+  resetDeckAndHand,
+  sumCardCount,
+} from '../handDeckUtils'
 import { renderCards } from '../reactUtils'
-import { type HandDeckStateChange, type MultiPokeCard } from '../utils'
+import { type MultiPokeCard, type SaveHandDeckState } from '../utils'
 
 type Props = {
   deck: MultiPokeCard[]
+  originalDeck: MultiPokeCard[]
   hand: MultiPokeCard[]
-  resetDeckAndHand: () => void
-  saveHandDeckState: (
-    handDeckStateChangeFn: HandDeckStateChange,
-    ...args: any[]
-  ) => () => void
+  saveHandDeckState: SaveHandDeckState
 }
 
-const Hand = ({ deck, hand, resetDeckAndHand, saveHandDeckState }: Props) => {
+const Hand = ({ deck, hand, originalDeck, saveHandDeckState }: Props) => {
   const deckSize = sumCardCount(deck)
   const handSize = sumCardCount(hand)
   const hasPokeball = Boolean(hand.find(pokeballFilter))
@@ -49,7 +51,10 @@ const Hand = ({ deck, hand, resetDeckAndHand, saveHandDeckState }: Props) => {
         >
           Use Professor's Research
         </Button>
-        <Button onClick={resetDeckAndHand} disabled={handSize == 0}>
+        <Button
+          onClick={saveHandDeckState(resetDeckAndHand, originalDeck)}
+          disabled={handSize == 0}
+        >
           Reset
         </Button>
       </div>
