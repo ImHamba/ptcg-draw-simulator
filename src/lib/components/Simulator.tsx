@@ -2,18 +2,25 @@ import { Button } from '@/components/ui/button'
 import { useRef, useState } from 'react'
 import {
   Bar,
-  BarChart,
   CartesianGrid,
+  ComposedChart,
   Legend,
+  Line,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts'
 import { FIRST_HAND_SIZE, MAX_DECK_SIZE } from '../constants'
-import { drawFirstHand, drawFromDeck, type TargetHands } from '../handDeckUtils'
+import {
+  drawFirstHand,
+  drawFromDeck,
+  useSpecialCards,
+  type TargetHands,
+} from '../handDeckUtils'
 import {
   checkHandMatchesTargetHands,
+  getHexColorForValue,
   sumObjects,
   type MultiPokeCard,
   type SaveHandDeckState,
@@ -37,27 +44,37 @@ const Simulator = ({
   const [doSimulation, _setDoSimulation] = useState(doSimulationRef.current)
   const [simulationCount, setSimulationCount] = useState(0)
 
+  const simulationLimit = 10000
+
   // initialise simulation results data structure.
   // the top level holds a key for each possible number of draws (until deck is depleted).
   // each value holds the cumulative sums of each target hand that was matched first in a simulation at the
   // given number of draws.
   // e.g. target hand X was the first target hand to be matched 150 times at the 4th draw of the game
-  const initialCumulativeSimulationResults = Object.fromEntries(
-    Array.from({ length: MAX_DECK_SIZE - FIRST_HAND_SIZE + 1 }, (_, i) => [
+  const initialCumulativeSimulationResults: Record<
+    string,
+    Record<'any' | keyof TargetHands, number>
+  > = Object.fromEntries([
+    ...Array.from({ length: MAX_DECK_SIZE - FIRST_HAND_SIZE + 1 }, (_, i) => [
       i,
-      Object.fromEntries(
-        Object.entries(targetHands).map(([targetHandId, _]) => {
-          return [targetHandId, 0]
-        }),
-      ),
+      {
+        ...Object.fromEntries(
+          Object.entries(targetHands).map(([targetHandId, _]) => {
+            return [targetHandId, 0]
+          }),
+        ),
+
+        // additional property to track when any hand is matched
+        // since multiple hands can match on the same draw.
+        // the value of these properties from all the draw counts should sum
+        // to the total number of simulations done.
+        anyMatch: 0,
+      },
     ]),
-  )
+  ])
+
   const [cumulativeSimulationResults, setCumulativeSimulationResults] =
     useState(initialCumulativeSimulationResults)
-
-  //   useEffect(() => {
-  //     console.log(cumulativeSimulationResults)
-  //   }, [cumulativeSimulationResults])
 
   const setDoSimulation = (value: boolean) => {
     doSimulationRef.current = value
@@ -68,26 +85,27 @@ const Simulator = ({
   // returns an obj indicating which target hand was first matched (could be multiple) and how many draws
   // it took (first hand is 0 draws)
   const drawSimulation = () => {
-    let hand: MultiPokeCard[] = []
+    let hand: MultiPokeCard[]
     let deck = originalDeck
     let drawCount = 0
 
-    const firstHandDrawResult = drawFirstHand(deck)
-    hand = firstHandDrawResult.newHand
-    deck = firstHandDrawResult.newDeck
+    // check matches after drawing first hand and using special cards
+    ;({ newHand: hand, newDeck: deck } = drawFirstHand(deck))
+    ;({ newHand: hand, newDeck: deck } = useSpecialCards(hand, deck))
 
     let targetHandMatches = checkHandMatchesTargetHands(hand, targetHands)
 
+    // if not matching, repeat drawing and using any special cards
     while (!targetHandMatches.anyMatch) {
-      const drawResult = drawFromDeck(hand, deck)
-      hand = drawResult.newHand
-      deck = drawResult.newDeck
+      ;({ newHand: hand, newDeck: deck } = drawFromDeck(hand, deck))
+      ;({ newHand: hand, newDeck: deck } = useSpecialCards(hand, deck))
 
       targetHandMatches = checkHandMatchesTargetHands(hand, targetHands)
+
       drawCount++
     }
 
-    return { targetHandMatches: targetHandMatches.targetHandMatches, drawCount }
+    return { targetHandMatches, drawCount }
   }
 
   const simulate = async () => {
@@ -95,17 +113,16 @@ const Simulator = ({
     setSimulationCount(0)
 
     const timeBudgetMs = 10
-    const limit = 10000
     let innerLoopCount = 0
 
     setCumulativeSimulationResults(initialCumulativeSimulationResults)
 
-    while (doSimulationRef.current && innerLoopCount < limit) {
+    while (doSimulationRef.current && innerLoopCount < simulationLimit) {
       const frameStart = performance.now()
 
       while (
         performance.now() - frameStart < timeBudgetMs &&
-        innerLoopCount < limit
+        innerLoopCount < simulationLimit
       ) {
         const { targetHandMatches, drawCount } = drawSimulation()
         setCumulativeSimulationResults((prev) => {
@@ -125,33 +142,62 @@ const Simulator = ({
   }
 
   const stopSimulation = () => {
-    console.log('stop')
     setDoSimulation(false)
   }
 
-  const chartData = Object.entries(cumulativeSimulationResults).map(
-    ([drawCount, targetHandMatches]) => {
-      return {
-        name: drawCount,
+  const chartData = Object.entries(cumulativeSimulationResults)
+    // exclude results for high draw counts if the results only have 0s
+    .filter((_, i) => {
+      const followingItems = Object.entries(cumulativeSimulationResults).slice(
+        i,
+      )
+      const followingAreZeros = followingItems.every(
+        ([_, targetHandMatches]) => targetHandMatches.anyMatch <= 0,
+      )
+
+      return !followingAreZeros
+    })
+    .map(([drawCount, targetHandMatches]) => {
+      const chartBar: Record<string, number | string> = {
+        // transform draw count to real number of cards drawn including first hand draw
+        name: (Number(drawCount) + FIRST_HAND_SIZE).toString(),
         ...Object.fromEntries(
-          Object.entries(targetHandMatches).map(([_, matchCount], i) => {
-            return [
-              `Target Hand ${i + 1}`,
-              (matchCount / simulationCount) * 100,
-            ]
-          }),
+          Object.entries(targetHandMatches).map(
+            ([targetHandId, matchCount]) => {
+              return [targetHandId, (matchCount / simulationCount) * 100]
+            },
+          ),
         ),
       }
-    },
-  )
 
-  console.log(targetHands, chartData)
+      return chartBar
+    })
+    // track cumulative values of anyMatch over the draw counts
+    .reduce(
+      (acc, chartBar) => {
+        // @ts-ignore
+        const cumulative = acc.cumulative + (chartBar.anyMatch as number)
+        return {
+          data: [...acc.data, { ...chartBar, cumulative: cumulative }],
+          cumulative: cumulative,
+        }
+      },
+      { data: [], cumulative: 0 } as {
+        data: Record<string, number>[]
+        cumulative: number
+      },
+    ).data
 
   const targetHandIds = Object.keys(targetHands)
 
   return (
     <div className="full col-center gap-3">
-      <div className="text-2xl">Draw Simulator {simulationCount}</div>
+      <div className="col-center gap-1">
+        <div className="text-2xl">Draw Simulator</div>
+        <div>
+          {simulationCount}/{simulationLimit} simulations
+        </div>
+      </div>
 
       <div className="row-center gap-2">
         <Button onClick={doSimulation ? stopSimulation : simulate}>
@@ -159,17 +205,26 @@ const Simulator = ({
         </Button>
         <Button
           onClick={() => {
-            const a = drawSimulation()
-            console.log(a)
+            console.log('simulate')
+            drawSimulation()
           }}
         >
-          Test
+          test
+        </Button>
+        <Button
+          onClick={() => {
+            // console.log(JSON.stringify(originalDeck))
+            // console.log(JSON.stringify(targetHands))
+            console.log(cumulativeSimulationResults)
+          }}
+        >
+          print
         </Button>
       </div>
       <ResponsiveContainer>
-        <BarChart data={chartData}>
+        <ComposedChart data={chartData}>
           <CartesianGrid />
-          <Tooltip />
+          <Tooltip formatter={(value: number) => `${value.toFixed(1)}%`} />
           <Legend />
           <YAxis
             type="number"
@@ -180,12 +235,22 @@ const Simulator = ({
               //   position: 'insideLeft',
               //   offset: 20,
             }}
+            domain={[0, (dataMax: number) => Math.min(dataMax, 100)]}
+            tickFormatter={(value: number) => value.toFixed(0)}
           />
-          <XAxis dataKey="name" label={{ value: 'Draw Count', dy: 10 }} />
-          {targetHandIds.map((_, i) => (
-            <Bar dataKey={`Target Hand ${i + 1}`} stackId={1} />
-          ))}
-        </BarChart>
+          <XAxis dataKey="name" label={{ value: 'Draw Count', dy: 13 }} />
+          <Bar dataKey="anyMatch" name="Any Target Hand" />
+          {targetHandIds.map((targetHandId, i) => {
+            return (
+              <Bar
+                dataKey={targetHandId}
+                name={`Target Hand ${i + 1}`}
+                fill={getHexColorForValue(i / targetHandIds.length, 0, 0.1)}
+              />
+            )
+          })}
+          <Line dataKey="cumulative" name="Cumulative" />
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   )

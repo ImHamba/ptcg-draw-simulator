@@ -1,4 +1,9 @@
-import { basicPokemonFilter, otherCardFilter } from './cardFilters'
+import { usePokeball, useProfessorsResearch } from './cardEffects'
+import {
+  basicPokemonFilter,
+  otherCardFilter,
+  pokeballFilter,
+} from './cardFilters'
 import { FIRST_HAND_SIZE, MAX_DECK_SIZE } from './constants'
 
 import {
@@ -17,7 +22,7 @@ export const drawFromDeck = (
   hand: MultiPokeCard[],
   deck: MultiPokeCard[],
   filter?: CardFilter,
-): { newHand: MultiPokeCard[]; newDeck: MultiPokeCard[] } => {
+) => {
   if (deck.length === 0) {
     throw Error(`Tried to draw from empty deck.`)
   }
@@ -85,8 +90,9 @@ export const drawFromDeck = (
     ? incrementedHand
     : [...hand, { ...drawnCard, count: 1 }]
 
-  return { newDeck, newHand }
+  return { newDeck, newHand, drawnCard }
 }
+
 export const drawMany = (
   hand: MultiPokeCard[],
   deck: MultiPokeCard[],
@@ -95,12 +101,17 @@ export const drawMany = (
 ) => {
   const arr: number[] = Array(numberOfCards).fill(0)
   return arr.reduce(
-    ({ newHand, newDeck }, _) => {
-      return drawFromDeck(newHand, newDeck, filter)
+    ({ newHand, newDeck, drawnCards }, _) => {
+      const drawResult = drawFromDeck(newHand, newDeck, filter)
+      return {
+        ...drawResult,
+        drawnCards: [...drawnCards, drawResult.drawnCard],
+      }
     },
     {
       newDeck: deck,
       newHand: hand,
+      drawnCards: [] as PokeCard[],
     },
   )
 }
@@ -151,14 +162,16 @@ export const sumCardCount = (cards: MultiPokeCard[], filter?: CardFilter) => {
   return sum(filteredCards.map((card) => card.count))
 }
 
-export const drawBasic = (hand: MultiPokeCard[], deck: MultiPokeCard[]) =>
-  drawMany(
+export const drawBasic = (hand: MultiPokeCard[], deck: MultiPokeCard[]) => {
+  const basicPokemonInDeck = sumCardCount(deck, basicPokemonFilter)
+  return drawMany(
     hand,
     deck,
     // draw 1 if the deck has it
-    Math.min(1, sumCardCount(deck, basicPokemonFilter)),
+    Math.min(1, basicPokemonInDeck),
     basicPokemonFilter,
   )
+}
 
 const addCardToCardList = (
   card: PokeCard,
@@ -241,14 +254,10 @@ export const fillDeck = (
   return withoutOther
 }
 
-export const initialDeck: MultiPokeCard[] = fillDeck([
-  // { cardType: 'basicOther', count: 2 },
-])
+export const initialDeck: MultiPokeCard[] = fillDeck([])
 
 export type TargetHands = Record<string, MultiPokeCard[]>
-export const initialTargetHands: TargetHands = {
-  // test: [{ cardType: 'basicOther', count: 2 }],
-}
+export const initialTargetHands: TargetHands = {}
 
 export const initialHand: MultiPokeCard[] = []
 
@@ -292,4 +301,38 @@ export const addTargetCard = (
       [targetHandId]: addCardToCardList(card, addTo, numberToAdd),
     },
   }
+}
+
+type useCard = (
+  hand: MultiPokeCard[],
+  deck: MultiPokeCard[],
+) => {
+  newHand: MultiPokeCard[]
+  newDeck: MultiPokeCard[]
+}
+
+export const useAllCards = (
+  hand: MultiPokeCard[],
+  deck: MultiPokeCard[],
+  useCard: useCard,
+  cardFilter: CardFilter,
+) => {
+  let newHand = hand
+  let newDeck = deck
+  while (newHand.some(cardFilter)) {
+    ;({ newHand, newDeck } = useCard(newHand, newDeck))
+  }
+
+  return { newHand, newDeck }
+}
+
+export const useSpecialCards = (
+  hand: MultiPokeCard[],
+  deck: MultiPokeCard[],
+) => {
+  const { newHand: handAfterPokeball, newDeck: deckAfterPokeball } =
+    useAllCards(hand, deck, usePokeball, pokeballFilter)
+
+  // only uses if hand contains a prof research
+  return useProfessorsResearch(handAfterPokeball, deckAfterPokeball)
 }

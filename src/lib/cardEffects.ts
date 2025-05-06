@@ -19,7 +19,8 @@ export const usePokeball = (hand: MultiPokeCard[], deck: MultiPokeCard[]) => {
     pokeballFilter,
   )
 
-  return drawBasic(handAfterDecrement, deck)
+  const drawResult = drawBasic(handAfterDecrement, deck)
+  return drawResult
 }
 
 export const useProfessorsResearch = (
@@ -38,5 +39,11 @@ export const useProfessorsResearch = (
   )
 
   // draw up to 2 cards if there are enough in deck
-  return drawMany(handAfterDecrement, deck, Math.min(2, sumCardCount(deck)))
+  const drawResult = drawMany(
+    handAfterDecrement,
+    deck,
+    Math.min(2, sumCardCount(deck)),
+  )
+
+  return drawResult
 }
