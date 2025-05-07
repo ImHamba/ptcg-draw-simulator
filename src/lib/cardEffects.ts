@@ -1,6 +1,6 @@
 import { pokeballFilter, profResearchFilter } from './cardFilters'
 import {
-  decrementCardInHand,
+  decrementCardByCondition,
   drawBasic,
   drawMany,
   sumCardCount,
@@ -14,10 +14,7 @@ export const usePokeball = (hand: MultiPokeCard[], deck: MultiPokeCard[]) => {
     return { newHand: hand, newDeck: deck }
   }
 
-  const { newHand: handAfterDecrement } = decrementCardInHand(
-    hand,
-    pokeballFilter,
-  )
+  const handAfterDecrement = decrementCardByCondition(hand, pokeballFilter)
 
   const drawResult = drawBasic(handAfterDecrement, deck)
   return drawResult
@@ -33,10 +30,7 @@ export const useProfessorsResearch = (
     return { newHand: hand, newDeck: deck }
   }
 
-  const { newHand: handAfterDecrement } = decrementCardInHand(
-    hand,
-    profResearchFilter,
-  )
+  const handAfterDecrement = decrementCardByCondition(hand, profResearchFilter)
 
   // draw up to 2 cards if there are enough in deck
   const drawResult = drawMany(

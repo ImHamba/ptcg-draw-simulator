@@ -1,6 +1,14 @@
+import { Button } from '@/components/ui/button'
 import { type MultiPokeCard, imageUrlFromCard } from './utils'
 
-export const renderCards = (cards: MultiPokeCard[], width: number = 5) =>
+export const renderCards = (
+  cards: MultiPokeCard[],
+  width: number = 5,
+  incrementCard: ((card: MultiPokeCard) => void) | null = null,
+  decrementCard: ((card: MultiPokeCard) => void) | null = null,
+  disableIncrement: ((card: MultiPokeCard) => boolean) | null = null,
+  hideButtons: ((card: MultiPokeCard) => boolean) | null = null,
+) =>
   cards.map((card, i) => {
     const widths: Record<number, string> = {
       1: 'w-full',
@@ -22,9 +30,26 @@ export const renderCards = (cards: MultiPokeCard[], width: number = 5) =>
             />
           </div>
         </div>
-        <div className="shrink col-center text-center relative overflow-hidden p-0">
+        <div className="shrink row-center items-center text-center relative overflow-hidden p-0 gap-2 mt-1">
           {/* <div>{card.name || card.cardType}</div> */}
+          {decrementCard && (!hideButtons || !hideButtons(card)) && (
+            <Button
+              className="p-0 h-6 aspect-square"
+              onClick={() => decrementCard(card)}
+            >
+              -
+            </Button>
+          )}
           <div>{card.count}</div>
+          {incrementCard && (!hideButtons || !hideButtons(card)) && (
+            <Button
+              className="p-0 h-6 aspect-square"
+              onClick={() => incrementCard(card)}
+              disabled={disableIncrement ? disableIncrement(card) : false}
+            >
+              +
+            </Button>
+          )}
         </div>
       </div>
     )

@@ -9,6 +9,7 @@ import ReactDOM from 'react-dom/client'
 import { routeTree } from './routeTree.gen'
 
 import { CARD_DATA_PROXY_URL } from './lib/cardData.ts'
+import { VERSION } from './lib/constants.ts'
 import reportWebVitals from './reportWebVitals.ts'
 import './styles.css'
 
@@ -59,8 +60,10 @@ if (rootElement && !rootElement.innerHTML) {
         persistOptions={{
           persister: localStoragePersister,
           maxAge: cardDataCacheTime,
-          buster: CARD_DATA_PROXY_URL,
+          buster: `${CARD_DATA_PROXY_URL}_${VERSION}`,
         }}
+        onSuccess={() => console.log('success')}
+        onError={() => console.log('error')}
       >
         <RouterProvider router={router} />
       </PersistQueryClientProvider>

@@ -64,6 +64,43 @@ export const isSameCard = (card1: PokeCard, card2: PokeCard) => {
   return card1.cardType === card2.cardType && card1.data?.id === card2.data?.id
 }
 
+export const isEquivalentCard = (card1: PokeCard, card2: PokeCard) => {
+  // this will catch non specific cards, e.g. `other` or `otherBasic`
+  if (isSameCard(card1, card2)) {
+    return true
+  }
+
+  // both cards must be specific cards to be considered equivalent
+  if (!card1.data || !card2.data) {
+    return false
+  }
+
+  if (
+    card1.data.name !== card2.data.name ||
+    card1.data.type !== card2.data.type
+  ) {
+    return false
+  }
+
+  // name and type are equal at this point
+  const type = card1.data.type
+
+  // all non pokemon should have the same effect if they have the same name
+  if (type !== 'Pokemon') {
+    return true
+  }
+
+  // pokemon with the same attacks and abilities are probably equivalent
+  if (
+    JSON.stringify(card1.data.attack) === JSON.stringify(card2.data.attack) &&
+    JSON.stringify(card1.data.ability) === JSON.stringify(card2.data.ability)
+  ) {
+    return true
+  }
+
+  return false
+}
+
 export const checkHandMatchesTargetHand = (
   hand: MultiPokeCard[],
   targetHand: MultiPokeCard[],
@@ -133,6 +170,9 @@ export type CardData = {
   color: string
   stage: string
   dex: string
+  type: string
+  attack: string
+  ability: string
 }
 
 export const imageUrlFromCard = (card: PokeCard) => {

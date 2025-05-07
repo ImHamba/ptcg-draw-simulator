@@ -2,6 +2,9 @@ import { Button } from '@/components/ui/button'
 import { otherCardFilter } from '../cardFilters'
 import { MAX_DECK_SIZE } from '../constants'
 import {
+  decrementCard,
+  fillDeck,
+  incrementCard,
   resetAllAndAddCard,
   resetOriginalDeck,
   sumCardCount,
@@ -56,10 +59,51 @@ const Deck = ({ deck, originalDeck, cardData, saveHandDeckState }: Props) => {
     }
   })
 
+  // const decrementCardFromDeck = (card: PokeCard) => {
+  //   decreme
+  // }
+
+  const increment = (card: PokeCard) =>
+    saveHandDeckState((card) => {
+      return {
+        newOriginalDeck: fillDeck(incrementCard(originalDeck, card)),
+        newDeck: fillDeck(incrementCard(deck, card)),
+      }
+    }, card)()
+  const decrement = (card: PokeCard) =>
+    saveHandDeckState((card) => {
+      return {
+        newOriginalDeck: fillDeck(decrementCard(originalDeck, card)),
+        newDeck: fillDeck(decrementCard(deck, card)),
+      }
+    }, card)()
+
+  const disableIncrement = (card: MultiPokeCard) => {
+    // allow many basics but not exceeding deck size
+    if (card.cardType === 'basicOther') {
+      return originalDeckWithoutOtherSize >= MAX_DECK_SIZE
+    }
+
+    // cap other cards at 2
+    return card.count >= 2
+  }
+
+  // dont show buttons for other cards since theyre automatically populated
+  const hideCardButtons = (card: MultiPokeCard) => card.cardType === 'other'
+
   return (
     <div className="col-center gap-3">
       <div className="text-2xl">Deck ({deckSize})</div>
-      <div className="w-full flex-row flex-wrap">{renderCards(deck, 6)}</div>
+      <div className="w-full flex-row flex-wrap">
+        {renderCards(
+          deck,
+          6,
+          increment,
+          decrement,
+          disableIncrement,
+          hideCardButtons,
+        )}
+      </div>
 
       <div className="row-center gap-2">
         <Button onClick={saveHandDeckState(resetOriginalDeck)}>

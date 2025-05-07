@@ -1,10 +1,16 @@
 import { v4 as uuidv4 } from 'uuid'
-import { addTargetCard, type TargetHands } from '../handDeckUtils'
+import {
+  addTargetCard,
+  decrementCard,
+  incrementCard,
+  type TargetHands,
+} from '../handDeckUtils'
 import { renderCards } from '../reactUtils'
 import {
   checkHandMatchesTargetHand,
   isSameCard,
   type MultiPokeCard,
+  type PokeCard,
   type SaveHandDeckState,
 } from '../utils'
 import SearchSelect from './SearchSelect'
@@ -63,11 +69,41 @@ const TargetHand = ({
     saveHandDeckState(addTargetCard, card, addToTargetHandId, targetHands)()
   }
 
+  const increment = !targetHandId
+    ? null
+    : (card: PokeCard) => {
+        saveHandDeckState((card) => {
+          return {
+            newTargetHands: {
+              ...targetHands,
+              [targetHandId]: incrementCard(targetHand, card),
+            },
+          }
+        }, card)()
+      }
+
+  const decrement = !targetHandId
+    ? null
+    : (card: PokeCard) => {
+        saveHandDeckState((card) => {
+          return {
+            newTargetHands: {
+              ...targetHands,
+              [targetHandId]: decrementCard(targetHand, card),
+            },
+          }
+        }, card)()
+      }
+
+  const disableIncrement = (card: MultiPokeCard) =>
+    card.count >=
+    (originalDeck.find((deckCard) => isSameCard(deckCard, card))?.count ?? 0)
+
   return (
     <div className="pb-5 border-b-2">
       {!targetHandId && <div className="text-xl mb-2">Add new target hand</div>}
       <div className="w-full flex-row flex-wrap ">
-        {renderCards(targetHand, 8)}
+        {renderCards(targetHand, 8, increment, decrement, disableIncrement)}
       </div>
       {targetHandId && (
         <div className={handMatchesTarget ? 'text-green-300' : 'text-red-400'}>

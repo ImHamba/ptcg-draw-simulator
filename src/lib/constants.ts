@@ -1,3 +1,5 @@
+export const VERSION = '1.0'
+
 export const BASIC_STAGE = 'Basic'
 export const PROFESSORS_RESEARCH_CARD_NAME = 'Professor’s Research'
 export const POKEBALL_CARD_NAME = 'Poké Ball'
