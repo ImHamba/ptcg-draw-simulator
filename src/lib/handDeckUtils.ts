@@ -280,7 +280,8 @@ export const fillDeck = (
   return withoutOther
 }
 
-export const initialDeck: MultiPokeCard[] = fillDeck([
+export const initialDeck: MultiPokeCard[] = fillDeck([])
+;[
   // { cardType: 'basicOther', count: 2 },
 
   {
@@ -1413,7 +1414,7 @@ export const initialDeck: MultiPokeCard[] = fillDeck([
     },
     count: 2,
   },
-])
+]
 
 export type TargetHands = Record<string, MultiPokeCard[]>
 export const initialTargetHands: TargetHands = {

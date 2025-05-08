@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
-
 import { useState } from 'react'
 import { CARD_DATA_PROXY_URL } from '../cardData'
+import { CARD_DATA_PROPERTIES } from '../constants'
 import { initialDeck, initialHand, initialTargetHands } from '../handDeckUtils'
 import {
+  pick,
   type CardData,
   type MultiPokeCard,
   type SaveHandDeckState,
@@ -24,20 +25,25 @@ const HomePage = () => {
   const [targetHands, setTargetHands] = useState(initialTargetHands)
 
   const cardDataQuery = useQuery({
-    queryKey: ['cardData'],
+    queryKey: ['query'],
     queryFn: async () => {
-      return fetch(CARD_DATA_PROXY_URL).then((res) => {
-        if (!res.ok) {
-          throw new Error('Network response was not ok')
-        }
+      console.log('fetch data')
+      return fetch(CARD_DATA_PROXY_URL)
+        .then(async (res) => {
+          if (!res.ok) {
+            throw new Error('Network response was not ok')
+          }
 
-        return res.json()
-      })
+          return res.json()
+        })
+        .then(async (data: CardData[]) => {
+          const properties = CARD_DATA_PROPERTIES.map((x) => x)
+          return data.map((card: CardData) => pick(card, properties))
+        })
     },
   })
 
   const cardData: CardData[] = cardDataQuery.data ?? []
-  // const { isLoading, error } = cardDataQuery
 
   // returns a callable that wraps a hand/deck state changing function with state save
   const saveHandDeckState: SaveHandDeckState =

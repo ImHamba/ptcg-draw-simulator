@@ -1,6 +1,13 @@
 import { Button } from '@/components/ui/button'
+import { useRouter, useSearch } from '@tanstack/react-router'
+import { useEffect, useMemo } from 'react'
+import {
+  generateEncodedDeckString,
+  generateShareLink,
+  interpretDeckCode,
+} from '../appUtils'
 import { otherCardFilter } from '../cardFilters'
-import { MAX_DECK_SIZE } from '../constants'
+import { MAX_DECK_SIZE, URL_DECK_SEARCH_PARAM } from '../constants'
 import {
   decrementCard,
   fillDeck,
@@ -11,6 +18,7 @@ import {
 } from '../handDeckUtils'
 import { renderCards } from '../reactUtils'
 import {
+  copyToClipboard,
   not,
   type CardData,
   type MultiPokeCard,
@@ -18,6 +26,7 @@ import {
   type SaveHandDeckState,
 } from '../utils'
 import SearchSelect from './SearchSelect'
+import { ShareLinkButton } from './ShareLinkButton'
 
 type Props = {
   deck: MultiPokeCard[]
@@ -26,7 +35,54 @@ type Props = {
   saveHandDeckState: SaveHandDeckState
 }
 
+// greninja
+// http://localhost:3000/?deck=2.PROMO-007_2.A2b-111_2.A1-089_2.A1-087_2.A3-144
+
 const Deck = ({ deck, originalDeck, cardData, saveHandDeckState }: Props) => {
+  // @ts-ignore
+  const searchParams: { [URL_DECK_SEARCH_PARAM]: string } = useSearch({
+    strict: false,
+  })
+  const deckCode = searchParams[URL_DECK_SEARCH_PARAM]
+  const router = useRouter()
+
+  // load deck code on mount
+  useEffect(() => {
+    const deck = interpretDeckCode(deckCode, cardData)
+
+    const stateFn = () => {
+      return {
+        newDeck: deck,
+        newOriginalDeck: deck,
+      }
+    }
+
+    saveHandDeckState(stateFn)()
+    console.log('imported deck')
+  }, [deckCode, cardData])
+
+  useEffect(() => {
+    const deckString = generateEncodedDeckString(originalDeck)
+
+    const currentSearchParams = new URLSearchParams()
+    if (deckString) {
+      currentSearchParams.set(URL_DECK_SEARCH_PARAM, deckString)
+    }
+
+    console.log(
+      'set url deckstring',
+      deckString,
+      Object.fromEntries(currentSearchParams.entries()),
+    )
+
+    router.navigate({
+      to: window.location.pathname,
+      search: {
+        ...Object.fromEntries(currentSearchParams.entries()),
+      },
+    })
+  }, [originalDeck])
+
   const deckSize = sumCardCount(deck)
   //   const originalDeckSize = sumCardCount(originalDeck)
   const originalDeckWithoutOtherSize = sumCardCount(
@@ -44,7 +100,7 @@ const Deck = ({ deck, originalDeck, cardData, saveHandDeckState }: Props) => {
     saveHandDeckState(resetAllAndAddCard, card, originalDeck)()
   }
 
-  const addBasic = () => {
+  const onAddBasic = () => {
     const card: PokeCard = {
       cardType: 'basicOther',
     }
@@ -52,24 +108,26 @@ const Deck = ({ deck, originalDeck, cardData, saveHandDeckState }: Props) => {
     return resetAllAndAddCard(card, originalDeck)
   }
 
-  const cardDataOptions = cardData?.map((data, i) => {
-    return {
-      value: i.toString(),
-      label: `${data.name} (${data.id} ${data.set_name})`,
-    }
-  })
+  const cardDataOptions = useMemo(
+    () =>
+      cardData?.map((data, i) => {
+        return {
+          value: i.toString(),
+          label: `${data.name} (${data.id} ${data.set_name})`,
+        }
+      }),
+    [cardData],
+  )
 
-  // const decrementCardFromDeck = (card: PokeCard) => {
-  //   decreme
-  // }
-
-  const increment = (card: PokeCard) =>
+  const increment = (card: PokeCard) => {
+    console.log('increment', performance.now())
     saveHandDeckState((card) => {
       return {
         newOriginalDeck: fillDeck(incrementCard(originalDeck, card)),
         newDeck: fillDeck(incrementCard(deck, card)),
       }
     }, card)()
+  }
   const decrement = (card: PokeCard) =>
     saveHandDeckState((card) => {
       return {
@@ -91,6 +149,11 @@ const Deck = ({ deck, originalDeck, cardData, saveHandDeckState }: Props) => {
   // dont show buttons for other cards since theyre automatically populated
   const hideCardButtons = (card: MultiPokeCard) => card.cardType === 'other'
 
+  const onShareLinkClick = () => {
+    const link = generateShareLink(originalDeck)
+    copyToClipboard(link)
+  }
+
   return (
     <div className="col-center gap-3">
       <div className="text-2xl">Deck ({deckSize})</div>
@@ -109,12 +172,18 @@ const Deck = ({ deck, originalDeck, cardData, saveHandDeckState }: Props) => {
         <Button onClick={saveHandDeckState(resetOriginalDeck)}>
           Clear Deck
         </Button>
+
         <Button
-          onClick={saveHandDeckState(addBasic)}
+          onClick={saveHandDeckState(onAddBasic)}
           disabled={originalDeckWithoutOtherSize >= MAX_DECK_SIZE}
         >
           Add Basic
         </Button>
+
+        <ShareLinkButton
+          onShareLinkClick={onShareLinkClick}
+          disabled={originalDeckWithoutOtherSize >= MAX_DECK_SIZE}
+        />
       </div>
       <SearchSelect
         options={cardDataOptions}

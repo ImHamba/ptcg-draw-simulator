@@ -5,13 +5,14 @@ import {
   CARD_IMG_API_URL,
   DEFAULT_CARD_IMG_URL,
 } from './cardData'
+import { GENERIC_CARD_TYPES, type CARD_DATA_PROPERTIES } from './constants'
 import type { TargetHands } from './handDeckUtils'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export type CardType = 'basicOther' | 'other'
+export type CardType = (typeof GENERIC_CARD_TYPES)[number]
 
 export type PokeCard =
   | {
@@ -161,19 +162,7 @@ export type SaveHandDeckState = <T extends HandDeckStateChange>(
   ...args: Parameters<T>
 ) => () => void
 
-export type CardData = {
-  id: string
-  set_code: string
-  number: string
-  name: string
-  set_name: string
-  color: string
-  stage: string
-  dex: string
-  type: string
-  attack: string
-  ability: string
-}
+export type CardData = Record<(typeof CARD_DATA_PROPERTIES)[number], string>
 
 export const imageUrlFromCard = (card: PokeCard) => {
   const data = card.data
@@ -249,4 +238,27 @@ export const getHexColorForValue = (
   // Convert RGB to HEX
   const toHex = (c: number) => c.toString(16).padStart(2, '0')
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`
+}
+
+// only includes specific keys from an object
+export const pick = <T extends object, K extends keyof T>(
+  obj: T,
+  keys: K[],
+) => ({
+  ...keys.reduce((res, key) => ({ ...res, [key]: obj[key] }), {} as Pick<T, K>),
+})
+
+export const copyToClipboard = (str: string) =>
+  navigator.clipboard.writeText(str)
+
+export const includes = (strings: string[], value: string) =>
+  strings.includes(value)
+
+export const isGenericCardType = (value: string): value is CardType => {
+  return (GENERIC_CARD_TYPES as readonly string[]).includes(value)
+}
+
+export const clearUrlParams = () => {
+  const url = window.location.origin + window.location.pathname
+  window.history.pushState({}, document.title, url)
 }

@@ -34,16 +34,17 @@ const localStoragePersister = createSyncStoragePersister({
   storage: window.localStorage,
 })
 
-// hold data
 const cardDataCacheTime = 12 * 60 * 60 * 1000
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       // never refetch data during a particular session
+      // TODO: why does this not refetch when buster changes, but removing staletime fixes it
+      // but then it refetches every mount
       staleTime: cardDataCacheTime,
       gcTime: cardDataCacheTime,
-      retry: false,
+      // retry: false,
     },
   },
 })
@@ -59,8 +60,8 @@ if (rootElement && !rootElement.innerHTML) {
         // only refetch data upon page load if the data is old enough
         persistOptions={{
           persister: localStoragePersister,
-          maxAge: cardDataCacheTime,
-          buster: `${CARD_DATA_PROXY_URL}_${VERSION}`,
+          maxAge: cardDataCacheTime * 1.1,
+          buster: `${VERSION}_${CARD_DATA_PROXY_URL}`,
         }}
         onSuccess={() => console.log('success')}
         onError={() => console.log('error')}
