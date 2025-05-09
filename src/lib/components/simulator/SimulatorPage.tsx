@@ -6,21 +6,25 @@ import {
   decodeTargetHandsCode,
   generateEncodedCardsString,
   generateEncodedTargetHandsString,
-} from '../appUtils'
-import { CARD_DATA_PROXY_URL } from '../cardData'
+} from '../../appUtils'
+import { CARD_DATA_PROXY_URL } from '../../cardData'
 import {
   CARD_DATA_PROPERTIES,
   DECK_SEARCH_PARAM,
   TARGET_HANDS_SEARCH_PARAM,
-} from '../constants'
-import { initialDeck, initialHand, initialTargetHands } from '../handDeckUtils'
+} from '../../constants'
+import {
+  initialDeck,
+  initialHand,
+  initialTargetHands,
+} from '../../handDeckUtils'
 import {
   pick,
   type CardData,
   type HandDeckStateChange,
   type MultiPokeCard,
   type SaveHandDeckState,
-} from '../utils'
+} from '../../utils'
 import Deck from './Deck'
 import Simulator from './Simulator'
 import TargetHandsPanel from './TargetHandsPanel'
@@ -122,7 +126,6 @@ const SimulatorPage = () => {
       search: {
         ...Object.fromEntries(currentSearchParams.entries()),
       },
-      replace: true,
     })
   }, [originalDeck, targetHands])
 

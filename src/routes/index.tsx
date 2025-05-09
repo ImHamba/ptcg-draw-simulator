@@ -1,5 +1,4 @@
 import HomePage from '@/lib/components/HomePage'
-import SimulatorPage from '@/lib/components/SimulatorPage'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({

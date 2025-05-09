@@ -4,15 +4,15 @@ import {
   decrementCard,
   incrementCard,
   type TargetHands,
-} from '../handDeckUtils'
-import { renderCards } from '../reactUtils'
+} from '../../handDeckUtils'
+import { renderCards } from '../../reactUtils'
 import {
   checkHandMatchesTargetHand,
   isSameCard,
   type MultiPokeCard,
   type PokeCard,
   type SaveHandDeckState,
-} from '../utils'
+} from '../../utils'
 import SearchSelect from './SearchSelect'
 
 type Props = {
@@ -103,7 +103,13 @@ const TargetHand = ({
     <div className="pb-5 border-b-2">
       {!targetHandId && <div className="text-xl mb-2">Add new target hand</div>}
       <div className="w-full flex-row flex-wrap ">
-        {renderCards(targetHand, 8, increment, decrement, disableIncrement)}
+        {renderCards(
+          targetHand,
+          Math.max(8, targetHand.length),
+          increment,
+          decrement,
+          disableIncrement,
+        )}
       </div>
       {targetHandId && (
         <div className={handMatchesTarget ? 'text-green-300' : 'text-red-400'}>

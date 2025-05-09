@@ -11,20 +11,20 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { FIRST_HAND_SIZE, MAX_DECK_SIZE } from '../constants'
+import { FIRST_HAND_SIZE, MAX_DECK_SIZE } from '../../constants'
 import {
   drawFirstHand,
   drawFromDeck,
   useSpecialCards,
   type TargetHands,
-} from '../handDeckUtils'
+} from '../../handDeckUtils'
 import {
   checkHandMatchesTargetHands,
   getHexColorForValue,
   sumObjects,
   type MultiPokeCard,
   type SaveHandDeckState,
-} from '../utils'
+} from '../../utils'
 
 type Props = {
   deck: MultiPokeCard[]
@@ -33,12 +33,7 @@ type Props = {
   targetHands: TargetHands
 }
 
-const Simulator = ({
-  //   deck,
-  originalDeck,
-  targetHands,
-  //   saveHandDeckState,
-}: Props) => {
+const Simulator = ({ originalDeck, targetHands }: Props) => {
   // ref so simulation loop can access the value in real time that may be changed by user interaction
   const doSimulationRef = useRef(false)
   const [doSimulation, _setDoSimulation] = useState(doSimulationRef.current)
@@ -159,8 +154,8 @@ const Simulator = ({
     })
     .map(([drawCount, targetHandMatches]) => {
       const chartBar: Record<string, number | string> = {
-        // transform draw count to real number of cards drawn including first hand draw
-        name: (Number(drawCount) + FIRST_HAND_SIZE).toString(),
+        // transform draw count to turns past
+        name: (Number(drawCount) + 1).toString(),
         ...Object.fromEntries(
           Object.entries(targetHandMatches).map(
             ([targetHandId, matchCount]) => {
@@ -236,7 +231,7 @@ const Simulator = ({
             domain={[0, (dataMax: number) => Math.min(dataMax, 100)]}
             tickFormatter={(value: number) => value.toFixed(0)}
           />
-          <XAxis dataKey="name" label={{ value: 'Draw Count', dy: 13 }} />
+          <XAxis dataKey="name" label={{ value: 'Turn', dy: 13 }} />
           <Bar dataKey="anyMatch" name="Any Target Hand" />
           {targetHandIds.map((targetHandId, i) => {
             return (

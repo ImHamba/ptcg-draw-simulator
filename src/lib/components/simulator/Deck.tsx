@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { useMemo } from 'react'
-import { generateShareLink } from '../appUtils'
-import { otherCardFilter } from '../cardFilters'
-import { MAX_DECK_SIZE } from '../constants'
+import { generateShareLink } from '../../appUtils'
+import { otherCardFilter } from '../../cardFilters'
+import { MAX_DECK_SIZE } from '../../constants'
 import {
   decrementCard,
   fillDeck,
@@ -11,8 +11,8 @@ import {
   resetOriginalDeck,
   sumCardCount,
   type TargetHands,
-} from '../handDeckUtils'
-import { renderCards } from '../reactUtils'
+} from '../../handDeckUtils'
+import { renderCards } from '../../reactUtils'
 import {
   copyToClipboard,
   not,
@@ -20,7 +20,7 @@ import {
   type MultiPokeCard,
   type PokeCard,
   type SaveHandDeckState,
-} from '../utils'
+} from '../../utils'
 import SearchSelect from './SearchSelect'
 import { ShareLinkButton } from './ShareLinkButton'
 
@@ -33,9 +33,8 @@ type Props = {
 }
 
 // greninja
-// http://localhost:3000/?deck=2.PROMO-007_2.A2b-111_2.A1-089_2.A1-087_2.A3-144
-
 // http://localhost:3000/?deck=2.PROMO-007_2.A2b-111_2.A1-089_2.A1-087_2.A3-144_2.A3-009_2.A3-012_1.A3-011_1.A1-088&target=1.A1-089_1.A1-087_1.A3-144
+// http://localhost:3000/simulator?deck=2.A2a-071_2.A2b-111_2.PROMO-007_2.A2a-050_2.A1-172_2.A2a-009_2.A3-144&target=1.A2a-071_1.A2a-009%7E1.A2a-050_1.A1-172_1.A2a-071_1.A3-144
 const Deck = ({
   deck,
   originalDeck,
@@ -116,7 +115,7 @@ const Deck = ({
 
   return (
     <div className="col-center gap-3 full">
-      <div className="text-2xl">Deck ({deckSize})</div>
+      <div className="text-2xl">Deck Builder ({deckSize})</div>
       <div className="row-center gap-2">
         <Button onClick={saveHandDeckState(resetOriginalDeck)}>
           Clear Deck
