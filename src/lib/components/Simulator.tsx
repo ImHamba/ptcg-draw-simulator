@@ -232,8 +232,6 @@ const Simulator = ({
               value: 'Target hand achieved %',
               angle: -90,
               dx: -15,
-              //   position: 'insideLeft',
-              //   offset: 20,
             }}
             domain={[0, (dataMax: number) => Math.min(dataMax, 100)]}
             tickFormatter={(value: number) => value.toFixed(0)}
@@ -245,7 +243,8 @@ const Simulator = ({
               <Bar
                 dataKey={targetHandId}
                 name={`Target Hand ${i + 1}`}
-                fill={getHexColorForValue(i / targetHandIds.length, 0, 0.1)}
+                // TODO: choose colors based on deck type
+                fill={getHexColorForValue(i / targetHandIds.length, 0.55, 0.75)}
               />
             )
           })}

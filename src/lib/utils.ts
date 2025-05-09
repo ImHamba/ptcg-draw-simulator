@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from 'clsx'
+import { useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 import {
   BASIC_CARD_IMG_URL,
@@ -261,4 +262,25 @@ export const isGenericCardType = (value: string): value is CardType => {
 export const clearUrlParams = () => {
   const url = window.location.origin + window.location.pathname
   window.history.pushState({}, document.title, url)
+}
+
+export const useElementSize = (ref: React.RefObject<HTMLElement | null>) => {
+  const [size, setSize] = useState<null | { width: number; height: number }>(
+    null,
+  )
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    const observer = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect
+      setSize({ width, height })
+    })
+
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [ref])
+
+  return size
 }

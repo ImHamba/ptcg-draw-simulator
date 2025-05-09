@@ -9,7 +9,9 @@ export const FIRST_HAND_SIZE = 6 // includes first draw
 // delimiters for share link url
 export const COUNT_ID_DELIMITER = '.'
 export const CARD_DELIMITER = '_'
-export const URL_DECK_SEARCH_PARAM = 'deck'
+export const TARGET_HAND_DELIMITER = '~'
+export const DECK_SEARCH_PARAM = 'deck'
+export const TARGET_HANDS_SEARCH_PARAM = 'target'
 
 // properties stored from card data api
 export const CARD_DATA_PROPERTIES = [

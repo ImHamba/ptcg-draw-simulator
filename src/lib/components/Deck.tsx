@@ -1,13 +1,8 @@
 import { Button } from '@/components/ui/button'
-import { useRouter, useSearch } from '@tanstack/react-router'
-import { useEffect, useMemo } from 'react'
-import {
-  generateEncodedDeckString,
-  generateShareLink,
-  interpretDeckCode,
-} from '../appUtils'
+import { useMemo } from 'react'
+import { generateShareLink } from '../appUtils'
 import { otherCardFilter } from '../cardFilters'
-import { MAX_DECK_SIZE, URL_DECK_SEARCH_PARAM } from '../constants'
+import { MAX_DECK_SIZE } from '../constants'
 import {
   decrementCard,
   fillDeck,
@@ -15,6 +10,7 @@ import {
   resetAllAndAddCard,
   resetOriginalDeck,
   sumCardCount,
+  type TargetHands,
 } from '../handDeckUtils'
 import { renderCards } from '../reactUtils'
 import {
@@ -32,57 +28,21 @@ type Props = {
   deck: MultiPokeCard[]
   originalDeck: MultiPokeCard[]
   cardData: CardData[]
+  targetHands: TargetHands
   saveHandDeckState: SaveHandDeckState
 }
 
 // greninja
 // http://localhost:3000/?deck=2.PROMO-007_2.A2b-111_2.A1-089_2.A1-087_2.A3-144
 
-const Deck = ({ deck, originalDeck, cardData, saveHandDeckState }: Props) => {
-  // @ts-ignore
-  const searchParams: { [URL_DECK_SEARCH_PARAM]: string } = useSearch({
-    strict: false,
-  })
-  const deckCode = searchParams[URL_DECK_SEARCH_PARAM]
-  const router = useRouter()
-
-  // load deck code on mount
-  useEffect(() => {
-    const deck = interpretDeckCode(deckCode, cardData)
-
-    const stateFn = () => {
-      return {
-        newDeck: deck,
-        newOriginalDeck: deck,
-      }
-    }
-
-    saveHandDeckState(stateFn)()
-    console.log('imported deck')
-  }, [deckCode, cardData])
-
-  useEffect(() => {
-    const deckString = generateEncodedDeckString(originalDeck)
-
-    const currentSearchParams = new URLSearchParams()
-    if (deckString) {
-      currentSearchParams.set(URL_DECK_SEARCH_PARAM, deckString)
-    }
-
-    console.log(
-      'set url deckstring',
-      deckString,
-      Object.fromEntries(currentSearchParams.entries()),
-    )
-
-    router.navigate({
-      to: window.location.pathname,
-      search: {
-        ...Object.fromEntries(currentSearchParams.entries()),
-      },
-    })
-  }, [originalDeck])
-
+// http://localhost:3000/?deck=2.PROMO-007_2.A2b-111_2.A1-089_2.A1-087_2.A3-144_2.A3-009_2.A3-012_1.A3-011_1.A1-088&target=1.A1-089_1.A1-087_1.A3-144
+const Deck = ({
+  deck,
+  originalDeck,
+  cardData,
+  targetHands,
+  saveHandDeckState,
+}: Props) => {
   const deckSize = sumCardCount(deck)
   //   const originalDeckSize = sumCardCount(originalDeck)
   const originalDeckWithoutOtherSize = sumCardCount(
@@ -150,24 +110,13 @@ const Deck = ({ deck, originalDeck, cardData, saveHandDeckState }: Props) => {
   const hideCardButtons = (card: MultiPokeCard) => card.cardType === 'other'
 
   const onShareLinkClick = () => {
-    const link = generateShareLink(originalDeck)
+    const link = generateShareLink(originalDeck, targetHands)
     copyToClipboard(link)
   }
 
   return (
-    <div className="col-center gap-3">
+    <div className="col-center gap-3 full">
       <div className="text-2xl">Deck ({deckSize})</div>
-      <div className="w-full flex-row flex-wrap">
-        {renderCards(
-          deck,
-          6,
-          increment,
-          decrement,
-          disableIncrement,
-          hideCardButtons,
-        )}
-      </div>
-
       <div className="row-center gap-2">
         <Button onClick={saveHandDeckState(resetOriginalDeck)}>
           Clear Deck
@@ -187,9 +136,21 @@ const Deck = ({ deck, originalDeck, cardData, saveHandDeckState }: Props) => {
       </div>
       <SearchSelect
         options={cardDataOptions}
-        className="mb-0 w-100 border-black border-2"
+        className="mb-0 w-100"
         onSelect={onCardSelect}
       />
+      <div className="grow full">
+        <div className="w-full">
+          {renderCards(
+            deck,
+            6,
+            increment,
+            decrement,
+            disableIncrement,
+            hideCardButtons,
+          )}
+        </div>
+      </div>
     </div>
   )
 }

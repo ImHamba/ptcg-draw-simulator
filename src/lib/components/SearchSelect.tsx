@@ -47,13 +47,15 @@ const SearchSelect = ({ options, className, onSelect }: Props) => {
   }
 
   return (
-    <select ref={selectRef} className={className} onChange={handleOnSelect}>
-      {options.map((option) => (
-        <option value={option.value} key={option.value}>
-          {option.label}
-        </option>
-      ))}
-    </select>
+    <div>
+      <select ref={selectRef} className={className} onChange={handleOnSelect}>
+        {options.map((option) => (
+          <option value={option.value} key={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
   )
 }
 

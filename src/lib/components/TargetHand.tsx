@@ -112,7 +112,7 @@ const TargetHand = ({
       )}
       <SearchSelect
         options={options}
-        className="w-100 border-black border-2"
+        className="w-100"
         onSelect={onCardSelect}
       />
     </div>

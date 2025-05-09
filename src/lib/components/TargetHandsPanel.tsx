@@ -1,5 +1,10 @@
+import { useEffect } from 'react'
 import type { TargetHands } from '../handDeckUtils'
-import { type MultiPokeCard, type SaveHandDeckState } from '../utils'
+import {
+  type HandDeckStateChange,
+  type MultiPokeCard,
+  type SaveHandDeckState,
+} from '../utils'
 import TargetHand from './TargetHand'
 
 type Props = {
@@ -15,10 +20,31 @@ const TargetHandsPanel = ({
   originalDeck,
   saveHandDeckState,
 }: Props) => {
+  // clear any empty target hands
+  useEffect(() => {
+    const entries = Object.entries(targetHands)
+    const withoutEmpty = entries.filter(
+      ([_, targetHand]) => targetHand.length !== 0,
+    )
+    const hasEmpty = withoutEmpty.length !== entries.length
+
+    if (!hasEmpty) {
+      return
+    }
+
+    const clear: HandDeckStateChange = () => {
+      return {
+        newTargetHands: Object.fromEntries(withoutEmpty),
+      }
+    }
+
+    saveHandDeckState(clear)()
+  })
+
   return (
-    <div className="w-full col-center gap-3">
+    <div className="full col-center gap-3">
       <div className="text-2xl">Target Hands</div>
-      <div className="flex-col gap-5 w-full">
+      <div className="flex-col gap-5 full overflow-y-scroll">
         {[
           ...Object.keys(targetHands).map((targetHandId, i) => {
             return (

@@ -1417,757 +1417,758 @@ export const initialDeck: MultiPokeCard[] = fillDeck([])
 ]
 
 export type TargetHands = Record<string, MultiPokeCard[]>
-export const initialTargetHands: TargetHands = {
-  '01b6dca2-4477-42fa-9974-5a44d6885c99': [
-    {
-      data: {
-        id: 'A1-089',
-        setId: 'A1',
-        number: '89',
-        name: 'Greninja',
-        set_code: 'A1',
-        set_name: 'Genetic Apex',
-        rarity: 'Rare',
-        color: 'Water',
-        type: 'Pokemon',
-        slug: 'a1-89-greninja',
-        has_image: '1',
-        has_art: '1',
-        dex: 'A1_2',
-        hp: '120',
-        stage: 'Stage 2',
-        prew_stage_name: 'Frogadier',
-        attack: [{ info: '{WC} Mist Slash 60', effect: '' }],
-        ability: [
-          {
-            info: 'Water Shuriken',
-            effect:
-              'Once during your turn, you may do 20 damage to 1 of your opponent’s Pokémon.',
-          },
-        ],
-        text: 'It creates throwing stars out of compressed water. <br />When it spins them and throws them at high speed, <br />these stars can split metal in two.',
-        weakness: 'Lightning',
-        retreat: '1',
-        rule: null,
-        illustrator: '5ban Graphics',
-        props: [
-          { name: 'Pokémon ID', value: 'GEKKOUGA' },
-          { name: 'Card Number', value: 'A1-089' },
-          { name: 'Dupe Reward', value: '100' },
-          { name: 'Pack Point', value: '150' },
-        ],
-        flairs: [
-          {
-            flairs: [
-              {
-                name: 'Sparkles Flair: Gold (Cosmetic)',
-                slug: 'decoration-sparkles-flair-gold-cosmetic',
-                type: 'Decoration',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/decoration-sparkles-flair-gold-cosmetic.webp',
-                demands: [
-                  {
-                    name: 'Greninja',
-                    slug: 'greninja',
-                    image: 'pokepocket/card-flair-demands/greninja.webp',
-                    amount: '1',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '360',
-                  },
-                ],
-                from_date: 1704034800,
-              },
-              {
-                name: 'Water Energy Flair (Cosmetic)',
-                slug: 'decoration-water-energy-flair-cosmetic',
-                type: 'Decoration',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/decoration-water-energy-flair-cosmetic.webp',
-                demands: [
-                  {
-                    name: 'Greninja',
-                    slug: 'greninja',
-                    image: 'pokepocket/card-flair-demands/greninja.webp',
-                    amount: '1',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '540',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Sparkles Flair: Gold (Cosmetic)',
-                prerequisite_count: '1',
-              },
-              {
-                name: 'Big Rings Flair: Blue (Battle)',
-                slug: 'battle-effect-big-rings-flair-blue-battle',
-                type: 'Battle Effect',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/battle-effect-big-rings-flair-blue-battle.webp',
-                demands: [
-                  {
-                    name: 'Greninja',
-                    slug: 'greninja',
-                    image: 'pokepocket/card-flair-demands/greninja.webp',
-                    amount: '1',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '1,080',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Water Energy Flair (Cosmetic)',
-                prerequisite_count: '1',
-              },
-              {
-                name: 'Mini Triangles Flair: Blue (Battle)',
-                slug: 'battle-effect-mini-triangles-flair-blue-battle',
-                type: 'Battle Effect',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/battle-effect-mini-triangles-flair-blue-battle.webp',
-                demands: [
-                  {
-                    name: 'Greninja',
-                    slug: 'greninja',
-                    image: 'pokepocket/card-flair-demands/greninja.webp',
-                    amount: '1',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '1,620',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Big Rings Flair: Blue (Battle)',
-                prerequisite_count: '1',
-              },
-            ],
-            routeName: 'A',
-          },
-          {
-            flairs: [
-              {
-                name: 'Sparkles Flair: Gold (Cosmetic)',
-                slug: 'decoration-sparkles-flair-gold-cosmetic',
-                type: 'Decoration',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/decoration-sparkles-flair-gold-cosmetic.webp',
-                demands: [
-                  {
-                    name: 'Greninja',
-                    slug: 'greninja',
-                    image: 'pokepocket/card-flair-demands/greninja.webp',
-                    amount: '1',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '360',
-                  },
-                ],
-                from_date: 1704034800,
-              },
-              {
-                name: 'Big Rings Flair: Blue (Battle)',
-                slug: 'battle-effect-big-rings-flair-blue-battle',
-                type: 'Battle Effect',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/battle-effect-big-rings-flair-blue-battle.webp',
-                demands: [
-                  {
-                    name: 'Greninja',
-                    slug: 'greninja',
-                    image: 'pokepocket/card-flair-demands/greninja.webp',
-                    amount: '1',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '540',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Sparkles Flair: Gold (Cosmetic)',
-                prerequisite_count: '1',
-              },
-              {
-                name: 'Mini Triangles Flair: Blue (Battle)',
-                slug: 'battle-effect-mini-triangles-flair-blue-battle',
-                type: 'Battle Effect',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/battle-effect-mini-triangles-flair-blue-battle.webp',
-                demands: [
-                  {
-                    name: 'Greninja',
-                    slug: 'greninja',
-                    image: 'pokepocket/card-flair-demands/greninja.webp',
-                    amount: '1',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '1,080',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Big Rings Flair: Blue (Battle)',
-                prerequisite_count: '1',
-              },
-              {
-                name: 'Water Energy Flair (Cosmetic)',
-                slug: 'decoration-water-energy-flair-cosmetic',
-                type: 'Decoration',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/decoration-water-energy-flair-cosmetic.webp',
-                demands: [
-                  {
-                    name: 'Greninja',
-                    slug: 'greninja',
-                    image: 'pokepocket/card-flair-demands/greninja.webp',
-                    amount: '1',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '1,620',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Mini Triangles Flair: Blue (Battle)',
-                prerequisite_count: '1',
-              },
-            ],
-            routeName: 'B',
-          },
-          {
-            flairs: [
-              {
-                name: 'Sparkles Flair: Gold (Cosmetic)',
-                slug: 'decoration-sparkles-flair-gold-cosmetic',
-                type: 'Decoration',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/decoration-sparkles-flair-gold-cosmetic.webp',
-                demands: [
-                  {
-                    name: 'Greninja',
-                    slug: 'greninja',
-                    image: 'pokepocket/card-flair-demands/greninja.webp',
-                    amount: '1',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '360',
-                  },
-                ],
-                from_date: 1704034800,
-              },
-              {
-                name: 'Mini Triangles Flair: Blue (Battle)',
-                slug: 'battle-effect-mini-triangles-flair-blue-battle',
-                type: 'Battle Effect',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/battle-effect-mini-triangles-flair-blue-battle.webp',
-                demands: [
-                  {
-                    name: 'Greninja',
-                    slug: 'greninja',
-                    image: 'pokepocket/card-flair-demands/greninja.webp',
-                    amount: '1',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '540',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Sparkles Flair: Gold (Cosmetic)',
-                prerequisite_count: '1',
-              },
-              {
-                name: 'Water Energy Flair (Cosmetic)',
-                slug: 'decoration-water-energy-flair-cosmetic',
-                type: 'Decoration',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/decoration-water-energy-flair-cosmetic.webp',
-                demands: [
-                  {
-                    name: 'Greninja',
-                    slug: 'greninja',
-                    image: 'pokepocket/card-flair-demands/greninja.webp',
-                    amount: '1',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '1,080',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Mini Triangles Flair: Blue (Battle)',
-                prerequisite_count: '1',
-              },
-              {
-                name: 'Big Rings Flair: Blue (Battle)',
-                slug: 'battle-effect-big-rings-flair-blue-battle',
-                type: 'Battle Effect',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/battle-effect-big-rings-flair-blue-battle.webp',
-                demands: [
-                  {
-                    name: 'Greninja',
-                    slug: 'greninja',
-                    image: 'pokepocket/card-flair-demands/greninja.webp',
-                    amount: '1',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '1,620',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Water Energy Flair (Cosmetic)',
-                prerequisite_count: '1',
-              },
-            ],
-            routeName: 'C',
-          },
-        ],
-        price: '0',
-        price_date: '0',
-        foilPrice: '0',
-        deltaPrice: '0',
-        deltaFoilPrice: '0',
-        delta7dPrice: '0',
-        delta7dPriceFoil: '0',
-      },
-      count: 1,
-    },
-    {
-      data: {
-        id: 'A1-087',
-        setId: 'A1',
-        number: '87',
-        name: 'Froakie',
-        set_code: 'A1',
-        set_name: 'Genetic Apex',
-        rarity: 'Common',
-        color: 'Water',
-        type: 'Pokemon',
-        slug: 'a1-87-froakie',
-        has_image: '1',
-        has_art: '1',
-        dex: 'A1_2',
-        hp: '60',
-        stage: 'Basic',
-        prew_stage_name: null,
-        attack: [{ info: '{C} Flop 10', effect: '' }],
-        ability: [],
-        text: 'It secretes flexible bubbles from its chest and back.<br />The bubbles reduce the damage it would otherwise<br />take when attacked.',
-        weakness: 'Lightning',
-        retreat: '1',
-        rule: null,
-        illustrator: 'Aya Kusube',
-        props: [
-          { name: 'Pokémon ID', value: 'KEROMATSU' },
-          { name: 'Card Number', value: 'A1-087' },
-          { name: 'Dupe Reward', value: '10' },
-          { name: 'Pack Point', value: '35' },
-        ],
-        flairs: [
-          {
-            flairs: [
-              {
-                name: 'Sparkles Flair: Gold (Cosmetic)',
-                slug: 'decoration-sparkles-flair-gold-cosmetic',
-                type: 'Decoration',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/decoration-sparkles-flair-gold-cosmetic.webp',
-                demands: [
-                  {
-                    name: 'Froakie',
-                    slug: 'froakie',
-                    image: 'pokepocket/card-flair-demands/froakie.webp',
-                    amount: '3',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '50',
-                  },
-                ],
-                from_date: 1704034800,
-              },
-              {
-                name: 'Ripples Flair: Light blue (Cosmetic)',
-                slug: 'decoration-ripples-flair-light-blue-cosmetic',
-                type: 'Decoration',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/decoration-ripples-flair-light-blue-cosmetic.webp',
-                demands: [
-                  {
-                    name: 'Froakie',
-                    slug: 'froakie',
-                    image: 'pokepocket/card-flair-demands/froakie.webp',
-                    amount: '3',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '75',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Sparkles Flair: Gold (Cosmetic)',
-                prerequisite_count: '1',
-              },
-              {
-                name: 'Water Energy Flair (Cosmetic)',
-                slug: 'decoration-water-energy-flair-cosmetic',
-                type: 'Decoration',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/decoration-water-energy-flair-cosmetic.webp',
-                demands: [
-                  {
-                    name: 'Froakie',
-                    slug: 'froakie',
-                    image: 'pokepocket/card-flair-demands/froakie.webp',
-                    amount: '3',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '150',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Ripples Flair: Light blue (Cosmetic)',
-                prerequisite_count: '1',
-              },
-              {
-                name: 'Star Outlines Flair: Yellow (Battle)',
-                slug: 'battle-effect-star-outlines-flair-yellow-battle',
-                type: 'Battle Effect',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/battle-effect-star-outlines-flair-yellow-battle.webp',
-                demands: [
-                  {
-                    name: 'Froakie',
-                    slug: 'froakie',
-                    image: 'pokepocket/card-flair-demands/froakie.webp',
-                    amount: '3',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '225',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Water Energy Flair (Cosmetic)',
-                prerequisite_count: '1',
-              },
-            ],
-            routeName: 'A',
-          },
-          {
-            flairs: [
-              {
-                name: 'Sparkles Flair: Gold (Cosmetic)',
-                slug: 'decoration-sparkles-flair-gold-cosmetic',
-                type: 'Decoration',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/decoration-sparkles-flair-gold-cosmetic.webp',
-                demands: [
-                  {
-                    name: 'Froakie',
-                    slug: 'froakie',
-                    image: 'pokepocket/card-flair-demands/froakie.webp',
-                    amount: '3',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '50',
-                  },
-                ],
-                from_date: 1704034800,
-              },
-              {
-                name: 'Water Energy Flair (Cosmetic)',
-                slug: 'decoration-water-energy-flair-cosmetic',
-                type: 'Decoration',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/decoration-water-energy-flair-cosmetic.webp',
-                demands: [
-                  {
-                    name: 'Froakie',
-                    slug: 'froakie',
-                    image: 'pokepocket/card-flair-demands/froakie.webp',
-                    amount: '3',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '75',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Sparkles Flair: Gold (Cosmetic)',
-                prerequisite_count: '1',
-              },
-              {
-                name: 'Star Outlines Flair: Yellow (Battle)',
-                slug: 'battle-effect-star-outlines-flair-yellow-battle',
-                type: 'Battle Effect',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/battle-effect-star-outlines-flair-yellow-battle.webp',
-                demands: [
-                  {
-                    name: 'Froakie',
-                    slug: 'froakie',
-                    image: 'pokepocket/card-flair-demands/froakie.webp',
-                    amount: '3',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '150',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Water Energy Flair (Cosmetic)',
-                prerequisite_count: '1',
-              },
-              {
-                name: 'Ripples Flair: Light blue (Cosmetic)',
-                slug: 'decoration-ripples-flair-light-blue-cosmetic',
-                type: 'Decoration',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/decoration-ripples-flair-light-blue-cosmetic.webp',
-                demands: [
-                  {
-                    name: 'Froakie',
-                    slug: 'froakie',
-                    image: 'pokepocket/card-flair-demands/froakie.webp',
-                    amount: '3',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '225',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Star Outlines Flair: Yellow (Battle)',
-                prerequisite_count: '1',
-              },
-            ],
-            routeName: 'B',
-          },
-          {
-            flairs: [
-              {
-                name: 'Sparkles Flair: Gold (Cosmetic)',
-                slug: 'decoration-sparkles-flair-gold-cosmetic',
-                type: 'Decoration',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/decoration-sparkles-flair-gold-cosmetic.webp',
-                demands: [
-                  {
-                    name: 'Froakie',
-                    slug: 'froakie',
-                    image: 'pokepocket/card-flair-demands/froakie.webp',
-                    amount: '3',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '50',
-                  },
-                ],
-                from_date: 1704034800,
-              },
-              {
-                name: 'Star Outlines Flair: Yellow (Battle)',
-                slug: 'battle-effect-star-outlines-flair-yellow-battle',
-                type: 'Battle Effect',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/battle-effect-star-outlines-flair-yellow-battle.webp',
-                demands: [
-                  {
-                    name: 'Froakie',
-                    slug: 'froakie',
-                    image: 'pokepocket/card-flair-demands/froakie.webp',
-                    amount: '3',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '75',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Sparkles Flair: Gold (Cosmetic)',
-                prerequisite_count: '1',
-              },
-              {
-                name: 'Ripples Flair: Light blue (Cosmetic)',
-                slug: 'decoration-ripples-flair-light-blue-cosmetic',
-                type: 'Decoration',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/decoration-ripples-flair-light-blue-cosmetic.webp',
-                demands: [
-                  {
-                    name: 'Froakie',
-                    slug: 'froakie',
-                    image: 'pokepocket/card-flair-demands/froakie.webp',
-                    amount: '3',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '150',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Star Outlines Flair: Yellow (Battle)',
-                prerequisite_count: '1',
-              },
-              {
-                name: 'Water Energy Flair (Cosmetic)',
-                slug: 'decoration-water-energy-flair-cosmetic',
-                type: 'Decoration',
-                count: '1',
-                image:
-                  'pokepocket/card-flairs/decoration-water-energy-flair-cosmetic.webp',
-                demands: [
-                  {
-                    name: 'Froakie',
-                    slug: 'froakie',
-                    image: 'pokepocket/card-flair-demands/froakie.webp',
-                    amount: '3',
-                  },
-                  {
-                    name: 'Shinedust',
-                    slug: 'shinedust',
-                    image: 'pokepocket/card-flair-demands/shinedust.webp',
-                    amount: '225',
-                  },
-                ],
-                from_date: 1704034800,
-                prerequisite_name: 'Ripples Flair: Light blue (Cosmetic)',
-                prerequisite_count: '1',
-              },
-            ],
-            routeName: 'C',
-          },
-        ],
-        price: '0',
-        price_date: '0',
-        foilPrice: '0',
-        deltaPrice: '0',
-        deltaFoilPrice: '0',
-        delta7dPrice: '0',
-        delta7dPriceFoil: '0',
-      },
-      count: 1,
-    },
-    {
-      data: {
-        id: 'A3-144',
-        setId: 'A3',
-        number: '144',
-        name: 'Rare Candy',
-        set_code: 'A3',
-        set_name: 'Celestial Guardians',
-        rarity: 'Uncommon',
-        color: null,
-        type: null,
-        slug: 'a3-144-rare-candy',
-        has_image: '1',
-        has_art: '0',
-        dex: 'A3_1,A3_2',
-        hp: null,
-        stage: 'Item',
-        prew_stage_name: null,
-        attack: null,
-        ability: null,
-        text: null,
-        weakness: null,
-        retreat: null,
-        rule: 'You may play any number of Item cards during your turn.',
-        illustrator: 'Toyste Beach',
-        props: null,
-        flairs: null,
-        price: '0',
-        price_date: '0',
-        foilPrice: '0',
-        deltaPrice: '0',
-        deltaFoilPrice: '0',
-        delta7dPrice: '0',
-        delta7dPriceFoil: '0',
-      },
-      count: 1,
-    },
-  ],
-}
+export const initialTargetHands: TargetHands = {}
+// {
+//   '01b6dca2-4477-42fa-9974-5a44d6885c99': [
+//     {
+//       data: {
+//         id: 'A1-089',
+//         setId: 'A1',
+//         number: '89',
+//         name: 'Greninja',
+//         set_code: 'A1',
+//         set_name: 'Genetic Apex',
+//         rarity: 'Rare',
+//         color: 'Water',
+//         type: 'Pokemon',
+//         slug: 'a1-89-greninja',
+//         has_image: '1',
+//         has_art: '1',
+//         dex: 'A1_2',
+//         hp: '120',
+//         stage: 'Stage 2',
+//         prew_stage_name: 'Frogadier',
+//         attack: [{ info: '{WC} Mist Slash 60', effect: '' }],
+//         ability: [
+//           {
+//             info: 'Water Shuriken',
+//             effect:
+//               'Once during your turn, you may do 20 damage to 1 of your opponent’s Pokémon.',
+//           },
+//         ],
+//         text: 'It creates throwing stars out of compressed water. <br />When it spins them and throws them at high speed, <br />these stars can split metal in two.',
+//         weakness: 'Lightning',
+//         retreat: '1',
+//         rule: null,
+//         illustrator: '5ban Graphics',
+//         props: [
+//           { name: 'Pokémon ID', value: 'GEKKOUGA' },
+//           { name: 'Card Number', value: 'A1-089' },
+//           { name: 'Dupe Reward', value: '100' },
+//           { name: 'Pack Point', value: '150' },
+//         ],
+//         flairs: [
+//           {
+//             flairs: [
+//               {
+//                 name: 'Sparkles Flair: Gold (Cosmetic)',
+//                 slug: 'decoration-sparkles-flair-gold-cosmetic',
+//                 type: 'Decoration',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/decoration-sparkles-flair-gold-cosmetic.webp',
+//                 demands: [
+//                   {
+//                     name: 'Greninja',
+//                     slug: 'greninja',
+//                     image: 'pokepocket/card-flair-demands/greninja.webp',
+//                     amount: '1',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '360',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//               },
+//               {
+//                 name: 'Water Energy Flair (Cosmetic)',
+//                 slug: 'decoration-water-energy-flair-cosmetic',
+//                 type: 'Decoration',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/decoration-water-energy-flair-cosmetic.webp',
+//                 demands: [
+//                   {
+//                     name: 'Greninja',
+//                     slug: 'greninja',
+//                     image: 'pokepocket/card-flair-demands/greninja.webp',
+//                     amount: '1',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '540',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Sparkles Flair: Gold (Cosmetic)',
+//                 prerequisite_count: '1',
+//               },
+//               {
+//                 name: 'Big Rings Flair: Blue (Battle)',
+//                 slug: 'battle-effect-big-rings-flair-blue-battle',
+//                 type: 'Battle Effect',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/battle-effect-big-rings-flair-blue-battle.webp',
+//                 demands: [
+//                   {
+//                     name: 'Greninja',
+//                     slug: 'greninja',
+//                     image: 'pokepocket/card-flair-demands/greninja.webp',
+//                     amount: '1',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '1,080',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Water Energy Flair (Cosmetic)',
+//                 prerequisite_count: '1',
+//               },
+//               {
+//                 name: 'Mini Triangles Flair: Blue (Battle)',
+//                 slug: 'battle-effect-mini-triangles-flair-blue-battle',
+//                 type: 'Battle Effect',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/battle-effect-mini-triangles-flair-blue-battle.webp',
+//                 demands: [
+//                   {
+//                     name: 'Greninja',
+//                     slug: 'greninja',
+//                     image: 'pokepocket/card-flair-demands/greninja.webp',
+//                     amount: '1',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '1,620',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Big Rings Flair: Blue (Battle)',
+//                 prerequisite_count: '1',
+//               },
+//             ],
+//             routeName: 'A',
+//           },
+//           {
+//             flairs: [
+//               {
+//                 name: 'Sparkles Flair: Gold (Cosmetic)',
+//                 slug: 'decoration-sparkles-flair-gold-cosmetic',
+//                 type: 'Decoration',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/decoration-sparkles-flair-gold-cosmetic.webp',
+//                 demands: [
+//                   {
+//                     name: 'Greninja',
+//                     slug: 'greninja',
+//                     image: 'pokepocket/card-flair-demands/greninja.webp',
+//                     amount: '1',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '360',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//               },
+//               {
+//                 name: 'Big Rings Flair: Blue (Battle)',
+//                 slug: 'battle-effect-big-rings-flair-blue-battle',
+//                 type: 'Battle Effect',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/battle-effect-big-rings-flair-blue-battle.webp',
+//                 demands: [
+//                   {
+//                     name: 'Greninja',
+//                     slug: 'greninja',
+//                     image: 'pokepocket/card-flair-demands/greninja.webp',
+//                     amount: '1',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '540',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Sparkles Flair: Gold (Cosmetic)',
+//                 prerequisite_count: '1',
+//               },
+//               {
+//                 name: 'Mini Triangles Flair: Blue (Battle)',
+//                 slug: 'battle-effect-mini-triangles-flair-blue-battle',
+//                 type: 'Battle Effect',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/battle-effect-mini-triangles-flair-blue-battle.webp',
+//                 demands: [
+//                   {
+//                     name: 'Greninja',
+//                     slug: 'greninja',
+//                     image: 'pokepocket/card-flair-demands/greninja.webp',
+//                     amount: '1',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '1,080',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Big Rings Flair: Blue (Battle)',
+//                 prerequisite_count: '1',
+//               },
+//               {
+//                 name: 'Water Energy Flair (Cosmetic)',
+//                 slug: 'decoration-water-energy-flair-cosmetic',
+//                 type: 'Decoration',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/decoration-water-energy-flair-cosmetic.webp',
+//                 demands: [
+//                   {
+//                     name: 'Greninja',
+//                     slug: 'greninja',
+//                     image: 'pokepocket/card-flair-demands/greninja.webp',
+//                     amount: '1',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '1,620',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Mini Triangles Flair: Blue (Battle)',
+//                 prerequisite_count: '1',
+//               },
+//             ],
+//             routeName: 'B',
+//           },
+//           {
+//             flairs: [
+//               {
+//                 name: 'Sparkles Flair: Gold (Cosmetic)',
+//                 slug: 'decoration-sparkles-flair-gold-cosmetic',
+//                 type: 'Decoration',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/decoration-sparkles-flair-gold-cosmetic.webp',
+//                 demands: [
+//                   {
+//                     name: 'Greninja',
+//                     slug: 'greninja',
+//                     image: 'pokepocket/card-flair-demands/greninja.webp',
+//                     amount: '1',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '360',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//               },
+//               {
+//                 name: 'Mini Triangles Flair: Blue (Battle)',
+//                 slug: 'battle-effect-mini-triangles-flair-blue-battle',
+//                 type: 'Battle Effect',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/battle-effect-mini-triangles-flair-blue-battle.webp',
+//                 demands: [
+//                   {
+//                     name: 'Greninja',
+//                     slug: 'greninja',
+//                     image: 'pokepocket/card-flair-demands/greninja.webp',
+//                     amount: '1',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '540',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Sparkles Flair: Gold (Cosmetic)',
+//                 prerequisite_count: '1',
+//               },
+//               {
+//                 name: 'Water Energy Flair (Cosmetic)',
+//                 slug: 'decoration-water-energy-flair-cosmetic',
+//                 type: 'Decoration',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/decoration-water-energy-flair-cosmetic.webp',
+//                 demands: [
+//                   {
+//                     name: 'Greninja',
+//                     slug: 'greninja',
+//                     image: 'pokepocket/card-flair-demands/greninja.webp',
+//                     amount: '1',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '1,080',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Mini Triangles Flair: Blue (Battle)',
+//                 prerequisite_count: '1',
+//               },
+//               {
+//                 name: 'Big Rings Flair: Blue (Battle)',
+//                 slug: 'battle-effect-big-rings-flair-blue-battle',
+//                 type: 'Battle Effect',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/battle-effect-big-rings-flair-blue-battle.webp',
+//                 demands: [
+//                   {
+//                     name: 'Greninja',
+//                     slug: 'greninja',
+//                     image: 'pokepocket/card-flair-demands/greninja.webp',
+//                     amount: '1',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '1,620',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Water Energy Flair (Cosmetic)',
+//                 prerequisite_count: '1',
+//               },
+//             ],
+//             routeName: 'C',
+//           },
+//         ],
+//         price: '0',
+//         price_date: '0',
+//         foilPrice: '0',
+//         deltaPrice: '0',
+//         deltaFoilPrice: '0',
+//         delta7dPrice: '0',
+//         delta7dPriceFoil: '0',
+//       },
+//       count: 1,
+//     },
+//     {
+//       data: {
+//         id: 'A1-087',
+//         setId: 'A1',
+//         number: '87',
+//         name: 'Froakie',
+//         set_code: 'A1',
+//         set_name: 'Genetic Apex',
+//         rarity: 'Common',
+//         color: 'Water',
+//         type: 'Pokemon',
+//         slug: 'a1-87-froakie',
+//         has_image: '1',
+//         has_art: '1',
+//         dex: 'A1_2',
+//         hp: '60',
+//         stage: 'Basic',
+//         prew_stage_name: null,
+//         attack: [{ info: '{C} Flop 10', effect: '' }],
+//         ability: [],
+//         text: 'It secretes flexible bubbles from its chest and back.<br />The bubbles reduce the damage it would otherwise<br />take when attacked.',
+//         weakness: 'Lightning',
+//         retreat: '1',
+//         rule: null,
+//         illustrator: 'Aya Kusube',
+//         props: [
+//           { name: 'Pokémon ID', value: 'KEROMATSU' },
+//           { name: 'Card Number', value: 'A1-087' },
+//           { name: 'Dupe Reward', value: '10' },
+//           { name: 'Pack Point', value: '35' },
+//         ],
+//         flairs: [
+//           {
+//             flairs: [
+//               {
+//                 name: 'Sparkles Flair: Gold (Cosmetic)',
+//                 slug: 'decoration-sparkles-flair-gold-cosmetic',
+//                 type: 'Decoration',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/decoration-sparkles-flair-gold-cosmetic.webp',
+//                 demands: [
+//                   {
+//                     name: 'Froakie',
+//                     slug: 'froakie',
+//                     image: 'pokepocket/card-flair-demands/froakie.webp',
+//                     amount: '3',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '50',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//               },
+//               {
+//                 name: 'Ripples Flair: Light blue (Cosmetic)',
+//                 slug: 'decoration-ripples-flair-light-blue-cosmetic',
+//                 type: 'Decoration',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/decoration-ripples-flair-light-blue-cosmetic.webp',
+//                 demands: [
+//                   {
+//                     name: 'Froakie',
+//                     slug: 'froakie',
+//                     image: 'pokepocket/card-flair-demands/froakie.webp',
+//                     amount: '3',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '75',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Sparkles Flair: Gold (Cosmetic)',
+//                 prerequisite_count: '1',
+//               },
+//               {
+//                 name: 'Water Energy Flair (Cosmetic)',
+//                 slug: 'decoration-water-energy-flair-cosmetic',
+//                 type: 'Decoration',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/decoration-water-energy-flair-cosmetic.webp',
+//                 demands: [
+//                   {
+//                     name: 'Froakie',
+//                     slug: 'froakie',
+//                     image: 'pokepocket/card-flair-demands/froakie.webp',
+//                     amount: '3',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '150',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Ripples Flair: Light blue (Cosmetic)',
+//                 prerequisite_count: '1',
+//               },
+//               {
+//                 name: 'Star Outlines Flair: Yellow (Battle)',
+//                 slug: 'battle-effect-star-outlines-flair-yellow-battle',
+//                 type: 'Battle Effect',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/battle-effect-star-outlines-flair-yellow-battle.webp',
+//                 demands: [
+//                   {
+//                     name: 'Froakie',
+//                     slug: 'froakie',
+//                     image: 'pokepocket/card-flair-demands/froakie.webp',
+//                     amount: '3',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '225',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Water Energy Flair (Cosmetic)',
+//                 prerequisite_count: '1',
+//               },
+//             ],
+//             routeName: 'A',
+//           },
+//           {
+//             flairs: [
+//               {
+//                 name: 'Sparkles Flair: Gold (Cosmetic)',
+//                 slug: 'decoration-sparkles-flair-gold-cosmetic',
+//                 type: 'Decoration',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/decoration-sparkles-flair-gold-cosmetic.webp',
+//                 demands: [
+//                   {
+//                     name: 'Froakie',
+//                     slug: 'froakie',
+//                     image: 'pokepocket/card-flair-demands/froakie.webp',
+//                     amount: '3',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '50',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//               },
+//               {
+//                 name: 'Water Energy Flair (Cosmetic)',
+//                 slug: 'decoration-water-energy-flair-cosmetic',
+//                 type: 'Decoration',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/decoration-water-energy-flair-cosmetic.webp',
+//                 demands: [
+//                   {
+//                     name: 'Froakie',
+//                     slug: 'froakie',
+//                     image: 'pokepocket/card-flair-demands/froakie.webp',
+//                     amount: '3',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '75',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Sparkles Flair: Gold (Cosmetic)',
+//                 prerequisite_count: '1',
+//               },
+//               {
+//                 name: 'Star Outlines Flair: Yellow (Battle)',
+//                 slug: 'battle-effect-star-outlines-flair-yellow-battle',
+//                 type: 'Battle Effect',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/battle-effect-star-outlines-flair-yellow-battle.webp',
+//                 demands: [
+//                   {
+//                     name: 'Froakie',
+//                     slug: 'froakie',
+//                     image: 'pokepocket/card-flair-demands/froakie.webp',
+//                     amount: '3',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '150',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Water Energy Flair (Cosmetic)',
+//                 prerequisite_count: '1',
+//               },
+//               {
+//                 name: 'Ripples Flair: Light blue (Cosmetic)',
+//                 slug: 'decoration-ripples-flair-light-blue-cosmetic',
+//                 type: 'Decoration',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/decoration-ripples-flair-light-blue-cosmetic.webp',
+//                 demands: [
+//                   {
+//                     name: 'Froakie',
+//                     slug: 'froakie',
+//                     image: 'pokepocket/card-flair-demands/froakie.webp',
+//                     amount: '3',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '225',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Star Outlines Flair: Yellow (Battle)',
+//                 prerequisite_count: '1',
+//               },
+//             ],
+//             routeName: 'B',
+//           },
+//           {
+//             flairs: [
+//               {
+//                 name: 'Sparkles Flair: Gold (Cosmetic)',
+//                 slug: 'decoration-sparkles-flair-gold-cosmetic',
+//                 type: 'Decoration',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/decoration-sparkles-flair-gold-cosmetic.webp',
+//                 demands: [
+//                   {
+//                     name: 'Froakie',
+//                     slug: 'froakie',
+//                     image: 'pokepocket/card-flair-demands/froakie.webp',
+//                     amount: '3',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '50',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//               },
+//               {
+//                 name: 'Star Outlines Flair: Yellow (Battle)',
+//                 slug: 'battle-effect-star-outlines-flair-yellow-battle',
+//                 type: 'Battle Effect',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/battle-effect-star-outlines-flair-yellow-battle.webp',
+//                 demands: [
+//                   {
+//                     name: 'Froakie',
+//                     slug: 'froakie',
+//                     image: 'pokepocket/card-flair-demands/froakie.webp',
+//                     amount: '3',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '75',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Sparkles Flair: Gold (Cosmetic)',
+//                 prerequisite_count: '1',
+//               },
+//               {
+//                 name: 'Ripples Flair: Light blue (Cosmetic)',
+//                 slug: 'decoration-ripples-flair-light-blue-cosmetic',
+//                 type: 'Decoration',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/decoration-ripples-flair-light-blue-cosmetic.webp',
+//                 demands: [
+//                   {
+//                     name: 'Froakie',
+//                     slug: 'froakie',
+//                     image: 'pokepocket/card-flair-demands/froakie.webp',
+//                     amount: '3',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '150',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Star Outlines Flair: Yellow (Battle)',
+//                 prerequisite_count: '1',
+//               },
+//               {
+//                 name: 'Water Energy Flair (Cosmetic)',
+//                 slug: 'decoration-water-energy-flair-cosmetic',
+//                 type: 'Decoration',
+//                 count: '1',
+//                 image:
+//                   'pokepocket/card-flairs/decoration-water-energy-flair-cosmetic.webp',
+//                 demands: [
+//                   {
+//                     name: 'Froakie',
+//                     slug: 'froakie',
+//                     image: 'pokepocket/card-flair-demands/froakie.webp',
+//                     amount: '3',
+//                   },
+//                   {
+//                     name: 'Shinedust',
+//                     slug: 'shinedust',
+//                     image: 'pokepocket/card-flair-demands/shinedust.webp',
+//                     amount: '225',
+//                   },
+//                 ],
+//                 from_date: 1704034800,
+//                 prerequisite_name: 'Ripples Flair: Light blue (Cosmetic)',
+//                 prerequisite_count: '1',
+//               },
+//             ],
+//             routeName: 'C',
+//           },
+//         ],
+//         price: '0',
+//         price_date: '0',
+//         foilPrice: '0',
+//         deltaPrice: '0',
+//         deltaFoilPrice: '0',
+//         delta7dPrice: '0',
+//         delta7dPriceFoil: '0',
+//       },
+//       count: 1,
+//     },
+//     {
+//       data: {
+//         id: 'A3-144',
+//         setId: 'A3',
+//         number: '144',
+//         name: 'Rare Candy',
+//         set_code: 'A3',
+//         set_name: 'Celestial Guardians',
+//         rarity: 'Uncommon',
+//         color: null,
+//         type: null,
+//         slug: 'a3-144-rare-candy',
+//         has_image: '1',
+//         has_art: '0',
+//         dex: 'A3_1,A3_2',
+//         hp: null,
+//         stage: 'Item',
+//         prew_stage_name: null,
+//         attack: null,
+//         ability: null,
+//         text: null,
+//         weakness: null,
+//         retreat: null,
+//         rule: 'You may play any number of Item cards during your turn.',
+//         illustrator: 'Toyste Beach',
+//         props: null,
+//         flairs: null,
+//         price: '0',
+//         price_date: '0',
+//         foilPrice: '0',
+//         deltaPrice: '0',
+//         deltaFoilPrice: '0',
+//         delta7dPrice: '0',
+//         delta7dPriceFoil: '0',
+//       },
+//       count: 1,
+//     },
+//   ],
+// }
 
 export const initialHand: MultiPokeCard[] = []
 
