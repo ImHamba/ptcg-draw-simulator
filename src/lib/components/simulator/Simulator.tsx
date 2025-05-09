@@ -1,4 +1,10 @@
 import { Button } from '@/components/ui/button'
+import {
+  checkHandMatchesTargetHands,
+  type MultiPokeCard,
+  type SaveHandDeckState,
+  type TargetHands,
+} from '@/lib/appUtils'
 import { useRef, useState } from 'react'
 import {
   Bar,
@@ -16,15 +22,8 @@ import {
   drawFirstHand,
   drawFromDeck,
   useSpecialCards,
-  type TargetHands,
 } from '../../handDeckUtils'
-import {
-  checkHandMatchesTargetHands,
-  getHexColorForValue,
-  sumObjects,
-  type MultiPokeCard,
-  type SaveHandDeckState,
-} from '../../utils'
+import { getHexColorForValue, sumObjects } from '../../utils'
 
 type Props = {
   deck: MultiPokeCard[]

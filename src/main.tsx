@@ -8,8 +8,7 @@ import ReactDOM from 'react-dom/client'
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
-import { CARD_DATA_PROXY_URL } from './lib/cardData.ts'
-import { VERSION } from './lib/constants.ts'
+import { CARD_DATA_PROXY_URL, VERSION } from './lib/constants.ts'
 import reportWebVitals from './reportWebVitals.ts'
 import './styles.css'
 

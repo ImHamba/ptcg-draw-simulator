@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { type MultiPokeCard, type SaveHandDeckState } from '@/lib/appUtils'
 import { usePokeball, useProfessorsResearch } from '../../cardEffects'
 import { pokeballFilter, profResearchFilter } from '../../cardFilters'
 import {
@@ -8,7 +9,6 @@ import {
   sumCardCount,
 } from '../../handDeckUtils'
 import { renderCards } from '../../reactUtils'
-import { type MultiPokeCard, type SaveHandDeckState } from '../../utils'
 
 type Props = {
   deck: MultiPokeCard[]

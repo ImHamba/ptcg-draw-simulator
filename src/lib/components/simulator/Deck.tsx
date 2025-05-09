@@ -1,4 +1,10 @@
 import { Button } from '@/components/ui/button'
+import {
+  type MultiPokeCard,
+  type PokeCard,
+  type SaveHandDeckState,
+  type TargetHands,
+} from '@/lib/appUtils'
 import { useMemo } from 'react'
 import { generateShareLink } from '../../appUtils'
 import { otherCardFilter } from '../../cardFilters'
@@ -10,17 +16,9 @@ import {
   resetAllAndAddCard,
   resetOriginalDeck,
   sumCardCount,
-  type TargetHands,
 } from '../../handDeckUtils'
 import { renderCards } from '../../reactUtils'
-import {
-  copyToClipboard,
-  not,
-  type CardData,
-  type MultiPokeCard,
-  type PokeCard,
-  type SaveHandDeckState,
-} from '../../utils'
+import { copyToClipboard, not, type CardData } from '../../utils'
 import SearchSelect from './SearchSelect'
 import { ShareLinkButton } from './ShareLinkButton'
 

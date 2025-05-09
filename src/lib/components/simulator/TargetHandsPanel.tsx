@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
-import type { TargetHands } from '../../handDeckUtils'
+import type { TargetHands } from '@/lib/appUtils'
 import {
   type HandDeckStateChange,
   type MultiPokeCard,
   type SaveHandDeckState,
-} from '../../utils'
+} from '@/lib/appUtils'
+import { useEffect } from 'react'
 import TargetHand from './TargetHand'
 
 type Props = {

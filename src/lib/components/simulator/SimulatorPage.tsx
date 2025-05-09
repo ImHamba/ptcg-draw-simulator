@@ -1,3 +1,8 @@
+import {
+  type HandDeckStateChange,
+  type MultiPokeCard,
+  type SaveHandDeckState,
+} from '@/lib/appUtils'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter, useSearch } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
@@ -7,9 +12,9 @@ import {
   generateEncodedCardsString,
   generateEncodedTargetHandsString,
 } from '../../appUtils'
-import { CARD_DATA_PROXY_URL } from '../../cardData'
 import {
   CARD_DATA_PROPERTIES,
+  CARD_DATA_PROXY_URL,
   DECK_SEARCH_PARAM,
   TARGET_HANDS_SEARCH_PARAM,
 } from '../../constants'
@@ -18,13 +23,7 @@ import {
   initialHand,
   initialTargetHands,
 } from '../../handDeckUtils'
-import {
-  pick,
-  type CardData,
-  type HandDeckStateChange,
-  type MultiPokeCard,
-  type SaveHandDeckState,
-} from '../../utils'
+import { pick, type CardData } from '../../utils'
 import Deck from './Deck'
 import Simulator from './Simulator'
 import TargetHandsPanel from './TargetHandsPanel'
@@ -78,8 +77,6 @@ const SimulatorPage = () => {
       return
     }
 
-    console.log('load url')
-
     const deck = deckCode ? decodeDeckCode(deckCode, cardData) : null
     const targetHands = targetHandsCode
       ? decodeTargetHandsCode(targetHandsCode, cardData)
@@ -104,7 +101,6 @@ const SimulatorPage = () => {
     // dont update while data is loading so the app has a chance to
     // read the initial url params and load them before overriding them
     if (isCardDataLoading) {
-      console.log('skip update url')
       return
     }
 

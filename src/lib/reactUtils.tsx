@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { type MultiPokeCard, imageUrlFromCard } from './utils'
+import { imageUrlFromCard, type MultiPokeCard } from './appUtils'
 
 export const renderCards = (
   cards: MultiPokeCard[],

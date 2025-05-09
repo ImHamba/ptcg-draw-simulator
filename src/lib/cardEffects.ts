@@ -1,3 +1,4 @@
+import type { MultiPokeCard } from './appUtils'
 import { pokeballFilter, profResearchFilter } from './cardFilters'
 import {
   decrementCardByCondition,
@@ -5,7 +6,6 @@ import {
   drawMany,
   sumCardCount,
 } from './handDeckUtils'
-import type { MultiPokeCard } from './utils'
 
 export const usePokeball = (hand: MultiPokeCard[], deck: MultiPokeCard[]) => {
   const pokeball = hand.find(pokeballFilter)
