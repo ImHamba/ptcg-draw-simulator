@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { type MultiPokeCard, type SaveHandDeckState } from '@/lib/appUtils'
+import type { MultiPokeCard, SaveHandDeckState } from '@/lib/appUtils'
 import { usePokeball, useProfessorsResearch } from '../../cardEffects'
 import { pokeballFilter, profResearchFilter } from '../../cardFilters'
 import {
@@ -8,7 +8,8 @@ import {
   resetDeckAndHand,
   sumCardCount,
 } from '../../handDeckUtils'
-import { renderCards } from '../../reactUtils'
+import PokeCardDisplay from './PokeCardDisplay'
+import PokeCardsContainer from './PokeCardsContainer'
 
 type Props = {
   deck: MultiPokeCard[]
@@ -58,7 +59,18 @@ const Hand = ({ deck, hand, originalDeck, saveHandDeckState }: Props) => {
           Reset
         </Button>
       </div>
-      <div className="w-full flex-row flex-wrap">{renderCards(hand, 8)}</div>
+      <div className="w-full flex-row flex-wrap">
+        <PokeCardsContainer width={8}>
+          {hand.map((card) => {
+            return (
+              <PokeCardDisplay
+                key={card.data?.id ?? card.cardType}
+                card={card}
+              />
+            )
+          })}
+        </PokeCardsContainer>
+      </div>
     </div>
   )
 }

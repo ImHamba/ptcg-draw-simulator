@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button'
-import {
-  type MultiPokeCard,
-  type PokeCard,
-  type SaveHandDeckState,
-  type TargetHands,
+import type {
+  MultiPokeCard,
+  PokeCard,
+  SaveHandDeckState,
+  TargetHands,
 } from '@/lib/appUtils'
-import { useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { generateShareLink } from '../../appUtils'
 import { otherCardFilter } from '../../cardFilters'
 import { MAX_DECK_SIZE } from '../../constants'
@@ -17,8 +17,10 @@ import {
   resetOriginalDeck,
   sumCardCount,
 } from '../../handDeckUtils'
-import { renderCards } from '../../reactUtils'
-import { copyToClipboard, not, type CardData } from '../../utils'
+import type { CardData } from '../../utils'
+import { copyToClipboard, not } from '../../utils'
+import PokeCardDisplay from './PokeCardDisplay'
+import PokeCardsContainer from './PokeCardsContainer'
 import SearchSelect from './SearchSelect'
 import { ShareLinkButton } from './ShareLinkButton'
 
@@ -47,15 +49,33 @@ const Deck = ({
     not(otherCardFilter),
   )
 
-  const onCardSelect = (cardIndexStr: string) => {
-    const cardIndex = parseInt(cardIndexStr)
-    const newCardData = cardData[cardIndex]
-    const card: PokeCard = {
-      data: newCardData,
-    }
+  useEffect(() => {
+    cardData
+    console.log('cardData, changed')
+  }, [cardData])
 
-    saveHandDeckState(resetAllAndAddCard, card, originalDeck)()
-  }
+  useEffect(() => {
+    originalDeck
+    console.log('originalDeck, changed')
+  }, [originalDeck])
+
+  useEffect(() => {
+    saveHandDeckState
+    console.log('saveHandDeckState, changed')
+  }, [saveHandDeckState])
+
+  const onCardSelect = useCallback(
+    (cardIndexStr: string) => {
+      const cardIndex = parseInt(cardIndexStr)
+      const newCardData = cardData[cardIndex]
+      const card: PokeCard = {
+        data: newCardData,
+      }
+
+      saveHandDeckState(resetAllAndAddCard, card, originalDeck)()
+    },
+    [cardData, originalDeck, saveHandDeckState],
+  )
 
   const onAddBasic = () => {
     const card: PokeCard = {
@@ -67,7 +87,7 @@ const Deck = ({
 
   const cardDataOptions = useMemo(
     () =>
-      cardData?.map((data, i) => {
+      cardData.map((data, i) => {
         return {
           value: i.toString(),
           label: `${data.name} (${data.id} ${data.set_name})`,
@@ -76,35 +96,29 @@ const Deck = ({
     [cardData],
   )
 
-  const increment = (card: PokeCard) => {
-    console.log('increment', performance.now())
-    saveHandDeckState((card) => {
-      return {
-        newOriginalDeck: fillDeck(incrementCard(originalDeck, card)),
-        newDeck: fillDeck(incrementCard(deck, card)),
-      }
-    }, card)()
-  }
-  const decrement = (card: PokeCard) =>
-    saveHandDeckState((card) => {
-      return {
-        newOriginalDeck: fillDeck(decrementCard(originalDeck, card)),
-        newDeck: fillDeck(decrementCard(deck, card)),
-      }
-    }, card)()
+  const increment = useCallback(
+    (card: PokeCard) => {
+      console.log('increment', performance.now())
+      saveHandDeckState((card) => {
+        return {
+          newOriginalDeck: fillDeck(incrementCard(originalDeck, card)),
+          newDeck: fillDeck(incrementCard(deck, card)),
+        }
+      }, card)()
+    },
+    [deck, originalDeck, saveHandDeckState],
+  )
 
-  const disableIncrement = (card: MultiPokeCard) => {
-    // allow many basics but not exceeding deck size
-    if (card.cardType === 'basicOther') {
-      return originalDeckWithoutOtherSize >= MAX_DECK_SIZE
-    }
-
-    // cap other cards at 2
-    return card.count >= 2
-  }
-
-  // dont show buttons for other cards since theyre automatically populated
-  const hideCardButtons = (card: MultiPokeCard) => card.cardType === 'other'
+  const decrement = useCallback(
+    (card: PokeCard) =>
+      saveHandDeckState((card) => {
+        return {
+          newOriginalDeck: fillDeck(decrementCard(originalDeck, card)),
+          newDeck: fillDeck(decrementCard(deck, card)),
+        }
+      }, card)(),
+    [deck, originalDeck, saveHandDeckState],
+  )
 
   const onShareLinkClick = () => {
     const link = generateShareLink(originalDeck, targetHands)
@@ -138,14 +152,28 @@ const Deck = ({
       />
       <div className="grow full">
         <div className="w-full">
-          {renderCards(
-            deck,
-            6,
-            increment,
-            decrement,
-            disableIncrement,
-            hideCardButtons,
-          )}
+          <PokeCardsContainer width={6}>
+            {deck.map((card) => {
+              const disableIncrement =
+                // allow many basics but not exceeding deck size
+                // cap other cards at 2
+                card.cardType === 'basicOther'
+                  ? originalDeckWithoutOtherSize >= MAX_DECK_SIZE
+                  : card.count >= 2
+
+              return (
+                <PokeCardDisplay
+                  key={card.data?.id ?? card.cardType}
+                  card={card}
+                  incrementCard={increment}
+                  decrementCard={decrement}
+                  disableIncrement={disableIncrement}
+                  // dont show buttons for Other cards since theyre automatically populated
+                  hideButtons={card.cardType === 'other'}
+                />
+              )
+            })}
+          </PokeCardsContainer>
         </div>
       </div>
     </div>

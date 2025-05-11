@@ -1,6 +1,7 @@
-import Choices, { type EventChoice } from 'choices.js'
+import type { EventChoice } from 'choices.js'
+import Choices from 'choices.js'
 import 'choices.js/public/assets/styles/choices.min.css'
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 type SelectOption = { value: string; label: string }
 
@@ -11,7 +12,7 @@ type Props = {
 }
 
 const SearchSelect = ({ options, className, onSelect }: Props) => {
-  const selectRef = useRef(null)
+  const selectRef = useRef<HTMLSelectElement>(null)
   const choicesInstance = useRef<Choices>(null)
 
   useEffect(() => {
@@ -29,7 +30,7 @@ const SearchSelect = ({ options, className, onSelect }: Props) => {
         },
       })
 
-      choicesInstance.current?.removeActiveItems()
+      choicesInstance.current.removeActiveItems()
     }
 
     // Cleanup
@@ -38,7 +39,7 @@ const SearchSelect = ({ options, className, onSelect }: Props) => {
         choicesInstance.current.destroy()
       }
     }
-  }, [options])
+  }, [className, options])
 
   const handleOnSelect = () => {
     onSelect((choicesInstance.current?.getValue() as EventChoice).value)
@@ -46,14 +47,19 @@ const SearchSelect = ({ options, className, onSelect }: Props) => {
     choicesInstance.current?.removeActiveItems()
   }
 
+  const optionsElements = useMemo(() => {
+    console.log('options changed')
+    return options.map((option) => (
+      <option value={option.value} key={option.value}>
+        {option.label}
+      </option>
+    ))
+  }, [options])
+
   return (
     <div>
       <select ref={selectRef} className={className} onChange={handleOnSelect}>
-        {options.map((option) => (
-          <option value={option.value} key={option.value}>
-            {option.label}
-          </option>
-        ))}
+        {optionsElements}
       </select>
     </div>
   )

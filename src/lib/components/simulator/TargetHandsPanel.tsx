@@ -1,8 +1,8 @@
-import type { TargetHands } from '@/lib/appUtils'
-import {
-  type HandDeckStateChange,
-  type MultiPokeCard,
-  type SaveHandDeckState,
+import type {
+  HandDeckStateChange,
+  MultiPokeCard,
+  SaveHandDeckState,
+  TargetHands,
 } from '@/lib/appUtils'
 import { useEffect } from 'react'
 import TargetHand from './TargetHand'
@@ -44,7 +44,7 @@ const TargetHandsPanel = ({
   return (
     <div className="full col-center gap-3">
       <div className="text-2xl">Target Hands</div>
-      <div className="flex-col gap-5 full overflow-y-scroll">
+      <div className="flex-col gap-5 full">
         {[
           ...Object.keys(targetHands).map((targetHandId, i) => {
             return (

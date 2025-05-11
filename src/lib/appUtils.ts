@@ -9,11 +9,12 @@ import {
   DECK_SEARCH_PARAM,
   DEFAULT_CARD_IMG_URL,
   GENERIC_CARD_TYPES,
-  TARGET_HAND_DELIMITER,
   TARGET_HANDS_SEARCH_PARAM,
+  TARGET_HAND_DELIMITER,
 } from './constants'
 import { fillDeck } from './handDeckUtils'
-import { clearUrlParams, not, type CardData } from './utils'
+import type { CardData } from './utils'
+import { clearUrlParams, not } from './utils'
 
 export const decodeCardsCode = (cardsCode: string, cardData: CardData[]) => {
   try {

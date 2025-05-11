@@ -1,7 +1,8 @@
-import { clsx, type ClassValue } from 'clsx'
+import type { ClassValue } from 'clsx'
+import { clsx } from 'clsx'
 import { useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
-import { type CARD_DATA_PROPERTIES } from './constants'
+import type { CARD_DATA_PROPERTIES } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
