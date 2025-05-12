@@ -18,8 +18,8 @@ const PokeCardDisplay = ({
   disableIncrement,
   hideButtons,
 }: Props) => (
-  <div className={`p-1`} key={card.data?.id ?? card.cardType}>
-    <div className="aspect-367/512 ">
+  <div className="p-1 w-full" key={card.data?.id ?? card.cardType}>
+    <div className="aspect-367/512 w-full">
       <div className="full col-center text-center relative overflow-hidden p-0">
         <img
           src={imageUrlFromCard(card)}

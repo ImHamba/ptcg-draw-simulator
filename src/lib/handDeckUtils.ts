@@ -1,4 +1,7 @@
-import { usePokeball, useProfessorsResearch } from './cardEffects'
+import {
+  useProfessorsResearch as playProfessorsResearch,
+  usePokeball,
+} from './cardEffects'
 import {
   basicPokemonFilter,
   otherCardFilter,
@@ -6,14 +9,14 @@ import {
 } from './cardFilters'
 import { FIRST_HAND_SIZE, MAX_DECK_SIZE } from './constants'
 
-import {
-  isSameCard,
-  type CardFilter,
-  type MultiCardWithCumuCount,
-  type MultiPokeCard,
-  type PokeCard,
-  type TargetHands,
+import type {
+  CardFilter,
+  MultiCardWithCumuCount,
+  MultiPokeCard,
+  PokeCard,
+  TargetHands,
 } from './appUtils'
+import { isSameCard } from './appUtils'
 import { conditionalListItem, getRandomInt, sum } from './utils'
 
 export const drawFromDeck = (
@@ -84,6 +87,7 @@ export const drawFromDeck = (
     return handCard
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const newHand = cardAlreadyInHand
     ? incrementedHand
     : [...hand, { ...drawnCard, count: 1 }]
@@ -174,7 +178,7 @@ export const decrementCard = (
     return cards
   }
 
-  return hasCardAlready?.count <= 1
+  return hasCardAlready.count <= 1
     ? cards.filter((c) => c !== hasCardAlready)
     : cards.map((c) =>
         c === hasCardAlready ? { ...c, count: c.count - 1 } : c,
@@ -296,7 +300,6 @@ export const resetOriginalDeck = () => {
     newDeck: fillDeck([]),
     newOriginalDeck: fillDeck([]),
     newHand: [],
-    newTargetHands: {},
   }
 }
 
@@ -335,36 +338,36 @@ type useCard = (
   newDeck: MultiPokeCard[]
 }
 
-export const useAllCards = (
+export const playAllCards = (
   hand: MultiPokeCard[],
   deck: MultiPokeCard[],
-  useCard: useCard,
+  playCard: useCard,
   cardFilter: CardFilter,
 ) => {
   let newHand = hand
   let newDeck = deck
   while (newHand.some(cardFilter)) {
-    ;({ newHand, newDeck } = useCard(newHand, newDeck))
+    ;({ newHand, newDeck } = playCard(newHand, newDeck))
   }
 
   return { newHand, newDeck }
 }
 
-export const useSpecialCards = (
+export const playSpecialCards = (
   hand: MultiPokeCard[],
   deck: MultiPokeCard[],
 ) => {
   const { newHand: handAfterPokeball, newDeck: deckAfterPokeball } =
-    useAllCards(hand, deck, usePokeball, pokeballFilter)
+    playAllCards(hand, deck, usePokeball, pokeballFilter)
 
   // only uses if hand contains a prof research
   const { newHand: handAfterResearch, newDeck: deckAfterResearch } =
-    useProfessorsResearch(handAfterPokeball, deckAfterPokeball)
+    playProfessorsResearch(handAfterPokeball, deckAfterPokeball)
 
   // TODO: work out why using pokeballs after research reduces chance to get target hand
   // return { newHand: handAfterResearch, newDeck: deckAfterResearch }
   // use pokeball again that might be drawn by prof research
-  return useAllCards(
+  return playAllCards(
     handAfterResearch,
     deckAfterResearch,
     usePokeball,

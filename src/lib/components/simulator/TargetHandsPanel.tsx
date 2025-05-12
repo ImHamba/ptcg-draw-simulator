@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button'
 import type {
   HandDeckStateChange,
   MultiPokeCard,
@@ -41,9 +42,23 @@ const TargetHandsPanel = ({
     saveHandDeckState(clear)()
   })
 
+  const clear: HandDeckStateChange = () => {
+    return {
+      newTargetHands: {},
+    }
+  }
+
   return (
     <div className="full col-center gap-3">
-      <div className="text-2xl">Target Hands</div>
+      <div className="text-2xl">
+        Target Hands ({Object.keys(targetHands).length})
+      </div>
+      <Button
+        className="bg-red-800"
+        onClick={saveHandDeckState(clear)}
+      >
+        Clear All
+      </Button>
       <div className="flex-col gap-5 full">
         {[
           ...Object.keys(targetHands).map((targetHandId, i) => {

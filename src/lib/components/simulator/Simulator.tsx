@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button'
-import {
-  checkHandMatchesTargetHands,
-  type MultiPokeCard,
-  type SaveHandDeckState,
-  type TargetHands,
+import type {
+  MultiPokeCard,
+  SaveHandDeckState,
+  TargetHands,
 } from '@/lib/appUtils'
+import { checkHandMatchesTargetHands } from '@/lib/appUtils'
+import { basicPokemonFilter } from '@/lib/cardFilters'
 import { useRef, useState } from 'react'
 import {
   Bar,
@@ -21,7 +22,7 @@ import { FIRST_HAND_SIZE, MAX_DECK_SIZE } from '../../constants'
 import {
   drawFirstHand,
   drawFromDeck,
-  useSpecialCards,
+  playSpecialCards,
 } from '../../handDeckUtils'
 import { getHexColorForValue, sumObjects } from '../../utils'
 
@@ -85,14 +86,14 @@ const Simulator = ({ originalDeck, targetHands }: Props) => {
 
     // check matches after drawing first hand and using special cards
     ;({ newHand: hand, newDeck: deck } = drawFirstHand(deck))
-    ;({ newHand: hand, newDeck: deck } = useSpecialCards(hand, deck))
+    ;({ newHand: hand, newDeck: deck } = playSpecialCards(hand, deck))
 
     let targetHandMatches = checkHandMatchesTargetHands(hand, targetHands)
 
     // if not matching, repeat drawing and using any special cards
     while (!targetHandMatches.anyMatch) {
       ;({ newHand: hand, newDeck: deck } = drawFromDeck(hand, deck))
-      ;({ newHand: hand, newDeck: deck } = useSpecialCards(hand, deck))
+      ;({ newHand: hand, newDeck: deck } = playSpecialCards(hand, deck))
 
       targetHandMatches = checkHandMatchesTargetHands(hand, targetHands)
 
@@ -184,39 +185,37 @@ const Simulator = ({ originalDeck, targetHands }: Props) => {
 
   const targetHandIds = Object.keys(targetHands)
 
+  const placeholderChartData = Array(8)
+    .fill(0)
+    .map((_, i) => {
+      return { name: i + 1, anyMatch: 0 }
+    })
+
+  const canStartSimulation =
+    originalDeck.filter(basicPokemonFilter).length > 0 &&
+    targetHandIds.length > 0
+
   return (
     <div className="full col-center gap-3">
       <div className="col-center gap-1">
         <div className="text-2xl">Draw Simulator</div>
-        <div>
-          {simulationCount}/{simulationLimit} simulations
-        </div>
       </div>
-
-      <div className="row-center gap-2">
-        <Button onClick={doSimulation ? stopSimulation : simulate}>
-          {doSimulation ? 'Stop' : 'Start'}
-        </Button>
-        <Button
-          onClick={() => {
-            console.log('simulate')
-            drawSimulation()
-          }}
-        >
-          test
-        </Button>
-        <Button
-          onClick={() => {
-            // console.log(JSON.stringify(originalDeck))
-            // console.log(JSON.stringify(targetHands))
-            console.log(cumulativeSimulationResults)
-          }}
-        >
-          print
-        </Button>
-      </div>
+      {simulationCount}/{simulationLimit} simulations
+      <Button
+        onClick={doSimulation ? stopSimulation : simulate}
+        disabled={!canStartSimulation}
+        title={
+          targetHandIds.length === 0
+            ? 'Add a basic Pokemon to the deck, and create a target hand.'
+            : undefined
+        }
+      >
+        {doSimulation ? 'Stop' : 'Start'}
+      </Button>
       <ResponsiveContainer>
-        <ComposedChart data={chartData}>
+        <ComposedChart
+          data={chartData.length ? chartData : placeholderChartData}
+        >
           <CartesianGrid />
           <Tooltip formatter={(value: number) => `${value.toFixed(1)}%`} />
           <Legend />

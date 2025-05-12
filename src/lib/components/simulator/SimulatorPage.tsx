@@ -69,18 +69,15 @@ const SimulatorPage = () => {
     queryKey: ['query'],
     queryFn: async () => {
       console.log('fetch data')
-      return fetch(CARD_DATA_PROXY_URL)
-        .then(async (res) => {
-          if (!res.ok) {
-            throw new Error('Network response was not ok')
-          }
+      return fetch(CARD_DATA_PROXY_URL).then(async (res) => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok')
+        }
 
-          return res.json()
-        })
-        .then(async (data: CardData[]) => {
-          const properties = CARD_DATA_PROPERTIES.map((x) => x)
-          return data.map((card: CardData) => pick(card, properties))
-        })
+        const data = await res.json()
+        const properties = CARD_DATA_PROPERTIES.map((x) => x)
+        return data.map((card: CardData) => pick(card, properties))
+      })
     },
   })
 
@@ -150,6 +147,7 @@ const SimulatorPage = () => {
       search: {
         ...Object.fromEntries(currentSearchParams.entries()),
       },
+      resetScroll: false,
     })
   }, [isCardDataLoading, originalDeck, router, targetHands])
 
@@ -157,8 +155,8 @@ const SimulatorPage = () => {
     <>
       <div className="flex-col ">
         <div className="h-10 top-0 bg-amber-100 z-100">nav</div>
-        <div className="row-center gap-10 px-5">
-          <div className="w-1/2 h-full sticky top-0 pt-3">
+        <div className="row-center gap-20 px-10 pb-10">
+          <div className="w-1/2 h-full sticky top-0 pt-5">
             <Deck
               deck={deck}
               originalDeck={originalDeck}
@@ -167,14 +165,14 @@ const SimulatorPage = () => {
               saveHandDeckState={saveHandDeckState}
             />
           </div>
-          <div className="w-1/2 h-full col-center gap-5 pt-3">
+          <div className="w-1/2 h-full col-center gap-7 pt-5">
             {/* <Hand
                 deck={deck}
                 originalDeck={originalDeck}
                 hand={hand}
                 saveHandDeckState={saveHandDeckState}
               /> */}
-            <div className="h-[50vh] w-full">
+            <div className="h-[45vh] w-full">
               <Simulator
                 targetHands={targetHands}
                 deck={deck}

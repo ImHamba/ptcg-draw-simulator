@@ -1,11 +1,13 @@
+import { Button } from '@/components/ui/button'
 import type {
+  HandDeckStateChange,
   MultiPokeCard,
   PokeCard,
   SaveHandDeckState,
   TargetHands,
 } from '@/lib/appUtils'
 import { checkHandMatchesTargetHand, isSameCard } from '@/lib/appUtils'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import {
   addTargetCard,
@@ -73,71 +75,108 @@ const TargetHand = ({
     saveHandDeckState(addTargetCard, card, addToTargetHandId, targetHands)()
   }
 
-  const increment = useMemo(() => {
-    return !targetHandId
-      ? null
-      : (card: PokeCard) => {
-          targetHand
-          saveHandDeckState((card) => {
-            return {
-              newTargetHands: {
-                ...targetHands,
-                [targetHandId]: incrementCard(targetHand, card),
-              },
-            }
-          }, card)()
-        }
-  }, [saveHandDeckState, targetHand, targetHandId, targetHands])
+  const increment = useCallback(
+    (card: PokeCard) => {
+      if (!targetHandId) {
+        return {}
+      }
 
-  const decrement = useMemo(() => {
-    return !targetHandId
-      ? null
-      : (card: PokeCard) => {
-          saveHandDeckState((card) => {
-            return {
-              newTargetHands: {
-                ...targetHands,
-                [targetHandId]: decrementCard(targetHand, card),
-              },
-            }
-          }, card)()
-        }
-  }, [saveHandDeckState, targetHand, targetHandId, targetHands])
+      return {
+        newTargetHands: {
+          ...targetHands,
+          [targetHandId]: incrementCard(targetHand, card),
+        },
+      }
+    },
+    [targetHand, targetHandId, targetHands],
+  )
+
+  const decrement = useCallback(
+    (card: PokeCard) => {
+      if (!targetHandId) {
+        return {}
+      }
+
+      return {
+        newTargetHands: {
+          ...targetHands,
+          [targetHandId]: decrementCard(targetHand, card),
+        },
+      }
+    },
+    [targetHand, targetHandId, targetHands],
+  )
+
+  const clear: HandDeckStateChange = () => {
+    return {
+      newTargetHands: Object.fromEntries(
+        Object.entries(targetHands).filter(([id, _]) => id !== targetHandId),
+      ),
+    }
+  }
+
+  const duplicate: HandDeckStateChange = () => {
+    return {
+      newTargetHands: { ...targetHands, [uuidv4()]: targetHand },
+    }
+  }
 
   return (
-    <div className="pb-5 border-b-2">
-      {!targetHandId && <div className="text-xl mb-2">Add new target hand</div>}
-      <div className="w-full flex-row flex-wrap ">
-        <PokeCardsContainer width={Math.max(8, targetHand.length)}>
-          {targetHand.map((card) => {
-            return (
-              <PokeCardDisplay
-                key={card.data?.id ?? card.cardType}
-                card={card}
-                incrementCard={increment ?? undefined}
-                decrementCard={decrement ?? undefined}
-                disableIncrement={
-                  card.count >=
-                  (originalDeck.find((deckCard) => isSameCard(deckCard, card))
-                    ?.count ?? 0)
-                }
-              />
-            )
-          })}
-        </PokeCardsContainer>
-      </div>
-      {targetHandId && (
-        <div className={handMatchesTarget ? 'text-green-300' : 'text-red-400'}>
-          {handMatchesTarget ? 'Matching!' : 'Not Matching'}
-        </div>
-      )}
-
+    <div className={`pb-5 ${targetHandId && 'border-b-2'}`}>
       {targetHandId ?? 'null'}
-      <SearchSelect
-        options={options}
-        className="w-100"
-        onSelect={onCardSelect}
-      />
+      <div className="w-full flex-row gap-5">
+        <div className="w-3/5">
+          {!targetHandId ? (
+            <div className="text-xl ms-3">Create new target hand</div>
+          ) : (
+            <PokeCardsContainer width={Math.max(4, targetHand.length)}>
+              {targetHand.map((card) => {
+                return (
+                  <PokeCardDisplay
+                    key={card.data?.id ?? card.cardType}
+                    card={card}
+                    incrementCard={saveHandDeckState(increment, card)}
+                    decrementCard={saveHandDeckState(decrement, card)}
+                    disableIncrement={
+                      card.count >=
+                      (originalDeck.find((deckCard) =>
+                        isSameCard(deckCard, card),
+                      )?.count ?? 0)
+                    }
+                  />
+                )
+              })}
+            </PokeCardsContainer>
+          )}
+        </div>
+        <div className="flex-col w-2/5 mt-2">
+          {/* {targetHandId && (
+            <div
+              className={handMatchesTarget ? 'text-green-300' : 'text-red-400'}
+            >
+              {handMatchesTarget ? 'Matching!' : 'Not Matching'}
+            </div>
+          )} */}
+          <SearchSelect
+            options={options}
+            className="w-full"
+            onSelect={onCardSelect}
+          />
+          {targetHandId && (
+            <div className="mt-2 flex-row gap-2 justify-end">
+              <Button className="" onClick={saveHandDeckState(duplicate)}>
+                Duplicate
+              </Button>
+              <Button
+                className="bg-red-800 aspect-square p-0"
+                onClick={saveHandDeckState(clear)}
+              >
+                <i className="fa-solid fa-trash" />
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

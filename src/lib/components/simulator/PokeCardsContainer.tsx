@@ -8,7 +8,7 @@ type Props = {
 
 const PokeCardsContainer = ({ width = 5, children }: Props) => (
   <div
-    className="grid full"
+    className="grid full overflow-x-auto"
     style={{ gridTemplateColumns: `repeat(${width}, 1fr)` }}
   >
     {children}

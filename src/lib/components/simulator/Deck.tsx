@@ -5,7 +5,7 @@ import type {
   SaveHandDeckState,
   TargetHands,
 } from '@/lib/appUtils'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { generateShareLink } from '../../appUtils'
 import { otherCardFilter } from '../../cardFilters'
 import { MAX_DECK_SIZE } from '../../constants'
@@ -49,21 +49,6 @@ const Deck = ({
     not(otherCardFilter),
   )
 
-  useEffect(() => {
-    cardData
-    console.log('cardData, changed')
-  }, [cardData])
-
-  useEffect(() => {
-    originalDeck
-    console.log('originalDeck, changed')
-  }, [originalDeck])
-
-  useEffect(() => {
-    saveHandDeckState
-    console.log('saveHandDeckState, changed')
-  }, [saveHandDeckState])
-
   const onCardSelect = useCallback(
     (cardIndexStr: string) => {
       const cardIndex = parseInt(cardIndexStr)
@@ -98,7 +83,6 @@ const Deck = ({
 
   const increment = useCallback(
     (card: PokeCard) => {
-      console.log('increment', performance.now())
       saveHandDeckState((card) => {
         return {
           newOriginalDeck: fillDeck(incrementCard(originalDeck, card)),
@@ -127,23 +111,26 @@ const Deck = ({
 
   return (
     <div className="col-center gap-3 full">
-      <div className="text-2xl">Deck Builder ({deckSize})</div>
+      <div className="text-2xl">Deck Builder</div>
       <div className="row-center gap-2">
-        <Button onClick={saveHandDeckState(resetOriginalDeck)}>
-          Clear Deck
-        </Button>
-
         <Button
           onClick={saveHandDeckState(onAddBasic)}
           disabled={originalDeckWithoutOtherSize >= MAX_DECK_SIZE}
         >
-          Add Basic
+          Add Generic Basic
         </Button>
 
         <ShareLinkButton
           onShareLinkClick={onShareLinkClick}
           disabled={originalDeckWithoutOtherSize >= MAX_DECK_SIZE}
         />
+
+        <Button
+          className="bg-red-800"
+          onClick={saveHandDeckState(resetOriginalDeck)}
+        >
+          Clear Deck
+        </Button>
       </div>
       <SearchSelect
         options={cardDataOptions}

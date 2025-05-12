@@ -48,7 +48,6 @@ const SearchSelect = ({ options, className, onSelect }: Props) => {
   }
 
   const optionsElements = useMemo(() => {
-    console.log('options changed')
     return options.map((option) => (
       <option value={option.value} key={option.value}>
         {option.label}
