@@ -42,8 +42,6 @@ const Deck = ({
   targetHands,
   saveHandDeckState,
 }: Props) => {
-  const deckSize = sumCardCount(deck)
-  //   const originalDeckSize = sumCardCount(originalDeck)
   const originalDeckWithoutOtherSize = sumCardCount(
     originalDeck,
     not(otherCardFilter),

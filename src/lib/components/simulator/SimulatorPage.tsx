@@ -25,6 +25,7 @@ import {
 } from '../../handDeckUtils'
 import type { CardData } from '../../utils'
 import { pick } from '../../utils'
+import NavBar from '../NavBar'
 import Deck from './Deck'
 import Simulator from './Simulator'
 import TargetHandsPanel from './TargetHandsPanel'
@@ -154,7 +155,7 @@ const SimulatorPage = () => {
   return (
     <>
       <div className="flex-col ">
-        <div className="h-10 top-0 bg-amber-100 z-100">nav</div>
+        <NavBar />
         <div className="row-center gap-20 px-10 pb-10">
           <div className="w-1/2 h-full sticky top-0 pt-5">
             <Deck
