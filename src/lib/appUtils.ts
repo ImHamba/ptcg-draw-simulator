@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 
+import { router } from '@/main'
 import { otherCardFilter } from './cardFilters'
 import {
   BASIC_CARD_IMG_URL,
@@ -102,16 +103,19 @@ export const generateShareLink = (
     : null
 
   const baseUrl = `${window.location.protocol}//${window.location.host}`
-  const url = new URL(baseUrl)
 
-  if (deckEncodedString) {
-    url.searchParams.set(DECK_SEARCH_PARAM, deckEncodedString)
-  }
-  if (targetHandsEncodedString) {
-    url.searchParams.set(TARGET_HANDS_SEARCH_PARAM, targetHandsEncodedString)
-  }
+  const routeString = router.buildLocation({
+    // defaults path to where ever this is being called from, i.e. /simulator
+    to: './',
+    search: {
+      ...(deckEncodedString && { [DECK_SEARCH_PARAM]: deckEncodedString }),
+      ...(targetHandsEncodedString && {
+        [TARGET_HANDS_SEARCH_PARAM]: targetHandsEncodedString,
+      }),
+    },
+  }).href
 
-  return url.toString()
+  return baseUrl + routeString
 }
 
 export type CardType = (typeof GENERIC_CARD_TYPES)[number]
