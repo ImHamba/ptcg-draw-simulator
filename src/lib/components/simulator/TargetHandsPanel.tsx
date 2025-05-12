@@ -5,7 +5,7 @@ import type {
   SaveHandDeckState,
   TargetHands,
 } from '@/lib/appUtils'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import TargetHand from './TargetHand'
 
 type Props = {
@@ -40,23 +40,20 @@ const TargetHandsPanel = ({
     }
 
     saveHandDeckState(clear)()
-  })
+  }, [saveHandDeckState, targetHands])
 
-  const clear: HandDeckStateChange = () => {
+  const clearAll: HandDeckStateChange = useCallback(() => {
     return {
       newTargetHands: {},
     }
-  }
+  }, [])
 
   return (
     <div className="full col-center gap-3">
       <div className="text-2xl">
         Target Hands ({Object.keys(targetHands).length})
       </div>
-      <Button
-        className="bg-red-800"
-        onClick={saveHandDeckState(clear)}
-      >
+      <Button className="bg-red-800" onClick={saveHandDeckState(clearAll)}>
         Clear All
       </Button>
       <div className="flex-col gap-5 full">

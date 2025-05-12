@@ -6,25 +6,15 @@ import type {
 } from '@/lib/appUtils'
 import { checkHandMatchesTargetHands } from '@/lib/appUtils'
 import { basicPokemonFilter } from '@/lib/cardFilters'
-import { useRef, useState } from 'react'
-import {
-  Bar,
-  CartesianGrid,
-  ComposedChart,
-  Legend,
-  Line,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { useMemo, useRef, useState } from 'react'
 import { FIRST_HAND_SIZE, MAX_DECK_SIZE } from '../../constants'
 import {
   drawFirstHand,
   drawFromDeck,
   playSpecialCards,
 } from '../../handDeckUtils'
-import { getHexColorForValue, sumObjects } from '../../utils'
+import { sumObjects } from '../../utils'
+import SimulatorChart from './SimulatorChart'
 
 type Props = {
   deck: MultiPokeCard[]
@@ -140,60 +130,76 @@ const Simulator = ({ originalDeck, targetHands }: Props) => {
     setDoSimulation(false)
   }
 
-  const chartData = Object.entries(cumulativeSimulationResults)
-    // exclude results for high draw counts if the results only have 0s
-    .filter((_, i) => {
-      const followingItems = Object.entries(cumulativeSimulationResults).slice(
-        i,
-      )
-      const followingAreZeros = followingItems.every(
-        ([_, targetHandMatches]) => targetHandMatches.anyMatch <= 0,
-      )
+  const chartData = useMemo(
+    () =>
+      Object.entries(cumulativeSimulationResults)
+        // exclude results for high draw counts if the results only have 0s
+        .filter((_, i) => {
+          const followingItems = Object.entries(
+            cumulativeSimulationResults,
+          ).slice(i)
+          const followingAreZeros = followingItems.every(
+            ([_, targetHandMatches]) => targetHandMatches.anyMatch <= 0,
+          )
 
-      return !followingAreZeros
-    })
-    .map(([drawCount, targetHandMatches]) => {
-      const chartBar: Record<string, number | string> = {
-        // transform draw count to turns past
-        name: (Number(drawCount) + 1).toString(),
-        ...Object.fromEntries(
-          Object.entries(targetHandMatches).map(
-            ([targetHandId, matchCount]) => {
-              return [targetHandId, (matchCount / simulationCount) * 100]
-            },
-          ),
-        ),
-      }
+          return !followingAreZeros
+        })
+        .map(([drawCount, targetHandMatches]) => {
+          const chartBar: Record<string, number | string> = {
+            // transform draw count to turns past
+            name: (Number(drawCount) + 1).toString(),
+            ...Object.fromEntries(
+              Object.entries(targetHandMatches).map(
+                ([targetHandId, matchCount]) => {
+                  return [targetHandId, (matchCount / simulationCount) * 100]
+                },
+              ),
+            ),
+          }
 
-      return chartBar
-    })
-    // track cumulative values of anyMatch over the draw counts
-    .reduce(
-      (acc, chartBar) => {
-        // @ts-ignore
-        const cumulative = acc.cumulative + (chartBar.anyMatch as number)
-        return {
-          data: [...acc.data, { ...chartBar, cumulative: cumulative }],
-          cumulative: cumulative,
-        }
-      },
-      { data: [], cumulative: 0 } as {
-        data: Record<string, number>[]
-        cumulative: number
-      },
-    ).data
+          return chartBar
+        })
+        // track cumulative values of anyMatch over the draw counts
+        .reduce(
+          (acc, chartBar) => {
+            // @ts-ignore
+            const cumulative = acc.cumulative + (chartBar.anyMatch as number)
+            return {
+              data: [...acc.data, { ...chartBar, cumulative: cumulative }],
+              cumulative: cumulative,
+            }
+          },
+          { data: [], cumulative: 0 } as {
+            data: Record<string, number>[]
+            cumulative: number
+          },
+        ).data,
+    [cumulativeSimulationResults, simulationCount],
+  )
 
-  const targetHandIds = Object.keys(targetHands)
+  const targetHandIds = useMemo(() => Object.keys(targetHands), [targetHands])
 
-  const placeholderChartData = Array(8)
-    .fill(0)
-    .map((_, i) => {
-      return { name: i + 1, anyMatch: 0 }
-    })
+  const placeholderChartData = useMemo(
+    () =>
+      Array(8)
+        .fill(0)
+        .map((_, i) => {
+          return { name: i + 1, anyMatch: 0 }
+        }),
+    [],
+  )
 
-  const canStartSimulation =
-    originalDeck.filter(basicPokemonFilter).length > 0 &&
-    targetHandIds.length > 0
+  const actualChartData = useMemo(
+    () => (chartData.length ? chartData : placeholderChartData),
+    [chartData, placeholderChartData],
+  )
+
+  const canStartSimulation = useMemo(
+    () =>
+      originalDeck.filter(basicPokemonFilter).length > 0 &&
+      targetHandIds.length > 0,
+    [originalDeck, targetHandIds.length],
+  )
 
   return (
     <div className="full col-center gap-3">
@@ -212,38 +218,10 @@ const Simulator = ({ originalDeck, targetHands }: Props) => {
       >
         {doSimulation ? 'Stop' : 'Start'}
       </Button>
-      <ResponsiveContainer>
-        <ComposedChart
-          data={chartData.length ? chartData : placeholderChartData}
-        >
-          <CartesianGrid />
-          <Tooltip formatter={(value: number) => `${value.toFixed(1)}%`} />
-          <Legend />
-          <YAxis
-            type="number"
-            label={{
-              value: 'Target hand achieved %',
-              angle: -90,
-              dx: -15,
-            }}
-            domain={[0, (dataMax: number) => Math.min(dataMax, 100)]}
-            tickFormatter={(value: number) => value.toFixed(0)}
-          />
-          <XAxis dataKey="name" label={{ value: 'Turn', dy: 13 }} />
-          <Bar dataKey="anyMatch" name="Any Target Hand" />
-          {targetHandIds.map((targetHandId, i) => {
-            return (
-              <Bar
-                dataKey={targetHandId}
-                name={`Target Hand ${i + 1}`}
-                // TODO: choose colors based on deck type
-                fill={getHexColorForValue(i / targetHandIds.length, 0.55, 0.75)}
-              />
-            )
-          })}
-          <Line dataKey="cumulative" name="Cumulative" />
-        </ComposedChart>
-      </ResponsiveContainer>
+      <SimulatorChart
+        chartData={actualChartData}
+        targetHandIds={targetHandIds}
+      />
     </div>
   )
 }

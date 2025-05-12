@@ -107,19 +107,19 @@ const TargetHand = ({
     [targetHand, targetHandId, targetHands],
   )
 
-  const clear: HandDeckStateChange = () => {
+  const clear: HandDeckStateChange = useCallback(() => {
     return {
       newTargetHands: Object.fromEntries(
         Object.entries(targetHands).filter(([id, _]) => id !== targetHandId),
       ),
     }
-  }
+  }, [targetHandId, targetHands])
 
-  const duplicate: HandDeckStateChange = () => {
+  const duplicate: HandDeckStateChange = useCallback(() => {
     return {
       newTargetHands: { ...targetHands, [uuidv4()]: targetHand },
     }
-  }
+  }, [targetHand, targetHands])
 
   return (
     <div className={`pb-5 ${targetHandId && 'border-b-2'}`}>
