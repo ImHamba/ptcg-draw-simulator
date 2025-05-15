@@ -198,7 +198,7 @@ const SimulatorPage = () => {
       <div className="flex-col ">
         <NavBar cardData={cardData}>
           <div className="h-full flex-row items-center">
-            <img src="/public/PTCGP.png" className="h-full p-2" />
+            <img src="PTCGP.png" className="h-full p-2" />
           </div>
         </NavBar>
         <div className="row-center gap-20 px-10 pb-10">
