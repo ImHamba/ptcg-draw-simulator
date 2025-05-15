@@ -30,6 +30,7 @@ type Props = {
   cardData: CardData[]
   targetHands: TargetHands
   saveHandDeckState: SaveHandDeckState
+  guideDisplay?: boolean // for customised display in the user guide
 }
 
 // greninja
@@ -41,6 +42,7 @@ const Deck = ({
   cardData,
   targetHands,
   saveHandDeckState,
+  guideDisplay = false,
 }: Props) => {
   const originalDeckWithoutOtherSize = sumCardCount(
     originalDeck,
@@ -109,32 +111,39 @@ const Deck = ({
 
   return (
     <div className="col-center gap-3 full">
-      <div className="text-2xl">Deck Builder</div>
+      {!guideDisplay && <div className="text-2xl">Deck Builder</div>}
       <div className="row-center gap-2">
         <Button
           onClick={saveHandDeckState(onAddBasic)}
-          disabled={originalDeckWithoutOtherSize >= MAX_DECK_SIZE}
+          disabled={
+            originalDeckWithoutOtherSize >= MAX_DECK_SIZE || guideDisplay
+          }
         >
           Add Generic Basic
         </Button>
 
         <ShareLinkButton
           onShareLinkClick={onShareLinkClick}
-          disabled={originalDeckWithoutOtherSize >= MAX_DECK_SIZE}
+          disabled={guideDisplay}
         />
 
         <Button
           variant="destructive"
           onClick={saveHandDeckState(resetOriginalDeck)}
+          disabled={guideDisplay}
         >
           Clear Deck
         </Button>
       </div>
-      <SearchSelect
-        options={cardDataOptions}
-        className="mb-0 w-100"
-        onSelect={onCardSelect}
-      />
+
+      {!guideDisplay && (
+        <SearchSelect
+          options={cardDataOptions}
+          className="mb-0 w-100"
+          onSelect={onCardSelect}
+        />
+      )}
+
       <div className="grow full">
         <div className="w-full">
           <PokeCardsContainer width={6}>

@@ -17,7 +17,7 @@ type Props = {
   targetHandIds: string[]
 }
 
-const Simulator = ({ chartData, targetHandIds }: Props) => {
+const SimulatorChart = ({ chartData, targetHandIds }: Props) => {
   return (
     <ResponsiveContainer>
       <ComposedChart data={chartData}>
@@ -52,4 +52,4 @@ const Simulator = ({ chartData, targetHandIds }: Props) => {
   )
 }
 
-export default memo(Simulator)
+export default memo(SimulatorChart)

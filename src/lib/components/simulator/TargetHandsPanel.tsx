@@ -5,21 +5,22 @@ import type {
   SaveHandDeckState,
   TargetHands,
 } from '@/lib/appUtils'
+import { conditionalListItem } from '@/lib/utils'
 import { useCallback, useEffect } from 'react'
 import TargetHand from './TargetHand'
 
 type Props = {
   targetHands: TargetHands
-  hand: MultiPokeCard[]
   originalDeck: MultiPokeCard[]
   saveHandDeckState: SaveHandDeckState
+  guideDisplay?: boolean // for customised display in the user guide
 }
 
 const TargetHandsPanel = ({
-  hand,
   targetHands,
   originalDeck,
   saveHandDeckState,
+  guideDisplay = false,
 }: Props) => {
   // clear any empty target hands
   useEffect(() => {
@@ -42,19 +43,6 @@ const TargetHandsPanel = ({
     saveHandDeckState(clear)()
   }, [saveHandDeckState, targetHands])
 
-  // whenever deck changes, ensure target hands dont have more of a card than is in the deck
-  // useEffect(() => {
-  //   const changeMade = false
-
-  //   const limit: HandDeckStateChange = () => {
-  //     return {
-  //       newTargetHands: Object.fromEntries(limitedEntries),
-  //     }
-  //   }
-
-  //   // saveHandDeckState(limit)()
-  // }, [saveHandDeckState, targetHands, originalDeck])
-
   const clearAll: HandDeckStateChange = useCallback(() => {
     return {
       newTargetHands: {},
@@ -63,12 +51,16 @@ const TargetHandsPanel = ({
 
   return (
     <div className="full col-center gap-3">
-      <div className="text-2xl">
-        Target Hands ({Object.keys(targetHands).length})
-      </div>
-      <Button variant="destructive" onClick={saveHandDeckState(clearAll)}>
-        Clear All
-      </Button>
+      {!guideDisplay && (
+        <>
+          <div className="text-2xl">
+            Target Hands ({Object.keys(targetHands).length})
+          </div>
+          <Button variant="destructive" onClick={saveHandDeckState(clearAll)}>
+            Clear All
+          </Button>
+        </>
+      )}
       <div className="flex-col gap-5 full">
         {[
           ...Object.keys(targetHands).map((targetHandId, i) => {
@@ -76,9 +68,9 @@ const TargetHandsPanel = ({
               <TargetHand
                 targetHandId={targetHandId}
                 targetHands={targetHands}
-                hand={hand}
                 originalDeck={originalDeck}
                 saveHandDeckState={saveHandDeckState}
+                guideDisplay={guideDisplay}
                 key={'targetHand' + i}
               />
             )
@@ -86,14 +78,17 @@ const TargetHandsPanel = ({
           // extra component to allow user to add cards to a new target hand.
           // when a card is added, it'll generate a new id and be included in the
           // map above.
-          <TargetHand
-            targetHandId={null}
-            targetHands={targetHands}
-            hand={hand}
-            originalDeck={originalDeck}
-            saveHandDeckState={saveHandDeckState}
-            key={'targetHand_extra'}
-          />,
+          ...conditionalListItem(
+            <TargetHand
+              targetHandId={null}
+              targetHands={targetHands}
+              originalDeck={originalDeck}
+              saveHandDeckState={saveHandDeckState}
+              key={'targetHand_extra'}
+            />,
+            // dont display in the guide dialog
+            !guideDisplay,
+          ),
         ]}
       </div>
     </div>

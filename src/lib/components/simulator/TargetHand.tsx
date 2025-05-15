@@ -21,17 +21,17 @@ import SearchSelect from './SearchSelect'
 type Props = {
   targetHandId: string | null
   targetHands: TargetHands
-  hand: MultiPokeCard[]
   originalDeck: MultiPokeCard[]
   saveHandDeckState: SaveHandDeckState
+  guideDisplay?: boolean // for customised display in the user guide
 }
 
 const TargetHand = ({
   targetHandId,
-  hand,
   targetHands,
   originalDeck,
   saveHandDeckState,
+  guideDisplay = false,
 }: Props) => {
   const targetHand = useMemo(
     () => (targetHandId ? targetHands[targetHandId] : []),
@@ -147,27 +147,26 @@ const TargetHand = ({
           )}
         </div>
         <div className="flex-col w-2/5 mt-2">
-          {/* {targetHandId && (
-            <div
-              className={handMatchesTarget ? 'text-green-300' : 'text-red-400'}
-            >
-              {handMatchesTarget ? 'Matching!' : 'Not Matching'}
-            </div>
-          )} */}
           <SearchSelect
             options={options}
             className="w-full"
             onSelect={onCardSelect}
+            disabled={guideDisplay}
           />
           {targetHandId && (
             <div className="mt-2 flex-row gap-2 justify-end">
-              <Button className="" onClick={saveHandDeckState(duplicate)}>
+              <Button
+                className=""
+                onClick={saveHandDeckState(duplicate)}
+                disabled={guideDisplay}
+              >
                 Duplicate
               </Button>
               <Button
                 className="aspect-square p-0"
                 onClick={saveHandDeckState(clear)}
                 variant="destructive"
+                disabled={guideDisplay}
               >
                 <i className="fa-solid fa-trash" />
               </Button>

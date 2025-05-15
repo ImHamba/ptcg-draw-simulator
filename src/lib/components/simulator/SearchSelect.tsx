@@ -9,9 +9,15 @@ type Props = {
   options: SelectOption[]
   className: string
   onSelect: (value: string) => void
+  disabled?: boolean
 }
 
-const SearchSelect = ({ options, className, onSelect }: Props) => {
+const SearchSelect = ({
+  options,
+  className,
+  onSelect,
+  disabled = false,
+}: Props) => {
   const selectRef = useRef<HTMLSelectElement>(null)
   const choicesInstance = useRef<Choices>(null)
 
@@ -58,7 +64,12 @@ const SearchSelect = ({ options, className, onSelect }: Props) => {
 
   return (
     <div>
-      <select ref={selectRef} className={className} onChange={handleOnSelect}>
+      <select
+        disabled={disabled}
+        ref={selectRef}
+        className={className}
+        onChange={handleOnSelect}
+      >
         {optionsElements}
       </select>
     </div>

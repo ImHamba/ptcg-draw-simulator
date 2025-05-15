@@ -196,7 +196,7 @@ const SimulatorPage = () => {
   return (
     <>
       <div className="flex-col ">
-        <NavBar>
+        <NavBar cardData={cardData}>
           <div className="h-full flex-row items-center">
             <img src="/public/PTCGP.png" className="h-full p-2" />
           </div>
@@ -228,7 +228,6 @@ const SimulatorPage = () => {
             </div>
             <div className="w-full">
               <TargetHandsPanel
-                hand={hand}
                 targetHands={targetHands}
                 originalDeck={originalDeck}
                 saveHandDeckState={saveHandDeckState}

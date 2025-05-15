@@ -17,3 +17,7 @@
 .full {
   @apply w-full h-full;
 }
+
+h5 {
+  @apply text-lg font-medium mb-2
+}
