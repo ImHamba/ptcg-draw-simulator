@@ -193,8 +193,6 @@ export const dummyChartDataKeys = Object.keys(
   omitKeys(dummyChartData[0], ['anyMatch', 'name', 'cumulative']),
 )
 
-console.log(dummyChartDataKeys)
-
 export const dummySaveHandDeckState: SaveHandDeckState =
   (_: () => void, ...__) =>
   () => {}

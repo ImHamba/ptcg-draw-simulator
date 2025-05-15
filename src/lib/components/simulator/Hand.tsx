@@ -8,8 +8,8 @@ import {
   resetDeckAndHand,
   sumCardCount,
 } from '../../handDeckUtils'
-import PokeCardDisplay from './PokeCardDisplay'
-import PokeCardsContainer from './PokeCardsContainer'
+import PokeCardDisplay from '../reuseable/PokeCardDisplay'
+import PokeCardsContainer from '../reuseable/PokeCardsContainer'
 
 type Props = {
   deck: MultiPokeCard[]

@@ -1,9 +1,5 @@
 import { Button } from '@/components/ui/button'
-import type {
-  MultiPokeCard,
-  SaveHandDeckState,
-  TargetHands,
-} from '@/lib/appUtils'
+import type { MultiPokeCard, TargetHands } from '@/lib/appUtils'
 import { checkHandMatchesTargetHands } from '@/lib/appUtils'
 import { basicPokemonFilter } from '@/lib/cardFilters'
 import { useMemo, useRef, useState } from 'react'
@@ -14,16 +10,14 @@ import {
   playSpecialCards,
 } from '../../handDeckUtils'
 import { sumObjects } from '../../utils'
-import SimulatorChart from './SimulatorChart'
+import SimulatorChart from '../reuseable/SimulatorChart'
 
 type Props = {
-  deck: MultiPokeCard[]
   originalDeck: MultiPokeCard[]
-  saveHandDeckState: SaveHandDeckState
   targetHands: TargetHands
 }
 
-const Simulator = ({ originalDeck, targetHands }: Props) => {
+const SimulatorPanel = ({ originalDeck, targetHands }: Props) => {
   // ref so simulation loop can access the value in real time that may be changed by user interaction
   const doSimulationRef = useRef(false)
   const [doSimulation, _setDoSimulation] = useState(doSimulationRef.current)
@@ -226,4 +220,4 @@ const Simulator = ({ originalDeck, targetHands }: Props) => {
   )
 }
 
-export default Simulator
+export default SimulatorPanel

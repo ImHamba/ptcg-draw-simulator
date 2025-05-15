@@ -19,10 +19,10 @@ import {
 } from '../../handDeckUtils'
 import type { CardData } from '../../utils'
 import { copyToClipboard, not } from '../../utils'
-import PokeCardDisplay from './PokeCardDisplay'
-import PokeCardsContainer from './PokeCardsContainer'
-import SearchSelect from './SearchSelect'
-import { ShareLinkButton } from './ShareLinkButton'
+import PokeCardDisplay from '../reuseable/PokeCardDisplay'
+import PokeCardsContainer from '../reuseable/PokeCardsContainer'
+import SearchSelect from '../reuseable/SearchSelect'
+import { ShareLinkButton } from '../reuseable/ShareLinkButton'
 
 type Props = {
   deck: MultiPokeCard[]
@@ -36,7 +36,7 @@ type Props = {
 // greninja
 // http://localhost:3000/?deck=2.PROMO-007_2.A2b-111_2.A1-089_2.A1-087_2.A3-144_2.A3-009_2.A3-012_1.A3-011_1.A1-088&target=1.A1-089_1.A1-087_1.A3-144
 // http://localhost:3000/simulator?deck=2.A2a-071_2.A2b-111_2.PROMO-007_2.A2a-050_2.A1-172_2.A2a-009_2.A3-144&target=1.A2a-071_1.A2a-009%7E1.A2a-050_1.A1-172_1.A2a-071_1.A3-144
-const Deck = ({
+const DeckPanel = ({
   deck,
   originalDeck,
   cardData,
@@ -174,4 +174,4 @@ const Deck = ({
   )
 }
 
-export default Deck
+export default DeckPanel

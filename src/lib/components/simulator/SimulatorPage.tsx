@@ -1,8 +1,4 @@
-import type {
-  HandDeckStateChange,
-  MultiPokeCard,
-  SaveHandDeckState,
-} from '@/lib/appUtils'
+import type { MultiPokeCard, SaveHandDeckState } from '@/lib/appUtils'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter, useSearch } from '@tanstack/react-router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -26,10 +22,13 @@ import {
 } from '../../handDeckUtils'
 import type { CardData } from '../../utils'
 import { pick } from '../../utils'
-import NavBar from '../NavBar'
-import Deck from './Deck'
-import Simulator from './Simulator'
+import NavBar from '../reuseable/NavBar'
+import DeckPanel from './DeckPanel'
+import SimulatorPanel from './SimulatorPanel'
 import TargetHandsPanel from './TargetHandsPanel'
+
+// solgaleo
+// http://localhost:3000/simulator?deck=2.A3-122_2.A3-086_2.A3-144_2.PROMO-005_2.PROMO-007_2.basicOther_2.A3-085&target=1.A3-122_1.A3-144_1.A3-085%7E1.A3-122_1.A3-085_1.A3-086
 
 const SimulatorPage = () => {
   const router = useRouter()
@@ -50,8 +49,8 @@ const SimulatorPage = () => {
   } = useSearch({
     strict: false,
   })
-  const deckCode = searchParams[DECK_SEARCH_PARAM]
-  const targetHandsCode = searchParams[TARGET_HANDS_SEARCH_PARAM]
+  const urlDeckCode = searchParams[DECK_SEARCH_PARAM]
+  const urlTargetHandsCode = searchParams[TARGET_HANDS_SEARCH_PARAM]
 
   // returns a callable that wraps a hand/deck state changing function with state save
   const saveHandDeckState: SaveHandDeckState = useCallback(
@@ -75,7 +74,7 @@ const SimulatorPage = () => {
         else if (newOriginalDeck) {
           const currentTargetHands = newTargetHands ?? targetHands
           const entries = Object.entries(currentTargetHands)
-          console.log(newTargetHands)
+          let changeMade = false
           const limitedNewTargetHands: typeof entries = entries.map(
             ([id, targetHand]) => {
               return [
@@ -87,10 +86,12 @@ const SimulatorPage = () => {
                     )
                     if (!deckCard) {
                       // deck no longer has this card, it should be removed from target hand
+                      changeMade = true
                       return null
                     }
                     if (card.count > deckCard.count) {
                       // deck has less of this card, reduce the number in target hand
+                      changeMade = true
                       return { ...card, count: deckCard.count }
                     }
 
@@ -100,8 +101,11 @@ const SimulatorPage = () => {
               ]
             },
           )
-          console.log(Object.fromEntries(limitedNewTargetHands))
-          setTargetHands(Object.fromEntries(limitedNewTargetHands))
+
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (changeMade || newTargetHands) {
+            setTargetHands(Object.fromEntries(limitedNewTargetHands))
+          }
         }
       },
     [targetHands],
@@ -131,34 +135,36 @@ const SimulatorPage = () => {
 
   // load state on on mount from url params
   useEffect(() => {
-    const currentUrlState = `${deckCode ?? ''}|${targetHandsCode ?? ''}`
-    if (isCardDataLoading || loadedUrlState) {
+    const currentUrlState = `${urlDeckCode ?? ''}|${urlTargetHandsCode ?? ''}`
+    if (isCardDataLoading || loadedUrlState === currentUrlState) {
       return
     }
 
-    const decodedDeck = deckCode ? decodeDeckCode(deckCode, cardData) : null
-    const decodedTargetHands = targetHandsCode
-      ? decodeTargetHandsCode(targetHandsCode, cardData)
+    const decodedDeck = urlDeckCode
+      ? decodeDeckCode(urlDeckCode, cardData)
+      : null
+    const decodedTargetHands = urlTargetHandsCode
+      ? decodeTargetHandsCode(urlTargetHandsCode, cardData)
       : null
 
-    const stateFn: HandDeckStateChange = () => {
-      return {
-        ...(decodedDeck && {
-          newDeck: decodedDeck,
-          newOriginalDeck: decodedDeck,
-        }),
+    const newState = {
+      ...(decodedDeck && {
+        newDeck: decodedDeck,
+        newOriginalDeck: decodedDeck,
+      }),
 
-        ...(decodedTargetHands && { newTargetHands: decodedTargetHands }),
-      }
+      ...(decodedTargetHands && { newTargetHands: decodedTargetHands }),
     }
 
-    saveHandDeckState(stateFn)()
+    const stateChangeFn = () => newState
+
+    saveHandDeckState(stateChangeFn)()
 
     // record the current url state as having been loaded
     setLoadedUrlState(currentUrlState)
   }, [
-    deckCode,
-    targetHandsCode,
+    urlDeckCode,
+    urlTargetHandsCode,
     cardData,
     isCardDataLoading,
     saveHandDeckState,
@@ -184,6 +190,13 @@ const SimulatorPage = () => {
       currentSearchParams.set(TARGET_HANDS_SEARCH_PARAM, targetHandsString)
     }
 
+    if (
+      deckString === urlDeckCode &&
+      targetHandsString === urlTargetHandsCode
+    ) {
+      return
+    }
+
     router.navigate({
       to: window.location.pathname,
       search: {
@@ -191,7 +204,7 @@ const SimulatorPage = () => {
       },
       resetScroll: false,
     })
-  }, [isCardDataLoading, originalDeck, router, targetHands])
+  }, [isCardDataLoading, originalDeck, router, targetHands, urlDeckCode, urlTargetHandsCode])
 
   return (
     <>
@@ -203,7 +216,7 @@ const SimulatorPage = () => {
         </NavBar>
         <div className="row-center gap-20 px-10 pb-10">
           <div className="w-1/2 h-full sticky top-0 pt-5">
-            <Deck
+            <DeckPanel
               deck={deck}
               originalDeck={originalDeck}
               cardData={cardData}
@@ -219,11 +232,9 @@ const SimulatorPage = () => {
                 saveHandDeckState={saveHandDeckState}
               /> */}
             <div className="h-[45vh] w-full">
-              <Simulator
+              <SimulatorPanel
                 targetHands={targetHands}
-                deck={deck}
                 originalDeck={originalDeck}
-                saveHandDeckState={saveHandDeckState}
               />
             </div>
             <div className="w-full">

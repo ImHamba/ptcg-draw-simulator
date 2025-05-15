@@ -17,9 +17,9 @@ import {
 import type { CardData } from '@/lib/utils'
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
-import Deck from './Deck'
+import DeckPanel from '../simulator/DeckPanel'
+import TargetHandsPanel from '../simulator/TargetHandsPanel'
 import SimulatorChart from './SimulatorChart'
-import TargetHandsPanel from './TargetHandsPanel'
 
 type Props = {
   children: ReactNode
@@ -69,7 +69,7 @@ const GuideDialog = ({ children, cardData }: Props) => {
 
                 <div className="row-center">
                   <div className="w-4/5">
-                    <Deck
+                    <DeckPanel
                       deck={dummyDeck}
                       originalDeck={dummyDeck}
                       cardData={cardData}

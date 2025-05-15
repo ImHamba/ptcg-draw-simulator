@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button'
 import type { ReactNode } from 'react'
-import type { CardData } from '../utils'
-import GuideDialog from './simulator/GuideDialog'
+
+import type { CardData } from '@/lib/utils'
+import GuideDialog from './GuideDialog'
 
 type Props = {
   children: ReactNode

@@ -14,9 +14,9 @@ import {
   decrementCard,
   incrementCard,
 } from '../../handDeckUtils'
-import PokeCardDisplay from './PokeCardDisplay'
-import PokeCardsContainer from './PokeCardsContainer'
-import SearchSelect from './SearchSelect'
+import PokeCardDisplay from '../reuseable/PokeCardDisplay'
+import PokeCardsContainer from '../reuseable/PokeCardsContainer'
+import SearchSelect from '../reuseable/SearchSelect'
 
 type Props = {
   targetHandId: string | null
