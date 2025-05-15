@@ -23,6 +23,7 @@ const SearchSelect = ({ options, className, onSelect }: Props) => {
         removeItemButton: true,
         searchPlaceholderValue: 'Search for a card...',
         placeholderValue: 'Search for a card...',
+        itemSelectText: undefined,
 
         // @ts-ignore
         classNames: {

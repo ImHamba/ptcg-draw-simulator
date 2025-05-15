@@ -124,7 +124,7 @@ const Deck = ({
         />
 
         <Button
-          className="bg-red-800"
+          variant="destructive"
           onClick={saveHandDeckState(resetOriginalDeck)}
         >
           Clear Deck

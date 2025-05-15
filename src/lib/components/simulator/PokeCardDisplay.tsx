@@ -17,38 +17,49 @@ const PokeCardDisplay = ({
   decrementCard,
   disableIncrement,
   hideButtons,
-}: Props) => (
-  <div className="p-1 w-full" key={card.data?.id ?? card.cardType}>
-    <div className="aspect-367/512 w-full">
-      <div className="full col-center text-center relative overflow-hidden p-0">
-        <img
-          src={imageUrlFromCard(card)}
-          className="absolute top-0 left-0 z-0"
-        />
+}: Props) => {
+  const imgUrl = imageUrlFromCard(card)
+
+  return (
+    <div className="p-1 w-full">
+      <div className="aspect-367/585 w-full group">
+        <div className="full col-center text-center relative overflow-hidden p-0">
+          <img src={imgUrl} className="absolute top-0 left-0 z-0" />
+          {card.count >= 2 && (
+            <img src={imgUrl} className="absolute top-1/8 left-0 z-0" />
+          )}
+          <div
+            className={`flex-row ${card.cardType ? 'justify-center group-hover:justify-around' : 'justify-around'} w-full h-1/6 relative px-2 top-7/12 items-center`}
+          >
+            {decrementCard && !hideButtons && (
+              <Button
+                className="hidden group-hover:flex p-0 h-4/5 aspect-square rounded-full overflow-hidden"
+                onClick={() => decrementCard(card)}
+              >
+                -
+              </Button>
+            )}
+
+            <div
+              className={`${card.cardType ? 'row-center' : 'hidden group-hover:flex group-hover:flex-row'} justify-center items-center p-0 h-full aspect-square rounded-full text-primary-foreground bg-red-700 border-white border-2 drop-shadow-md`}
+            >
+              {card.count}
+            </div>
+
+            {incrementCard && !hideButtons && (
+              <Button
+                className="hidden group-hover:flex p-0 h-4/5 aspect-square rounded-full"
+                onClick={() => incrementCard(card)}
+                disabled={disableIncrement}
+              >
+                +
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
-    <div className="shrink row-center items-center text-center relative overflow-hidden p-0 gap-2 mt-1">
-      {/* <div>{card.name || card.cardType}</div> */}
-      {decrementCard && !hideButtons && (
-        <Button
-          className="p-0 h-6 aspect-square"
-          onClick={() => decrementCard(card)}
-        >
-          -
-        </Button>
-      )}
-      <div>{card.count}</div>
-      {incrementCard && !hideButtons && (
-        <Button
-          className="p-0 h-6 aspect-square"
-          onClick={() => incrementCard(card)}
-          disabled={disableIncrement}
-        >
-          +
-        </Button>
-      )}
-    </div>
-  </div>
-)
+  )
+}
 
 export default memo(PokeCardDisplay)

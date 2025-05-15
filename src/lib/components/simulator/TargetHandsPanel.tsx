@@ -42,6 +42,19 @@ const TargetHandsPanel = ({
     saveHandDeckState(clear)()
   }, [saveHandDeckState, targetHands])
 
+  // whenever deck changes, ensure target hands dont have more of a card than is in the deck
+  // useEffect(() => {
+  //   const changeMade = false
+
+  //   const limit: HandDeckStateChange = () => {
+  //     return {
+  //       newTargetHands: Object.fromEntries(limitedEntries),
+  //     }
+  //   }
+
+  //   // saveHandDeckState(limit)()
+  // }, [saveHandDeckState, targetHands, originalDeck])
+
   const clearAll: HandDeckStateChange = useCallback(() => {
     return {
       newTargetHands: {},
@@ -53,7 +66,7 @@ const TargetHandsPanel = ({
       <div className="text-2xl">
         Target Hands ({Object.keys(targetHands).length})
       </div>
-      <Button className="bg-red-800" onClick={saveHandDeckState(clearAll)}>
+      <Button variant="destructive" onClick={saveHandDeckState(clearAll)}>
         Clear All
       </Button>
       <div className="flex-col gap-5 full">

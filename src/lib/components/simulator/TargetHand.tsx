@@ -6,7 +6,7 @@ import type {
   SaveHandDeckState,
   TargetHands,
 } from '@/lib/appUtils'
-import { checkHandMatchesTargetHand, isSameCard } from '@/lib/appUtils'
+import { isSameCard } from '@/lib/appUtils'
 import { useCallback, useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import {
@@ -37,8 +37,6 @@ const TargetHand = ({
     () => (targetHandId ? targetHands[targetHandId] : []),
     [targetHandId, targetHands],
   )
-
-  const handMatchesTarget = checkHandMatchesTargetHand(hand, targetHand)
 
   const options = originalDeck
     .map((card, i) => {
@@ -123,7 +121,6 @@ const TargetHand = ({
 
   return (
     <div className={`pb-5 ${targetHandId && 'border-b-2'}`}>
-      {targetHandId ?? 'null'}
       <div className="w-full flex-row gap-5">
         <div className="w-3/5">
           {!targetHandId ? (
@@ -168,8 +165,9 @@ const TargetHand = ({
                 Duplicate
               </Button>
               <Button
-                className="bg-red-800 aspect-square p-0"
+                className="aspect-square p-0"
                 onClick={saveHandDeckState(clear)}
+                variant="destructive"
               >
                 <i className="fa-solid fa-trash" />
               </Button>

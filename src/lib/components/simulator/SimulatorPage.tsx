@@ -11,6 +11,7 @@ import {
   decodeTargetHandsCode,
   generateEncodedCardsString,
   generateEncodedTargetHandsString,
+  isSameCard,
 } from '../../appUtils'
 import {
   CARD_DATA_PROPERTIES,
@@ -61,9 +62,49 @@ const SimulatorPage = () => {
         newHand && setHand(newHand)
         newDeck && setDeck(newDeck)
         newOriginalDeck && setOriginalDeck(newOriginalDeck)
-        newTargetHands && setTargetHands(newTargetHands)
+
+        // if originalDeck wasnt changed, and target hands was, then simply set it
+        if (newTargetHands && !newOriginalDeck) {
+          setTargetHands(newTargetHands)
+        }
+
+        // when originalDeck changes, we want to ensure target hands doesn't end up with a higher
+        // count for any cards than are in the deck. We do this here rather than in a useEffect
+        // elsewhere to reduce additional rerenders. The cap on target hands car counts is essentially
+        // a hard limit enforced at the state saving stage.
+        else if (newOriginalDeck) {
+          const currentTargetHands = newTargetHands ?? targetHands
+          const entries = Object.entries(currentTargetHands)
+          console.log(newTargetHands)
+          const limitedNewTargetHands: typeof entries = entries.map(
+            ([id, targetHand]) => {
+              return [
+                id,
+                targetHand
+                  .map((card) => {
+                    const deckCard = newOriginalDeck.find((deckCard) =>
+                      isSameCard(card, deckCard),
+                    )
+                    if (!deckCard) {
+                      // deck no longer has this card, it should be removed from target hand
+                      return null
+                    }
+                    if (card.count > deckCard.count) {
+                      // deck has less of this card, reduce the number in target hand
+                      return { ...card, count: deckCard.count }
+                    }
+
+                    return card
+                  })
+                  .filter((x) => x !== null),
+              ]
+            },
+          )
+          console.log(Object.fromEntries(limitedNewTargetHands))
+          setTargetHands(Object.fromEntries(limitedNewTargetHands))
+        }
       },
-    [],
+    [targetHands],
   )
 
   const cardDataQuery = useQuery({
@@ -155,7 +196,11 @@ const SimulatorPage = () => {
   return (
     <>
       <div className="flex-col ">
-        <NavBar />
+        <NavBar>
+          <div className="h-full flex-row items-center">
+            <img src="/public/PTCGP.png" className="h-full p-2" />
+          </div>
+        </NavBar>
         <div className="row-center gap-20 px-10 pb-10">
           <div className="w-1/2 h-full sticky top-0 pt-5">
             <Deck
