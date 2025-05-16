@@ -5,6 +5,7 @@ import type {
   SaveHandDeckState,
   TargetHands,
 } from '@/lib/appUtils'
+import { useRouter } from '@tanstack/react-router'
 import { useCallback, useMemo } from 'react'
 import { generateShareLink } from '../../appUtils'
 import { otherCardFilter } from '../../cardFilters'
@@ -44,6 +45,7 @@ const DeckPanel = ({
   saveHandDeckState,
   guideDisplay = false,
 }: Props) => {
+  const router = useRouter()
   const originalDeckWithoutOtherSize = sumCardCount(
     originalDeck,
     not(otherCardFilter),
@@ -105,7 +107,7 @@ const DeckPanel = ({
   )
 
   const onShareLinkClick = () => {
-    const link = generateShareLink(originalDeck, targetHands)
+    const link = generateShareLink(originalDeck, targetHands, false, router)
     copyToClipboard(link)
   }
 

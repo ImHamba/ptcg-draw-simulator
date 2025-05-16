@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
 
-import { router } from '@/main'
 import { otherCardFilter } from './cardFilters'
 import {
   BASIC_CARD_IMG_URL,
@@ -94,6 +93,7 @@ export const generateShareLink = (
   cards: MultiPokeCard[] | null,
   targetHands: TargetHands | null,
   includeOther = false,
+  router
 ) => {
   const deckEncodedString = cards
     ? generateEncodedCardsString(cards, includeOther)

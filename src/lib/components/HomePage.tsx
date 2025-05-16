@@ -1,7 +1,7 @@
-import { router } from '@/main'
-import { Link } from '@tanstack/react-router'
+import { Link, useRouter } from '@tanstack/react-router'
 
 const HomePage = () => {
+  const router = useRouter()
   router.navigate({
     to: '/simulator',
   })

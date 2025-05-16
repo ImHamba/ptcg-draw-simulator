@@ -13,7 +13,7 @@ import reportWebVitals from './reportWebVitals.ts'
 import './styles.css'
 
 // Create a new router instance
-export const router = createRouter({
+const router = createRouter({
   routeTree,
   context: {},
   defaultPreload: 'intent',
