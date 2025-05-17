@@ -7,6 +7,7 @@ import type {
 } from '@/lib/types'
 import { conditionalListItem } from '@/lib/utils'
 import { useCallback, useEffect } from 'react'
+import Separator from '../reuseable/Separator'
 import TargetHand from './TargetHand'
 
 type Props = {
@@ -61,18 +62,24 @@ const TargetHandsPanel = ({
           </Button>
         </>
       )}
-      <div className="flex-col gap-5 full">
+      <div className="flex flex-col full">
         {[
           ...Object.keys(targetHands).map((targetHandId, i) => {
             return (
-              <TargetHand
-                targetHandId={targetHandId}
-                targetHands={targetHands}
-                originalDeck={originalDeck}
-                saveHandDeckState={saveHandDeckState}
-                guideDisplay={guideDisplay}
-                key={'targetHand' + i}
-              />
+              <>
+                <TargetHand
+                  targetHandId={targetHandId}
+                  targetHands={targetHands}
+                  originalDeck={originalDeck}
+                  saveHandDeckState={saveHandDeckState}
+                  guideDisplay={guideDisplay}
+                  key={'targetHand' + i}
+                />
+
+                <div className="w-full row-center" key={'separator' + i}>
+                  <Separator className="w-9/10 md:w-full my-6" />
+                </div>
+              </>
             )
           }),
           // extra component to allow user to add cards to a new target hand.

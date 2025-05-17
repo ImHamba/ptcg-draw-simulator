@@ -59,7 +59,7 @@ const Hand = ({ deck, hand, originalDeck, saveHandDeckState }: Props) => {
           Reset
         </Button>
       </div>
-      <div className="w-full flex-row flex-wrap">
+      <div className="w-full flex flex-row flex-wrap">
         <PokeCardsContainer width={8}>
           {hand.map((card) => {
             return (

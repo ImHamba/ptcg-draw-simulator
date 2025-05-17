@@ -1,6 +1,6 @@
 import type { CARD_DATA_PROPERTIES, GENERIC_CARD_TYPES } from './constants'
 
-type Prettify<T> = { [K in keyof T]: T[K] }
+export type Prettify<T> = { [K in keyof T]: T[K] }
 
 export type CardType = (typeof GENERIC_CARD_TYPES)[number]
 

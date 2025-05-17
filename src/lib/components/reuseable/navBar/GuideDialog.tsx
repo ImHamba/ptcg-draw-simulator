@@ -17,9 +17,9 @@ import {
 import type { CardData } from '@/lib/types'
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
-import DeckPanel from '../simulator/DeckPanel'
-import TargetHandsPanel from '../simulator/TargetHandsPanel'
-import SimulatorChart from './SimulatorChart'
+import DeckPanel from '../../simulator/DeckPanel'
+import TargetHandsPanel from '../../simulator/TargetHandsPanel'
+import SimulatorChart from '../SimulatorChart'
 
 type Props = {
   children: ReactNode
@@ -46,14 +46,14 @@ const GuideDialog = ({ children, cardData }: Props) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="min-w-[50vw] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+      <DialogContent className="min-w-[90vw] md:min-w-[70vw] xl:min-w-[50vw] max-h-[97vh] md:max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="w-full">
           <DialogTitle className="text-2xl">Draw Simulator Guide</DialogTitle>
         </DialogHeader>
-        <div className=" px-5">
-          <ol className="list-decimal list-outside [&>li]:ps-5 flex-col gap-7">
+        <div className="w-full px-5 flex">
+          <ol className="w-full list-decimal list-outside [&>li]:ps-5 [&>li]:w-full flex flex-col gap-7">
             <li>
-              <div className="flex-col gap-1">
+              <div className="flex flex-col gap-1">
                 <h5>Build your deck</h5>
                 <p>
                   Use the Deck Builder panel to add cards you want to calculate
@@ -68,7 +68,7 @@ const GuideDialog = ({ children, cardData }: Props) => {
                 </p>
 
                 <div className="row-center">
-                  <div className="w-4/5">
+                  <div className="w-full lg:w-4/5">
                     <DeckPanel
                       deck={dummyDeck}
                       originalDeck={dummyDeck}
@@ -82,7 +82,7 @@ const GuideDialog = ({ children, cardData }: Props) => {
               </div>
             </li>
             <li>
-              <div className="flex-col gap-1">
+              <div className="flex flex-col gap-1">
                 <h5>Create target hands</h5>
                 <p className="mb-5">
                   Use the Target Hands panel to create desirable hands using the
@@ -102,7 +102,7 @@ const GuideDialog = ({ children, cardData }: Props) => {
               </div>
             </li>
             <li>
-              <div className="flex-col gap-2">
+              <div className="flex flex-col gap-2">
                 <h5>Run draw simulation</h5>
                 <p>
                   Click <b>Start</b> in the Draw Simulator panel to begin
@@ -118,7 +118,7 @@ const GuideDialog = ({ children, cardData }: Props) => {
                   having achieved any of your target hands.
                 </p>
                 <div className="row-center">
-                  <div className="h-80 aspect-6/3">
+                  <div className="h-80 w-full max-w-160">
                     {showHeavyContent && (
                       <SimulatorChart
                         chartData={dummyChartData}

@@ -8,12 +8,6 @@
   @apply flex flex-row justify-center;
 }
 
-.flex-row {
-  @apply flex flex-row;
-}
-.flex-col {
-  @apply flex flex-col;
-}
 .full {
   @apply w-full h-full;
 }

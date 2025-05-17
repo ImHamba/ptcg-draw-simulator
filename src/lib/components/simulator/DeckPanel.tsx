@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { atLeast, useScreenSize } from '@/lib/hooks/useScreenSize'
 import type {
   CardData,
   MultiPokeCard,
@@ -46,6 +47,8 @@ const DeckPanel = ({
   guideDisplay = false,
 }: Props) => {
   const router = useRouter()
+  const screenSize = useScreenSize()
+
   const originalDeckWithoutOtherSize = sumCardCount(
     originalDeck,
     not(otherCardFilter),
@@ -111,10 +114,24 @@ const DeckPanel = ({
     copyToClipboard(link)
   }
 
+  const deckCardsContainerWidth = useMemo(
+    () =>
+      atLeast(screenSize, 'xl')
+        ? 6
+        : atLeast(screenSize, 'lg')
+          ? 5
+          : atLeast(screenSize, 'md')
+            ? 4
+            : atLeast(screenSize, 'sm')
+              ? 5
+              : 4,
+    [screenSize],
+  )
+
   return (
     <div className="col-center gap-3 full">
       {!guideDisplay && <div className="text-2xl">Deck Builder</div>}
-      <div className="row-center gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <Button
           onClick={saveHandDeckState(onAddBasic)}
           disabled={
@@ -124,11 +141,6 @@ const DeckPanel = ({
           Add Generic Basic
         </Button>
 
-        <ShareLinkButton
-          onShareLinkClick={onShareLinkClick}
-          disabled={guideDisplay}
-        />
-
         <Button
           variant="destructive"
           onClick={saveHandDeckState(resetOriginalDeck)}
@@ -136,19 +148,24 @@ const DeckPanel = ({
         >
           Clear Deck
         </Button>
+
+        <ShareLinkButton
+          onShareLinkClick={onShareLinkClick}
+          disabled={guideDisplay}
+        />
       </div>
 
       {!guideDisplay && (
         <SearchSelect
           options={cardDataOptions}
-          className="mb-0 w-100"
+          className="mb-0 w-100 max-w-full min-w-0"
           onSelect={onCardSelect}
         />
       )}
 
       <div className="grow full">
         <div className="w-full">
-          <PokeCardsContainer width={6}>
+          <PokeCardsContainer width={deckCardsContainerWidth}>
             {deck.map((card) => {
               const disableIncrement =
                 // allow many basics but not exceeding deck size

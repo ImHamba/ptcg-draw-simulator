@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { isSameCard } from '@/lib/appUtils'
+import { atLeast, useScreenSize } from '@/lib/hooks/useScreenSize'
 import type {
   HandDeckStateChanger,
   MultiPokeCard,
@@ -33,6 +34,8 @@ const TargetHand = ({
   saveHandDeckState,
   guideDisplay = false,
 }: Props) => {
+  const screenSize = useScreenSize()
+
   const targetHand = useMemo(
     () => (targetHandId ? targetHands[targetHandId] : []),
     [targetHandId, targetHands],
@@ -119,14 +122,22 @@ const TargetHand = ({
     }
   }, [targetHand, targetHands])
 
+  const targetHandCardContainerWidth = useMemo(
+    () =>
+      atLeast(screenSize, 'md')
+        ? Math.max(4, targetHand.length)
+        : Math.max(5, targetHand.length),
+    [screenSize, targetHand.length],
+  )
+
   return (
-    <div className={`pb-5 ${targetHandId && 'border-b-2'}`}>
-      <div className="w-full flex-row gap-5">
-        <div className="w-3/5">
+    <div>
+      <div className="w-full flex flex-col md:flex-row md:gap-5">
+        <div className="w-full md:w-3/5">
           {!targetHandId ? (
             <div className="text-xl ms-3">Create new target hand</div>
           ) : (
-            <PokeCardsContainer width={Math.max(4, targetHand.length)}>
+            <PokeCardsContainer width={targetHandCardContainerWidth}>
               {targetHand.map((card) => {
                 return (
                   <PokeCardDisplay
@@ -146,7 +157,7 @@ const TargetHand = ({
             </PokeCardsContainer>
           )}
         </div>
-        <div className="flex-col w-2/5 mt-2">
+        <div className="flex flex-row items-center md:flex-col md:items-end w-full md:w-2/5 mt-2 gap-2 md:gap-0">
           <SearchSelect
             options={options}
             className="w-full"
@@ -154,7 +165,7 @@ const TargetHand = ({
             disabled={guideDisplay}
           />
           {targetHandId && (
-            <div className="mt-2 flex-row gap-2 justify-end">
+            <div className="md:mt-2 flex flex-row gap-2 justify-end">
               <Button
                 className=""
                 onClick={saveHandDeckState(duplicate)}

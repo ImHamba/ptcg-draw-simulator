@@ -10,7 +10,8 @@ import {
   initialTargetHands,
 } from '../../handDeckUtils'
 import { pick } from '../../utils'
-import NavBar from '../reuseable/NavBar'
+import NavBar from '../reuseable/navBar/NavBar'
+import Separator from '../reuseable/Separator'
 import DeckPanel from './DeckPanel'
 import SimulatorPanel from './SimulatorPanel'
 import TargetHandsPanel from './TargetHandsPanel'
@@ -131,14 +132,14 @@ const SimulatorPage = () => {
 
   return (
     <>
-      <div className="flex-col ">
+      <div className="flex flex-col ">
         <NavBar cardData={cardData}>
-          <div className="h-full flex-row items-center">
-            <img src="PTCGP.png" className="h-full p-2" />
+          <div className="h-full flex flex-row items-center">
+            <img src="PTCGP.png" className="h-auto max-h-full p-2" />
           </div>
         </NavBar>
-        <div className="row-center gap-20 px-10 pb-10">
-          <div className="w-1/2 h-full sticky top-0 pt-5">
+        <div className="flex flex-col md:flex-row gap-5 md:gap-10 lg:gap-20 px-5 md:px-10 pb-10">
+          <div className="w-full md:w-1/2 h-full md:sticky md:top-0 pt-5">
             <DeckPanel
               deck={deck}
               originalDeck={originalDeck}
@@ -147,25 +148,27 @@ const SimulatorPage = () => {
               saveHandDeckState={saveHandDeckState}
             />
           </div>
-          <div className="w-1/2 h-full col-center gap-7 pt-5">
+          <Separator className="md:hidden my-0" />
+          <div className="w-full md:w-1/2 h-full col-center gap-7 pt-5">
             {/* <Hand
                 deck={deck}
                 originalDeck={originalDeck}
                 hand={hand}
                 saveHandDeckState={saveHandDeckState}
               /> */}
-            <div className="h-[45vh] w-full">
+            <div className="h-[65vh] md:h-[45vh] w-full order-2 md:order-1">
               <SimulatorPanel
                 targetHands={targetHands}
                 originalDeck={originalDeck}
               />
             </div>
-            <div className="w-full">
+            <div className="w-full order-1 md:order-2">
               <TargetHandsPanel
                 targetHands={targetHands}
                 originalDeck={originalDeck}
                 saveHandDeckState={saveHandDeckState}
               />
+              <Separator className="md:hidden" />
             </div>
           </div>
         </div>

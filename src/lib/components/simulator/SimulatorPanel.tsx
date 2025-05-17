@@ -1,4 +1,10 @@
 import { Button } from '@/components/ui/button'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { checkHandMatchesTargetHands } from '@/lib/appUtils'
 import { basicPokemonFilter } from '@/lib/cardFilters'
 import type { MultiPokeCard, TargetHands } from '@/lib/types'
@@ -188,11 +194,17 @@ const SimulatorPanel = ({ originalDeck, targetHands }: Props) => {
     [chartData, placeholderChartData],
   )
 
+  const deckHasBasic = useMemo(
+    () => originalDeck.filter(basicPokemonFilter).length > 0,
+    [originalDeck],
+  )
+  const targetHandsDefined = useMemo(
+    () => targetHandIds.length > 0,
+    [targetHandIds.length],
+  )
   const canStartSimulation = useMemo(
-    () =>
-      originalDeck.filter(basicPokemonFilter).length > 0 &&
-      targetHandIds.length > 0,
-    [originalDeck, targetHandIds.length],
+    () => deckHasBasic && targetHandsDefined,
+    [deckHasBasic, targetHandsDefined],
   )
 
   return (
@@ -201,17 +213,28 @@ const SimulatorPanel = ({ originalDeck, targetHands }: Props) => {
         <div className="text-2xl">Draw Simulator</div>
       </div>
       {simulationCount}/{simulationLimit} simulations
-      <Button
-        onClick={doSimulation ? stopSimulation : simulate}
-        disabled={!canStartSimulation}
-        title={
-          targetHandIds.length === 0
-            ? 'Add a basic Pokemon to the deck, and create a target hand.'
-            : undefined
-        }
-      >
-        {doSimulation ? 'Stop' : 'Start'}
-      </Button>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={doSimulation ? stopSimulation : simulate}
+              disabled={!canStartSimulation}
+            >
+              {doSimulation ? 'Stop' : 'Start'}
+            </Button>
+          </TooltipTrigger>
+          {!canStartSimulation && (
+            <TooltipContent side='bottom'>
+              <ul className='list-disc list-inside text-sm p-0.5 pe-1'>
+                {!deckHasBasic && (
+                  <li>Add at least 1 basic Pokemon to your deck.</li>
+                )}
+                {!targetHandsDefined && <li>Create a target hand.</li>}
+              </ul>
+            </TooltipContent>
+          )}
+        </Tooltip>
+      </TooltipProvider>
       <SimulatorChart
         chartData={actualChartData}
         targetHandIds={targetHandIds}

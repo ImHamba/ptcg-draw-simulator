@@ -29,7 +29,7 @@ const PokeCardDisplay = ({
             <img src={imgUrl} className="absolute top-1/8 left-0 z-0" />
           )}
           <div
-            className={`flex-row ${card.cardType ? 'justify-center group-hover:justify-around' : 'justify-around'} w-full h-1/6 relative px-2 top-7/12 items-center`}
+            className={`flex flex-row ${card.cardType ? 'justify-center group-hover:justify-around' : 'justify-around'} w-full h-1/6 relative px-2 top-7/12 items-center`}
           >
             {decrementCard && !hideButtons && (
               <Button
@@ -41,7 +41,7 @@ const PokeCardDisplay = ({
             )}
 
             <div
-              className={`${card.cardType ? 'row-center' : 'hidden group-hover:flex group-hover:flex-row'} justify-center items-center p-0 h-full aspect-square rounded-full text-primary-foreground bg-red-700 border-white border-2 drop-shadow-md`}
+              className={`${card.cardType ? 'row-center' : 'hidden group-hover:flex group-hover:flex flex-row'} justify-center items-center p-0 h-full aspect-square rounded-full text-primary-foreground bg-red-700 border-white border-2 drop-shadow-md`}
             >
               {card.count}
             </div>

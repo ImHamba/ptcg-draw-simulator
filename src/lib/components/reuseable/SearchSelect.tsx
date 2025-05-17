@@ -30,11 +30,6 @@ const SearchSelect = ({
         searchPlaceholderValue: 'Search for a card...',
         placeholderValue: 'Search for a card...',
         itemSelectText: undefined,
-
-        // @ts-ignore
-        classNames: {
-          containerOuter: ['choices', ...className.split(' ')],
-        },
       })
 
       choicesInstance.current.removeActiveItems()
@@ -63,7 +58,7 @@ const SearchSelect = ({
   }, [options])
 
   return (
-    <div>
+    <div className={className}>
       <select
         disabled={disabled}
         ref={selectRef}
