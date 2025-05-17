@@ -1,9 +1,9 @@
-import type { CardFilter } from './appUtils'
 import {
   BASIC_STAGE,
   POKEBALL_CARD_NAME,
   PROFESSORS_RESEARCH_CARD_NAME,
 } from './constants'
+import type { CardFilter } from './types'
 
 export const basicPokemonFilter: CardFilter = (card) =>
   card.cardType === 'basicOther' || card.data?.stage === BASIC_STAGE

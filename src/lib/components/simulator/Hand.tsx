@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import type { MultiPokeCard, SaveHandDeckState } from '@/lib/appUtils'
+import type { MultiPokeCard, SaveHandDeckState } from '@/lib/types'
 import { usePokeball, useProfessorsResearch } from '../../cardEffects'
 import { pokeballFilter, profResearchFilter } from '../../cardFilters'
 import {

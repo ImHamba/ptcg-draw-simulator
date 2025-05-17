@@ -14,7 +14,7 @@ import {
   dummySaveHandDeckState,
   dummyTargetHands,
 } from '@/lib/guideDialogDummyData'
-import type { CardData } from '@/lib/utils'
+import type { CardData } from '@/lib/types'
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import DeckPanel from '../simulator/DeckPanel'

@@ -9,14 +9,14 @@ import {
 } from './cardFilters'
 import { FIRST_HAND_SIZE, MAX_DECK_SIZE } from './constants'
 
+import { isSameCard } from './appUtils'
 import type {
   CardFilter,
   MultiCardWithCumuCount,
   MultiPokeCard,
   PokeCard,
   TargetHands,
-} from './appUtils'
-import { isSameCard } from './appUtils'
+} from './types'
 import { conditionalListItem, getRandomInt, sum } from './utils'
 
 export const drawFromDeck = (

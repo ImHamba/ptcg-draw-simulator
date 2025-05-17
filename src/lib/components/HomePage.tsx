@@ -5,6 +5,7 @@ const HomePage = () => {
   router.navigate({
     to: '/simulator',
   })
+  
   return (
     <div>
       Welcome!

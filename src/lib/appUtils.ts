@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 
+import type { RouterCore } from 'node_modules/@tanstack/router-core/dist/esm/router'
 import { otherCardFilter } from './cardFilters'
 import {
   BASIC_CARD_IMG_URL,
@@ -13,7 +14,13 @@ import {
   TARGET_HAND_DELIMITER,
 } from './constants'
 import { fillDeck } from './handDeckUtils'
-import type { CardData } from './utils'
+import type {
+  CardData,
+  CardType,
+  MultiPokeCard,
+  PokeCard,
+  TargetHands,
+} from './types'
 import { clearUrlParams, not } from './utils'
 
 export const decodeCardsCode = (cardsCode: string, cardData: CardData[]) => {
@@ -93,7 +100,7 @@ export const generateShareLink = (
   cards: MultiPokeCard[] | null,
   targetHands: TargetHands | null,
   includeOther = false,
-  router
+  router: RouterCore<any, any, any>,
 ) => {
   const deckEncodedString = cards
     ? generateEncodedCardsString(cards, includeOther)
@@ -117,24 +124,6 @@ export const generateShareLink = (
 
   return baseUrl + routeString
 }
-
-export type CardType = (typeof GENERIC_CARD_TYPES)[number]
-
-export type PokeCard =
-  | {
-      cardType: CardType
-      data?: CardData
-    }
-  | {
-      cardType?: CardType
-      data: CardData
-    }
-
-export type MultiPokeCard = PokeCard & {
-  count: number
-}
-
-export type CardFilter = (card: PokeCard) => boolean
 
 export const isSameCard = (card1: PokeCard, card2: PokeCard) => {
   return card1.cardType === card2.cardType && card1.data?.id === card2.data?.id
@@ -208,18 +197,6 @@ export const checkHandMatchesTargetHands = (
   }
 }
 
-export type HandDeckStateChange = (...args: any[]) => {
-  newHand?: MultiPokeCard[]
-  newOriginalDeck?: MultiPokeCard[]
-  newDeck?: MultiPokeCard[]
-  newTargetHands?: TargetHands
-}
-
-export type SaveHandDeckState = <T extends HandDeckStateChange>(
-  handDeckStateChangeFn: T,
-  ...args: Parameters<T>
-) => () => void
-
 export const imageUrlFromCard = (card: PokeCard) => {
   const data = card.data
 
@@ -239,7 +216,3 @@ export const imageUrlFromCard = (card: PokeCard) => {
 export const isGenericCardType = (value: string): value is CardType => {
   return (GENERIC_CARD_TYPES as readonly string[]).includes(value)
 }
-
-export type TargetHands = Record<string, MultiPokeCard[]>
-
-export type MultiCardWithCumuCount = MultiPokeCard & { cumuCount: number }

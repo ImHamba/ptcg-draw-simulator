@@ -2,7 +2,6 @@ import type { ClassValue } from 'clsx'
 import { clsx } from 'clsx'
 import { useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
-import type { CARD_DATA_PROPERTIES } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -57,8 +56,6 @@ export const conditionalListItem = <T>(
 
   return includeItem ? (Array.isArray(item) ? item : [item]) : []
 }
-
-export type CardData = Record<(typeof CARD_DATA_PROPERTIES)[number], string>
 
 /**
  * inverts a predicate

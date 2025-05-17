@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
-import type { MultiPokeCard } from '@/lib/appUtils'
 import { imageUrlFromCard } from '@/lib/appUtils'
+import type { MultiPokeCard } from '@/lib/types'
 import { memo } from 'react'
 
 type Props = {

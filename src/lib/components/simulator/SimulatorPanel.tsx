@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
-import type { MultiPokeCard, TargetHands } from '@/lib/appUtils'
 import { checkHandMatchesTargetHands } from '@/lib/appUtils'
 import { basicPokemonFilter } from '@/lib/cardFilters'
+import type { MultiPokeCard, TargetHands } from '@/lib/types'
 import { useMemo, useRef, useState } from 'react'
 import { FIRST_HAND_SIZE, MAX_DECK_SIZE } from '../../constants'
 import {

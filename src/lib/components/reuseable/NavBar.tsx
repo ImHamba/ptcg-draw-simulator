@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import type { ReactNode } from 'react'
 
-import type { CardData } from '@/lib/utils'
+import type { CardData } from '@/lib/types'
 import GuideDialog from './GuideDialog'
 
 type Props = {

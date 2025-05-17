@@ -1,10 +1,10 @@
 import { Button } from '@/components/ui/button'
 import type {
-  HandDeckStateChange,
+  HandDeckStateChanger,
   MultiPokeCard,
   SaveHandDeckState,
   TargetHands,
-} from '@/lib/appUtils'
+} from '@/lib/types'
 import { conditionalListItem } from '@/lib/utils'
 import { useCallback, useEffect } from 'react'
 import TargetHand from './TargetHand'
@@ -34,7 +34,7 @@ const TargetHandsPanel = ({
       return
     }
 
-    const clear: HandDeckStateChange = () => {
+    const clear: HandDeckStateChanger = () => {
       return {
         newTargetHands: Object.fromEntries(withoutEmpty),
       }
@@ -43,7 +43,7 @@ const TargetHandsPanel = ({
     saveHandDeckState(clear)()
   }, [saveHandDeckState, targetHands])
 
-  const clearAll: HandDeckStateChange = useCallback(() => {
+  const clearAll: HandDeckStateChanger = useCallback(() => {
     return {
       newTargetHands: {},
     }

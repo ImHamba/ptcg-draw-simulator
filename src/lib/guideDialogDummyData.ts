@@ -1,5 +1,5 @@
 // @ts-nocheck
-import type { MultiPokeCard, SaveHandDeckState, TargetHands } from './appUtils'
+import type { MultiPokeCard, SaveHandDeckState, TargetHands } from './types'
 import { omitKeys } from './utils'
 
 export const dummyDeck: MultiPokeCard[] = [

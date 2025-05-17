@@ -1,12 +1,12 @@
 import { Button } from '@/components/ui/button'
+import { isSameCard } from '@/lib/appUtils'
 import type {
-  HandDeckStateChange,
+  HandDeckStateChanger,
   MultiPokeCard,
   PokeCard,
   SaveHandDeckState,
   TargetHands,
-} from '@/lib/appUtils'
-import { isSameCard } from '@/lib/appUtils'
+} from '@/lib/types'
 import { useCallback, useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import {
@@ -105,7 +105,7 @@ const TargetHand = ({
     [targetHand, targetHandId, targetHands],
   )
 
-  const clear: HandDeckStateChange = useCallback(() => {
+  const clear: HandDeckStateChanger = useCallback(() => {
     return {
       newTargetHands: Object.fromEntries(
         Object.entries(targetHands).filter(([id, _]) => id !== targetHandId),
@@ -113,7 +113,7 @@ const TargetHand = ({
     }
   }, [targetHandId, targetHands])
 
-  const duplicate: HandDeckStateChange = useCallback(() => {
+  const duplicate: HandDeckStateChanger = useCallback(() => {
     return {
       newTargetHands: { ...targetHands, [uuidv4()]: targetHand },
     }

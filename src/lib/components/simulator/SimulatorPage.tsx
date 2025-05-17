@@ -1,26 +1,14 @@
-import type { MultiPokeCard, SaveHandDeckState } from '@/lib/appUtils'
+import { useAppStateSearchParamBinding } from '@/lib/hooks/useAppStateSearchParamBinding'
+import type { CardData, MultiPokeCard, SaveHandDeckState } from '@/lib/types'
 import { useQuery } from '@tanstack/react-query'
-import { useRouter, useSearch } from '@tanstack/react-router'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import {
-  decodeDeckCode,
-  decodeTargetHandsCode,
-  generateEncodedCardsString,
-  generateEncodedTargetHandsString,
-  isSameCard,
-} from '../../appUtils'
-import {
-  CARD_DATA_PROPERTIES,
-  CARD_DATA_PROXY_URL,
-  DECK_SEARCH_PARAM,
-  TARGET_HANDS_SEARCH_PARAM,
-} from '../../constants'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { isSameCard } from '../../appUtils'
+import { CARD_DATA_PROPERTIES, CARD_DATA_PROXY_URL } from '../../constants'
 import {
   initialDeck,
   initialHand,
   initialTargetHands,
 } from '../../handDeckUtils'
-import type { CardData } from '../../utils'
 import { pick } from '../../utils'
 import NavBar from '../reuseable/NavBar'
 import DeckPanel from './DeckPanel'
@@ -31,7 +19,6 @@ import TargetHandsPanel from './TargetHandsPanel'
 // http://localhost:3000/simulator?deck=2.A3-122_2.A3-086_2.A3-144_2.PROMO-005_2.PROMO-007_2.basicOther_2.A3-085&target=1.A3-122_1.A3-144_1.A3-085%7E1.A3-122_1.A3-085_1.A3-086
 
 const SimulatorPage = () => {
-  const router = useRouter()
   // stores the original state of deck, updated by user adding cards to it
   const [originalDeck, setOriginalDeck] = useState<MultiPokeCard[]>(initialDeck)
 
@@ -40,17 +27,14 @@ const SimulatorPage = () => {
 
   const [hand, setHand] = useState<MultiPokeCard[]>(initialHand)
   const [targetHands, setTargetHands] = useState(initialTargetHands)
-  const [loadedUrlState, setLoadedUrlState] = useState<string | null>(null)
 
-  // @ts-ignore
-  const searchParams: {
-    [DECK_SEARCH_PARAM]: string | undefined
-    [TARGET_HANDS_SEARCH_PARAM]: string | undefined
-  } = useSearch({
-    strict: false,
-  })
-  const urlDeckCode = searchParams[DECK_SEARCH_PARAM]
-  const urlTargetHandsCode = searchParams[TARGET_HANDS_SEARCH_PARAM]
+  const targetHandsRef = useRef(targetHands)
+
+  // targetHandsRef used for access in saveHandDeckState without it rerendering so
+  // it doesnt cause incorrect exeuction of app state/search params two way binding useEffects
+  useEffect(() => {
+    targetHandsRef.current = targetHands
+  }, [targetHands])
 
   // returns a callable that wraps a hand/deck state changing function with state save
   const saveHandDeckState: SaveHandDeckState = useCallback(
@@ -72,7 +56,7 @@ const SimulatorPage = () => {
         // elsewhere to reduce additional rerenders. The cap on target hands car counts is essentially
         // a hard limit enforced at the state saving stage.
         else if (newOriginalDeck) {
-          const currentTargetHands = newTargetHands ?? targetHands
+          const currentTargetHands = newTargetHands ?? targetHandsRef.current
           const entries = Object.entries(currentTargetHands)
           let changeMade = false
           const limitedNewTargetHands: typeof entries = entries.map(
@@ -108,7 +92,7 @@ const SimulatorPage = () => {
           }
         }
       },
-    [targetHands],
+    [],
   )
 
   const cardDataQuery = useQuery({
@@ -131,80 +115,19 @@ const SimulatorPage = () => {
     () => cardDataQuery.data ?? [],
     [cardDataQuery.data],
   )
-  const isCardDataLoading = cardDataQuery.isLoading
 
-  // load state on on mount from url params
-  useEffect(() => {
-    const currentUrlState = `${urlDeckCode ?? ''}|${urlTargetHandsCode ?? ''}`
-    if (isCardDataLoading || loadedUrlState === currentUrlState) {
-      return
-    }
+  const isCardDataLoading = useMemo(
+    () => cardDataQuery.isLoading,
+    [cardDataQuery.isLoading],
+  )
 
-    const decodedDeck = urlDeckCode
-      ? decodeDeckCode(urlDeckCode, cardData)
-      : null
-    const decodedTargetHands = urlTargetHandsCode
-      ? decodeTargetHandsCode(urlTargetHandsCode, cardData)
-      : null
-
-    const newState = {
-      ...(decodedDeck && {
-        newDeck: decodedDeck,
-        newOriginalDeck: decodedDeck,
-      }),
-
-      ...(decodedTargetHands && { newTargetHands: decodedTargetHands }),
-    }
-
-    const stateChangeFn = () => newState
-
-    saveHandDeckState(stateChangeFn)()
-
-    // record the current url state as having been loaded
-    setLoadedUrlState(currentUrlState)
-  }, [
-    urlDeckCode,
-    urlTargetHandsCode,
+  useAppStateSearchParamBinding(
+    originalDeck,
+    targetHands,
+    saveHandDeckState,
     cardData,
     isCardDataLoading,
-    saveHandDeckState,
-    loadedUrlState,
-  ])
-
-  // update url when deck/target hands change
-  useEffect(() => {
-    // dont update while data is loading so the app has a chance to
-    // read the initial url params and load them before overriding them
-    if (isCardDataLoading) {
-      return
-    }
-
-    const deckString = generateEncodedCardsString(originalDeck)
-    const targetHandsString = generateEncodedTargetHandsString(targetHands)
-
-    const currentSearchParams = new URLSearchParams()
-    if (deckString) {
-      currentSearchParams.set(DECK_SEARCH_PARAM, deckString)
-    }
-    if (targetHandsString) {
-      currentSearchParams.set(TARGET_HANDS_SEARCH_PARAM, targetHandsString)
-    }
-
-    if (
-      deckString === urlDeckCode &&
-      targetHandsString === urlTargetHandsCode
-    ) {
-      return
-    }
-
-    router.navigate({
-      to: window.location.pathname,
-      search: {
-        ...Object.fromEntries(currentSearchParams.entries()),
-      },
-      resetScroll: false,
-    })
-  }, [isCardDataLoading, originalDeck, router, targetHands, urlDeckCode, urlTargetHandsCode])
+  )
 
   return (
     <>

@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button'
 import type {
+  CardData,
   MultiPokeCard,
   PokeCard,
   SaveHandDeckState,
   TargetHands,
-} from '@/lib/appUtils'
+} from '@/lib/types'
 import { useRouter } from '@tanstack/react-router'
 import { useCallback, useMemo } from 'react'
 import { generateShareLink } from '../../appUtils'
@@ -18,7 +19,6 @@ import {
   resetOriginalDeck,
   sumCardCount,
 } from '../../handDeckUtils'
-import type { CardData } from '../../utils'
 import { copyToClipboard, not } from '../../utils'
 import PokeCardDisplay from '../reuseable/PokeCardDisplay'
 import PokeCardsContainer from '../reuseable/PokeCardsContainer'
