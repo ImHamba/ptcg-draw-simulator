@@ -131,7 +131,7 @@ const DeckPanel = ({
   return (
     <div className="col-center gap-3 full">
       {!guideDisplay && <div className="text-2xl">Deck Builder</div>}
-      <div className="flex flex-col sm:flex-row gap-2">
+      <div className="row-center flex-wrap gap-2">
         <Button
           onClick={saveHandDeckState(onAddBasic)}
           disabled={

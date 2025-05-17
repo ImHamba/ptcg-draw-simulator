@@ -50,7 +50,7 @@ const GuideDialog = ({ children, cardData }: Props) => {
         <DialogHeader className="w-full">
           <DialogTitle className="text-2xl">Draw Simulator Guide</DialogTitle>
         </DialogHeader>
-        <div className="w-full px-5 flex">
+        <div className="w-full ps-4 md:px-5 flex">
           <ol className="w-full list-decimal list-outside [&>li]:ps-5 [&>li]:w-full flex flex-col gap-7">
             <li>
               <div className="flex flex-col gap-1">

@@ -126,7 +126,7 @@ const TargetHand = ({
     () =>
       atLeast(screenSize, 'md')
         ? Math.max(4, targetHand.length)
-        : Math.max(5, targetHand.length),
+        : 4,
     [screenSize, targetHand.length],
   )
 
