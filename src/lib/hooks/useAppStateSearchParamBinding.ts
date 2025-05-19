@@ -93,7 +93,6 @@ export const useAppStateSearchParamBinding = (
 
     const stateChangeFn = () => newState
 
-    console.log('update state to match url')
     saveHandDeckState(stateChangeFn)()
   }, [
     urlDeckCode,
@@ -138,7 +137,6 @@ export const useAppStateSearchParamBinding = (
       currentSearchParams.set(TARGET_HANDS_SEARCH_PARAM, targetHandsString)
     }
 
-    console.log('update url to match state')
     router.navigate({
       to: window.location.pathname,
       search: {

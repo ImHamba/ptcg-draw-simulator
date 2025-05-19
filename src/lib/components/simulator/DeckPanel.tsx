@@ -11,13 +11,14 @@ import { useRouter } from '@tanstack/react-router'
 import { useCallback, useMemo } from 'react'
 import { generateShareLink } from '../../appUtils'
 import { otherCardFilter } from '../../cardFilters'
-import { MAX_DECK_SIZE } from '../../constants'
+import { MAX_COUNT_PER_CARD_NAME, MAX_DECK_SIZE } from '../../constants'
 import {
   decrementCard,
   fillDeck,
   incrementCard,
   resetAllAndAddCard,
   resetOriginalDeck,
+  sameNameCardsCount,
   sumCardCount,
 } from '../../handDeckUtils'
 import { copyToClipboard, not } from '../../utils'
@@ -60,6 +61,11 @@ const DeckPanel = ({
       const newCardData = cardData[cardIndex]
       const card: PokeCard = {
         data: newCardData,
+      }
+
+      // cancel operation if the deck already has 2 same named cards
+      if (sameNameCardsCount(card, originalDeck) >= 2) {
+        return
       }
 
       saveHandDeckState(resetAllAndAddCard, card, originalDeck)()
@@ -168,11 +174,15 @@ const DeckPanel = ({
           <PokeCardsContainer width={deckCardsContainerWidth}>
             {deck.map((card) => {
               const disableIncrement =
-                // allow many basics but not exceeding deck size
-                // cap other cards at 2
-                card.cardType === 'basicOther'
-                  ? originalDeckWithoutOtherSize >= MAX_DECK_SIZE
-                  : card.count >= 2
+                // everything disabled if deck at max capacity
+                originalDeckWithoutOtherSize >= MAX_DECK_SIZE
+                  ? true
+                  : // allow many basics but not exceeding deck size
+                    card.cardType === 'basicOther'
+                    ? false
+                    : // cap other cards at 2
+                      sameNameCardsCount(card, originalDeck) >=
+                      MAX_COUNT_PER_CARD_NAME
 
               return (
                 <PokeCardDisplay

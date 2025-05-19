@@ -129,6 +129,10 @@ export const isSameCard = (card1: PokeCard, card2: PokeCard) => {
   return card1.cardType === card2.cardType && card1.data?.id === card2.data?.id
 }
 
+export const isSameNameCard = (card1: PokeCard, card2: PokeCard) => {
+  return card1.data?.name === card2.data?.name
+}
+
 export const isEquivalentCard = (card1: PokeCard, card2: PokeCard) => {
   // this will catch non specific cards, e.g. `other` or `otherBasic`
   if (isSameCard(card1, card2)) {
@@ -142,7 +146,7 @@ export const isEquivalentCard = (card1: PokeCard, card2: PokeCard) => {
 
   if (
     card1.data.name !== card2.data.name ||
-    card1.data.type !== card2.data.type
+    card1.data.stage !== card2.data.stage
   ) {
     return false
   }

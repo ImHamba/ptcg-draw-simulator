@@ -9,7 +9,7 @@ import {
 } from './cardFilters'
 import { FIRST_HAND_SIZE, MAX_DECK_SIZE } from './constants'
 
-import { isSameCard } from './appUtils'
+import { isSameCard, isSameNameCard } from './appUtils'
 import type {
   CardFilter,
   MultiCardWithCumuCount,
@@ -313,6 +313,16 @@ export const resetAllAndAddCard = (
     newHand: newHand,
   }
 }
+
+export const sameNameCardsCount = (
+  card: PokeCard,
+  cardsList: MultiPokeCard[],
+) =>
+  sum(
+    cardsList.map((listCard) =>
+      isSameNameCard(listCard, card) ? listCard.count : 0,
+    ),
+  )
 
 export const addTargetCard = (
   card: PokeCard,
