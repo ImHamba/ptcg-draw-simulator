@@ -57,7 +57,7 @@ const GuideDialog = ({ children, cardData }: Props) => {
                 <h5>Build your deck</h5>
                 <p>
                   Use the Deck Builder panel to add cards you want to calculate
-                  draw probabilities of, as well as Poke balls and Professor's
+                  draw probabilities of, as well as Poke Balls and Professor's
                   Research.
                 </p>
                 <p className="mb-5">
@@ -108,7 +108,7 @@ const GuideDialog = ({ children, cardData }: Props) => {
                   Click <b>Start</b> in the Draw Simulator panel to begin
                   simulating thousands of hand draws. It will draw 6 cards on
                   turn 1 and then repeatedly draw from your deck until you have
-                  drawn any of your target hands. Poke balls and Professor's
+                  drawn any of your target hands. Poke Balls and Professor's
                   Research will be used as they are drawn.
                 </p>
                 <p className="mb-5">

@@ -11,7 +11,12 @@ import { useRouter } from '@tanstack/react-router'
 import { useCallback, useMemo } from 'react'
 import { generateShareLink } from '../../appUtils'
 import { otherCardFilter } from '../../cardFilters'
-import { MAX_COUNT_PER_CARD_NAME, MAX_DECK_SIZE } from '../../constants'
+import {
+  MAX_COUNT_PER_CARD_NAME,
+  MAX_DECK_SIZE,
+  POKEBALL_CARD_NAME,
+  PROFESSORS_RESEARCH_CARD_NAME,
+} from '../../constants'
 import {
   decrementCard,
   fillDeck,
@@ -50,9 +55,9 @@ const DeckPanel = ({
   const router = useRouter()
   const screenSize = useScreenSize()
 
-  const originalDeckWithoutOtherSize = sumCardCount(
-    originalDeck,
-    not(otherCardFilter),
+  const originalDeckWithoutOtherSize = useMemo(
+    () => sumCardCount(originalDeck, not(otherCardFilter)),
+    [originalDeck],
   )
 
   const onCardSelect = useCallback(
@@ -134,6 +139,45 @@ const DeckPanel = ({
     [screenSize],
   )
 
+  const add2cardToDeckFn = useCallback(
+    (card: PokeCard) => () => {
+      const count = Math.min(
+        2,
+        MAX_COUNT_PER_CARD_NAME - sameNameCardsCount(card, originalDeck),
+        MAX_DECK_SIZE - originalDeckWithoutOtherSize,
+      )
+      return resetAllAndAddCard(card, originalDeck, count)
+    },
+    [originalDeck, originalDeckWithoutOtherSize],
+  )
+
+  const promoPokeBall: PokeCard | undefined = useMemo(() => {
+    const data = cardData.find(
+      (cardData) =>
+        cardData.name === POKEBALL_CARD_NAME && cardData.set_name === 'Promo A',
+    )
+    if (!data) {
+      return undefined
+    }
+    return {
+      data: data,
+    }
+  }, [cardData])
+
+  const promoProfResearch: PokeCard | undefined = useMemo(() => {
+    const data = cardData.find(
+      (cardData) =>
+        cardData.name === PROFESSORS_RESEARCH_CARD_NAME &&
+        cardData.set_name === 'Promo A',
+    )
+    if (!data) {
+      return undefined
+    }
+    return {
+      data: data,
+    }
+  }, [cardData])
+
   return (
     <div className="col-center gap-3 full">
       {!guideDisplay && <div className="text-2xl">Deck Builder</div>}
@@ -144,7 +188,37 @@ const DeckPanel = ({
             originalDeckWithoutOtherSize >= MAX_DECK_SIZE || guideDisplay
           }
         >
-          Add Generic Basic
+          +1 Generic Basic
+        </Button>
+        <Button
+          onClick={
+            promoPokeBall
+              ? saveHandDeckState(add2cardToDeckFn(promoPokeBall))
+              : undefined
+          }
+          disabled={
+            originalDeckWithoutOtherSize >= MAX_DECK_SIZE ||
+            (promoPokeBall &&
+              sameNameCardsCount(promoPokeBall, originalDeck) >= 2) ||
+            guideDisplay
+          }
+        >
+          +2 Poke Ball
+        </Button>
+        <Button
+          onClick={
+            promoProfResearch
+              ? saveHandDeckState(add2cardToDeckFn(promoProfResearch))
+              : undefined
+          }
+          disabled={
+            originalDeckWithoutOtherSize >= MAX_DECK_SIZE ||
+            (promoProfResearch &&
+              sameNameCardsCount(promoProfResearch, originalDeck) >= 2) ||
+            guideDisplay
+          }
+        >
+          +2 Professor's Research
         </Button>
 
         <Button

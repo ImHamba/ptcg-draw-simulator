@@ -306,10 +306,11 @@ export const resetOriginalDeck = () => {
 export const resetAllAndAddCard = (
   card: PokeCard,
   originalDeck: MultiPokeCard[],
+  numberToAdd: number = 1
 ) => {
   const { newHand, newDeck } = resetDeckAndHand(originalDeck)
   return {
-    ...addCardToDeck(card, newDeck, originalDeck),
+    ...addCardToDeck(card, newDeck, originalDeck, numberToAdd),
     newHand: newHand,
   }
 }
