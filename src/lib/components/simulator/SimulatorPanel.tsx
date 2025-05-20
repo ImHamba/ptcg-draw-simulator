@@ -224,8 +224,8 @@ const SimulatorPanel = ({ originalDeck, targetHands }: Props) => {
             </Button>
           </TooltipTrigger>
           {!canStartSimulation && (
-            <TooltipContent side='bottom'>
-              <ul className='list-disc list-inside text-sm p-0.5 pe-1'>
+            <TooltipContent side="bottom">
+              <ul className="list-disc list-inside text-sm p-0.5 pe-1">
                 {!deckHasBasic && (
                   <li>Add at least 1 basic Pokemon to your deck.</li>
                 )}

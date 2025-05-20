@@ -123,16 +123,18 @@ export const drawFirstHand = (deck: MultiPokeCard[]) => {
     throw Error('Tried to draw first hand from deck without basics.')
   }
 
-  let newHand: MultiPokeCard[] = []
-  let newDeck: MultiPokeCard[] = deck
+  let firstHand: MultiPokeCard[] = []
+  let deckAfterFirstHand: MultiPokeCard[] = deck
 
-  while (!newHand.some(basicPokemonFilter)) {
-    newHand = []
+  while (!firstHand.some(basicPokemonFilter)) {
+    firstHand = []
 
-    const drawResult = drawMany(newHand, deck, FIRST_HAND_SIZE)
-    newHand = drawResult.newHand
-    newDeck = drawResult.newDeck
+    const drawResult = drawMany(firstHand, deck, FIRST_HAND_SIZE)
+    firstHand = drawResult.newHand
+    deckAfterFirstHand = drawResult.newDeck
   }
+
+  const { newHand, newDeck } = drawFromDeck(firstHand, deckAfterFirstHand)
 
   return { newHand, newDeck }
 }
@@ -306,7 +308,7 @@ export const resetOriginalDeck = () => {
 export const resetAllAndAddCard = (
   card: PokeCard,
   originalDeck: MultiPokeCard[],
-  numberToAdd: number = 1
+  numberToAdd: number = 1,
 ) => {
   const { newHand, newDeck } = resetDeckAndHand(originalDeck)
   return {
