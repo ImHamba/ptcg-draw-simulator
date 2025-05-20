@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { imageUrlFromCard } from '@/lib/appUtils'
 import type { MultiPokeCard } from '@/lib/types'
+import { Minus, Plus } from 'lucide-react'
 import { memo } from 'react'
 
 type Props = {
@@ -33,12 +34,10 @@ const PokeCardDisplay = ({
           >
             {decrementCard && !hideButtons && (
               <Button
-                className="hidden group-hover-always:flex p-0 h-4/5 aspect-square rounded-full overflow-hidden"
+                className="hidden group-hover-always:flex !p-0 h-4/5 aspect-square rounded-full overflow-hidden"
                 onClick={() => decrementCard(card)}
               >
-                <div className="row-center full items-center">
-                  <i className="fa-solid fa-minus align-middle" />
-                </div>
+                <Minus className="size-5/6" />
               </Button>
             )}
 
@@ -50,13 +49,11 @@ const PokeCardDisplay = ({
 
             {incrementCard && !hideButtons && (
               <Button
-                className="hidden group-hover-always:flex p-0 h-4/5 aspect-square rounded-full"
+                className="hidden group-hover-always:flex !p-0 h-4/5 aspect-square rounded-full"
                 onClick={() => incrementCard(card)}
                 disabled={disableIncrement}
               >
-                <div className="row-center full items-center">
-                  <i className="fa-solid fa-plus align-middle" />
-                </div>
+                <Plus className="size-5/6" />
               </Button>
             )}
           </div>
