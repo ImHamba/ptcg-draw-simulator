@@ -146,6 +146,7 @@ const SimulatorPage = () => {
               cardData={cardData}
               targetHands={targetHands}
               saveHandDeckState={saveHandDeckState}
+              isCardDataLoading={isCardDataLoading}
             />
           </div>
           <Separator className="md:hidden my-0" />

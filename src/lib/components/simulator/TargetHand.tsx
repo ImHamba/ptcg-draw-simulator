@@ -8,6 +8,7 @@ import type {
   SaveHandDeckState,
   TargetHands,
 } from '@/lib/types'
+import { Trash2 } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import {
@@ -123,10 +124,7 @@ const TargetHand = ({
   }, [targetHand, targetHands])
 
   const targetHandCardContainerWidth = useMemo(
-    () =>
-      atLeast(screenSize, 'md')
-        ? Math.max(4, targetHand.length)
-        : 4,
+    () => (atLeast(screenSize, 'md') ? Math.max(4, targetHand.length) : 4),
     [screenSize, targetHand.length],
   )
 
@@ -174,12 +172,13 @@ const TargetHand = ({
                 Duplicate
               </Button>
               <Button
-                className="aspect-square p-0"
+                className="aspect-square !p-0"
                 onClick={saveHandDeckState(clear)}
                 variant="destructive"
                 disabled={guideDisplay}
               >
-                <i className="fa-solid fa-trash" />
+                <Trash2 className='size-4/7' />
+                {/* <i className="fa-solid fa-trash" /> */}
               </Button>
             </div>
           )}

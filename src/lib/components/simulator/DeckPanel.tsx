@@ -8,6 +8,7 @@ import type {
   TargetHands,
 } from '@/lib/types'
 import { useRouter } from '@tanstack/react-router'
+import { Loader2Icon } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
 import { generateShareLink } from '../../appUtils'
 import { otherCardFilter } from '../../cardFilters'
@@ -39,10 +40,9 @@ type Props = {
   targetHands: TargetHands
   saveHandDeckState: SaveHandDeckState
   guideDisplay?: boolean // for customised display in the user guide
+  isCardDataLoading: boolean
 }
 
-// greninja
-// http://localhost:3000/?deck=2.PROMO-007_2.A2b-111_2.A1-089_2.A1-087_2.A3-144_2.A3-009_2.A3-012_1.A3-011_1.A1-088&target=1.A1-089_1.A1-087_1.A3-144
 // http://localhost:3000/simulator?deck=2.A2a-071_2.A2b-111_2.PROMO-007_2.A2a-050_2.A1-172_2.A2a-009_2.A3-144&target=1.A2a-071_1.A2a-009%7E1.A2a-050_1.A1-172_1.A2a-071_1.A3-144
 const DeckPanel = ({
   deck,
@@ -51,6 +51,7 @@ const DeckPanel = ({
   targetHands,
   saveHandDeckState,
   guideDisplay = false,
+  isCardDataLoading,
 }: Props) => {
   const router = useRouter()
   const screenSize = useScreenSize()
@@ -181,66 +182,84 @@ const DeckPanel = ({
   return (
     <div className="col-center gap-3 full">
       {!guideDisplay && <div className="text-2xl">Deck Builder</div>}
-      <div className="row-center flex-wrap gap-2">
-        <Button
-          onClick={saveHandDeckState(onAddBasic)}
-          disabled={
-            originalDeckWithoutOtherSize >= MAX_DECK_SIZE || guideDisplay
-          }
-        >
-          +1 Generic Basic
-        </Button>
-        <Button
-          onClick={
-            promoPokeBall
-              ? saveHandDeckState(add2cardToDeckFn(promoPokeBall))
-              : undefined
-          }
-          disabled={
-            originalDeckWithoutOtherSize >= MAX_DECK_SIZE ||
-            (promoPokeBall &&
-              sameNameCardsCount(promoPokeBall, originalDeck) >= 2) ||
-            guideDisplay
-          }
-        >
-          +2 Poke Ball
-        </Button>
-        <Button
-          onClick={
-            promoProfResearch
-              ? saveHandDeckState(add2cardToDeckFn(promoProfResearch))
-              : undefined
-          }
-          disabled={
-            originalDeckWithoutOtherSize >= MAX_DECK_SIZE ||
-            (promoProfResearch &&
-              sameNameCardsCount(promoProfResearch, originalDeck) >= 2) ||
-            guideDisplay
-          }
-        >
-          +2 Professor's Research
-        </Button>
+      {isCardDataLoading ? (
+        <div className="row-center items-center gap-2">
+          <div className="relative size-7">
+            <Loader2Icon
+              className="absolute animate-spin text-[#3466AF] full font-bold"
+              strokeWidth={6}
+            />
+            <Loader2Icon
+              className="absolute animate-spin text-[#FFCB05] full font-bold"
+              strokeWidth={3}
+            />
+          </div>
+          <div>Card data loading...</div>
+        </div>
+      ) : (
+        <>
+          <div className="row-center flex-wrap gap-2">
+            <Button
+              onClick={saveHandDeckState(onAddBasic)}
+              disabled={
+                originalDeckWithoutOtherSize >= MAX_DECK_SIZE || guideDisplay
+              }
+            >
+              +1 Generic Basic
+            </Button>
+            <Button
+              onClick={
+                promoPokeBall
+                  ? saveHandDeckState(add2cardToDeckFn(promoPokeBall))
+                  : undefined
+              }
+              disabled={
+                originalDeckWithoutOtherSize >= MAX_DECK_SIZE ||
+                (promoPokeBall &&
+                  sameNameCardsCount(promoPokeBall, originalDeck) >= 2) ||
+                guideDisplay
+              }
+            >
+              +2 Poke Ball
+            </Button>
+            <Button
+              onClick={
+                promoProfResearch
+                  ? saveHandDeckState(add2cardToDeckFn(promoProfResearch))
+                  : undefined
+              }
+              disabled={
+                originalDeckWithoutOtherSize >= MAX_DECK_SIZE ||
+                (promoProfResearch &&
+                  sameNameCardsCount(promoProfResearch, originalDeck) >= 2) ||
+                guideDisplay
+              }
+            >
+              +2 Professor's Research
+            </Button>
 
-        <Button
-          variant="destructive"
-          onClick={saveHandDeckState(resetOriginalDeck)}
-          disabled={guideDisplay}
-        >
-          Clear Deck
-        </Button>
+            <Button
+              variant="destructive"
+              onClick={saveHandDeckState(resetOriginalDeck)}
+              disabled={guideDisplay}
+            >
+              Clear Deck
+            </Button>
 
-        <ShareLinkButton
-          onShareLinkClick={onShareLinkClick}
-          disabled={guideDisplay}
-        />
-      </div>
+            <ShareLinkButton
+              onShareLinkClick={onShareLinkClick}
+              disabled={guideDisplay}
+            />
+          </div>
 
-      {!guideDisplay && (
-        <SearchSelect
-          options={cardDataOptions}
-          className="mb-0 w-100 max-w-full min-w-0"
-          onSelect={onCardSelect}
-        />
+          {!guideDisplay && (
+            <SearchSelect
+              options={cardDataOptions}
+              className="mb-0 w-100 max-w-full min-w-0"
+              onSelect={onCardSelect}
+            />
+          )}
+        </>
       )}
 
       <div className="grow full">

@@ -76,6 +76,7 @@ const GuideDialog = ({ children, cardData }: Props) => {
                       targetHands={dummyTargetHands}
                       saveHandDeckState={dummySaveHandDeckState}
                       guideDisplay
+                      isCardDataLoading={false}
                     />
                   </div>
                 </div>
