@@ -22,7 +22,14 @@ const SimulatorChart = ({ chartData, targetHandIds }: Props) => {
     <ResponsiveContainer>
       <ComposedChart data={chartData}>
         <CartesianGrid />
-        <Tooltip formatter={(value: number) => `${value.toFixed(1)}%`} />
+        <Tooltip
+          formatter={(value: number) => `${value.toFixed(1)}%`}
+          labelFormatter={(turn) => (
+            <b>
+              {`Turn ${turn} (${parseInt(turn) + 5} natural draws)`}
+            </b>
+          )}
+        />
         <Legend />
         <YAxis
           type="number"
@@ -35,18 +42,18 @@ const SimulatorChart = ({ chartData, targetHandIds }: Props) => {
           tickFormatter={(value: number) => value.toFixed(0)}
         />
         <XAxis dataKey="name" label={{ value: 'Turn', dy: 13 }} />
-        <Bar dataKey="anyMatch" name="Any Target Hand" />
+        <Bar dataKey="anyMatch" name="Any target hand" />
+        <Line dataKey="cumulative" name="Cumulative any" />
         {targetHandIds.map((targetHandId, i) => {
           return (
             <Bar
               dataKey={targetHandId}
-              name={`Target Hand ${i + 1}`}
+              name={`Target hand ${i + 1}`}
               // TODO: choose colors based on deck type
               fill={getHexColorForValue(i / targetHandIds.length, 0.55, 0.75)}
             />
           )
         })}
-        <Line dataKey="cumulative" name="Cumulative" />
       </ComposedChart>
     </ResponsiveContainer>
   )
