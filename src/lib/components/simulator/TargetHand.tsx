@@ -124,14 +124,14 @@ const TargetHand = ({
   }, [targetHand, targetHands])
 
   const targetHandCardContainerWidth = useMemo(
-    () => (atLeast(screenSize, 'md') ? Math.max(4, targetHand.length) : 4),
-    [screenSize, targetHand.length],
+    () => (atLeast(screenSize, 'md') ? 5 : 4),
+    [screenSize],
   )
 
   return (
     <div>
-      <div className="w-full flex flex-col md:flex-row md:gap-5">
-        <div className="w-full md:w-3/5">
+      <div className="w-full flex flex-col lg:flex-row lg:gap-5">
+        <div className="w-full lg:w-3/5">
           {!targetHandId ? (
             <div className="text-xl ms-3">Create new target hand</div>
           ) : (
@@ -155,7 +155,7 @@ const TargetHand = ({
             </PokeCardsContainer>
           )}
         </div>
-        <div className="flex flex-row items-center md:flex-col md:items-end w-full md:w-2/5 mt-2 gap-2 md:gap-0">
+        <div className="flex flex-row items-center lg:flex-col lg:items-end w-full lg:w-2/5 mt-2 gap-2 lg:gap-0">
           <SearchSelect
             options={options}
             className="w-full"
@@ -163,7 +163,7 @@ const TargetHand = ({
             disabled={guideDisplay}
           />
           {targetHandId && (
-            <div className="md:mt-2 flex flex-row gap-2 justify-end">
+            <div className="lg:mt-2 flex flex-row gap-2 justify-end">
               <Button
                 className=""
                 onClick={saveHandDeckState(duplicate)}
@@ -177,7 +177,7 @@ const TargetHand = ({
                 variant="destructive"
                 disabled={guideDisplay}
               >
-                <Trash2 className='size-4/7' />
+                <Trash2 className="size-4/7" />
                 {/* <i className="fa-solid fa-trash" /> */}
               </Button>
             </div>
