@@ -207,12 +207,25 @@ const SimulatorPanel = ({ originalDeck, targetHands }: Props) => {
     [deckHasBasic, targetHandsDefined],
   )
 
+  const showSimulationProgressBar =
+    simulationCount > 0 && simulationCount < simulationLimit
+
   return (
     <div className="full col-center gap-3">
       <div className="col-center gap-1">
         <div className="text-2xl">Draw Simulator</div>
       </div>
-      {simulationCount}/{simulationLimit} simulations
+      <div>
+        <span className="relative">
+          {simulationCount}/{simulationLimit} simulations
+          <div
+            className={`absolute -bottom-1 left-0 bg-green-300 h-0.5 rounded-full transition-opacity ${showSimulationProgressBar ? 'opacity-100' : 'duration-600 opacity-0'}`}
+            style={{
+              width: `${(simulationCount / simulationLimit) * 100}%`,
+            }}
+          />
+        </span>
+      </div>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
