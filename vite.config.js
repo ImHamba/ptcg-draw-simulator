@@ -10,7 +10,6 @@ export default defineConfig({
   build: {
     outDir: process.argv.includes('deploy') ? 'dist-deploy' : 'dist',
   },
-  base: '/ptcg-draw-simulator/',
   plugins: [
     TanStackRouterVite({ autoCodeSplitting: true }),
     viteReact(),
