@@ -8,6 +8,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+
+import { Link } from '@tanstack/react-router'
 import NavBarMenu from './NavBarMenu'
 
 type Props = {
@@ -16,11 +18,13 @@ type Props = {
 }
 const NavBar = ({ cardData, children }: Props) => {
   return (
-    <div className="h-15 py-2 md:py-1 px-2 md:px-10 bg-gray-50 z-20 flex flex-row content-between items-center relative">
-      <div className="flex flex-row items-center text-2xl full">
-        <img src="logo512.png" className="h-full me-1" />
-        {children}
-      </div>
+    <div className="h-15 py-2 md:py-1 px-2 md:px-10 bg-gray-50 z-20 flex flex-row justify-between items-center relative">
+      <Link to="/" className="h-full">
+        <div className="flex flex-row items-center text-2xl full">
+          <img src="logo512.png" className="h-full me-1" />
+          {children}
+        </div>
+      </Link>
 
       {/* menu for large screens */}
       <div className="hidden md:block">
@@ -31,7 +35,6 @@ const NavBar = ({ cardData, children }: Props) => {
         {/* collapsible menu for small screens */}
         <PopoverTrigger asChild>
           <Button
-            // onClick={toggleMenu}
             className="h-[85%] aspect-5/4 p-0 md:hidden"
             variant="ghost"
           >

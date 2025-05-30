@@ -232,7 +232,7 @@ const SimulatorPanel = ({ originalDeck, targetHands }: Props) => {
             <Button
               onClick={doSimulation ? stopSimulation : simulate}
               disabled={!canStartSimulation}
-              variant={doSimulation ? 'destructive' : 'default'}
+              variant={doSimulation ? 'destructive' : 'outline'}
             >
               {doSimulation ? 'Stop' : 'Start'}
             </Button>

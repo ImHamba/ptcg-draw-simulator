@@ -165,7 +165,7 @@ const TargetHand = ({
           {targetHandId && (
             <div className="lg:mt-2 flex flex-row gap-2 justify-end">
               <Button
-                className=""
+                variant="outline"
                 onClick={saveHandDeckState(duplicate)}
                 disabled={guideDisplay}
               >

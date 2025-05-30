@@ -199,7 +199,7 @@ const DeckPanel = ({
       ) : (
         <>
           <div className="row-center flex-wrap gap-2">
-            <Button
+            <Button variant='outline'
               onClick={saveHandDeckState(onAddBasic)}
               disabled={
                 originalDeckWithoutOtherSize >= MAX_DECK_SIZE || guideDisplay
@@ -207,7 +207,7 @@ const DeckPanel = ({
             >
               +1 Generic Basic
             </Button>
-            <Button
+            <Button variant='outline'
               onClick={
                 promoPokeBall
                   ? saveHandDeckState(add2cardToDeckFn(promoPokeBall))
@@ -222,7 +222,7 @@ const DeckPanel = ({
             >
               +2 Poke Ball
             </Button>
-            <Button
+            <Button variant='outline'
               onClick={
                 promoProfResearch
                   ? saveHandDeckState(add2cardToDeckFn(promoProfResearch))

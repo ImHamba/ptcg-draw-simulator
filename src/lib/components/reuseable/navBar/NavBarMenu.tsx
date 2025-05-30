@@ -11,7 +11,7 @@ const NavBarMenu = ({ cardData }: Props) => {
     <div className="flex flex-col md:flex-row gap-2 items-center">
       <GuideDialog cardData={cardData}>
         <Button
-          className="h-[85%] flex flex-row items-center text-xl font-normal"
+          className="h-[85%] w-full flex flex-row items-center text-xl font-normal"
           variant="ghost"
         >
           About/Guide
