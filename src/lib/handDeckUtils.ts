@@ -1,12 +1,4 @@
-import {
-  useProfessorsResearch as playProfessorsResearch,
-  usePokeball,
-} from './cardEffects'
-import {
-  basicPokemonFilter,
-  otherCardFilter,
-  pokeballFilter,
-} from './cardFilters'
+import { basicPokemonFilter, otherCardFilter } from './cardFilters'
 import { FIRST_HAND_SIZE, MAX_DECK_SIZE } from './constants'
 
 import { isSameCard, isSameNameCard } from './appUtils'
@@ -192,16 +184,22 @@ export const sumCardCount = (cards: MultiPokeCard[], filter?: CardFilter) => {
   return sum(filteredCards.map((card) => card.count))
 }
 
-export const drawBasic = (hand: MultiPokeCard[], deck: MultiPokeCard[]) => {
-  const basicPokemonInDeck = sumCardCount(deck, basicPokemonFilter)
-  return drawMany(
-    hand,
-    deck,
-    // draw 1 if the deck has it
-    Math.min(1, basicPokemonInDeck),
-    basicPokemonFilter,
-  )
+export const drawByFilter = (
+  hand: MultiPokeCard[],
+  deck: MultiPokeCard[],
+  cardFilter: CardFilter,
+) => {
+  const matchingCardsInDeck = sumCardCount(deck, cardFilter)
+
+  if (matchingCardsInDeck === 0) {
+    return { newDeck: deck, newHand: hand }
+  }
+
+  return drawFromDeck(hand, deck, cardFilter)
 }
+
+export const drawBasic = (hand: MultiPokeCard[], deck: MultiPokeCard[]) =>
+  drawByFilter(hand, deck, basicPokemonFilter)
 
 const addCardToCardList = (
   card: PokeCard,
@@ -343,7 +341,7 @@ export const addTargetCard = (
   }
 }
 
-type useCard = (
+type PlayCard = (
   hand: MultiPokeCard[],
   deck: MultiPokeCard[],
 ) => {
@@ -354,7 +352,7 @@ type useCard = (
 export const playAllCards = (
   hand: MultiPokeCard[],
   deck: MultiPokeCard[],
-  playCard: useCard,
+  playCard: PlayCard,
   cardFilter: CardFilter,
 ) => {
   let newHand = hand
@@ -366,24 +364,7 @@ export const playAllCards = (
   return { newHand, newDeck }
 }
 
-export const playSpecialCards = (
-  hand: MultiPokeCard[],
-  deck: MultiPokeCard[],
-) => {
-  const { newHand: handAfterPokeball, newDeck: deckAfterPokeball } =
-    playAllCards(hand, deck, usePokeball, pokeballFilter)
-
-  // only uses if hand contains a prof research
-  const { newHand: handAfterResearch, newDeck: deckAfterResearch } =
-    playProfessorsResearch(handAfterPokeball, deckAfterPokeball)
-
-  // TODO: work out why using pokeballs after research reduces chance to get target hand
-  // return { newHand: handAfterResearch, newDeck: deckAfterResearch }
-  // use pokeball again that might be drawn by prof research
-  return playAllCards(
-    handAfterResearch,
-    deckAfterResearch,
-    usePokeball,
-    pokeballFilter,
-  )
-}
+export const cardListHasCard = (
+  cardList: MultiPokeCard[],
+  hasCardFilter: CardFilter,
+) => Boolean(cardList.find(hasCardFilter))

@@ -15,3 +15,8 @@ export const profResearchFilter: CardFilter = (card) =>
   card.data?.name === PROFESSORS_RESEARCH_CARD_NAME
 
 export const otherCardFilter: CardFilter = (card) => card.cardType === 'other'
+
+export const gladionFilter: CardFilter = (card) => card.data?.name === 'Gladion'
+
+export const gladionSearchFilter: CardFilter = (card) =>
+  card.data?.name === 'Type: Null' || card.data?.name === 'Silvally'

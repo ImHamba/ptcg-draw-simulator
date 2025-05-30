@@ -66,20 +66,19 @@ const TargetHandsPanel = ({
         {[
           ...Object.keys(targetHands).map((targetHandId, i) => {
             return (
-              <>
+              <div key={'targetHand' + i}>
                 <TargetHand
                   targetHandId={targetHandId}
                   targetHands={targetHands}
                   originalDeck={originalDeck}
                   saveHandDeckState={saveHandDeckState}
                   guideDisplay={guideDisplay}
-                  key={'targetHand' + i}
                 />
 
                 <div className="w-full row-center" key={'separator' + i}>
                   <Separator className="w-9/10 md:w-full my-6" />
                 </div>
-              </>
+              </div>
             )
           }),
           // extra component to allow user to add cards to a new target hand.

@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import type { MultiPokeCard, SaveHandDeckState } from '@/lib/types'
-import { usePokeball, useProfessorsResearch } from '../../cardEffects'
+import { playPokeball, playProfessorsResearch } from '../../cardEffects'
 import { pokeballFilter, profResearchFilter } from '../../cardFilters'
 import {
   drawFirstHand,
@@ -41,13 +41,13 @@ const Hand = ({ deck, hand, originalDeck, saveHandDeckState }: Props) => {
           Draw First Hand
         </Button>
         <Button
-          onClick={saveHandDeckState(usePokeball, hand, deck)}
+          onClick={saveHandDeckState(playPokeball, hand, deck)}
           disabled={!hasPokeball}
         >
           Use PokeBall
         </Button>
         <Button
-          onClick={saveHandDeckState(useProfessorsResearch, hand, deck)}
+          onClick={saveHandDeckState(playProfessorsResearch, hand, deck)}
           disabled={!hasProfResearch}
         >
           Use Professor's Research

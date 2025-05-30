@@ -8,7 +8,7 @@ import type {
   TargetHands,
 } from '@/lib/types'
 import { useRouter } from '@tanstack/react-router'
-import { Loader2Icon } from 'lucide-react'
+import { LoaderCircle } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
 import { generateShareLink } from '../../appUtils'
 import { otherCardFilter } from '../../cardFilters'
@@ -184,22 +184,17 @@ const DeckPanel = ({
       {!guideDisplay && <div className="text-2xl">Deck Builder</div>}
       {isCardDataLoading ? (
         <div className="row-center items-center gap-2">
-          <div className="relative size-7">
-            <Loader2Icon
-              className="absolute animate-spin text-[#3466AF] full font-bold"
-              strokeWidth={6}
-            />
-            <Loader2Icon
-              className="absolute animate-spin text-[#FFCB05] full font-bold"
-              strokeWidth={3}
-            />
-          </div>
+          <LoaderCircle
+            className="animate-spin font-bold size-7"
+            strokeWidth={3}
+          />
           <div>Card data loading...</div>
         </div>
       ) : (
         <>
           <div className="row-center flex-wrap gap-2">
-            <Button variant='outline'
+            <Button
+              variant="outline"
               onClick={saveHandDeckState(onAddBasic)}
               disabled={
                 originalDeckWithoutOtherSize >= MAX_DECK_SIZE || guideDisplay
@@ -207,7 +202,8 @@ const DeckPanel = ({
             >
               +1 Generic Basic
             </Button>
-            <Button variant='outline'
+            <Button
+              variant="outline"
               onClick={
                 promoPokeBall
                   ? saveHandDeckState(add2cardToDeckFn(promoPokeBall))
@@ -222,7 +218,8 @@ const DeckPanel = ({
             >
               +2 Poke Ball
             </Button>
-            <Button variant='outline'
+            <Button
+              variant="outline"
               onClick={
                 promoProfResearch
                   ? saveHandDeckState(add2cardToDeckFn(promoProfResearch))

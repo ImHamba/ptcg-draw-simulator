@@ -6,15 +6,12 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { checkHandMatchesTargetHands } from '@/lib/appUtils'
+import { playSpecialCards } from '@/lib/cardEffects'
 import { basicPokemonFilter } from '@/lib/cardFilters'
 import type { MultiPokeCard, TargetHands } from '@/lib/types'
 import { useMemo, useRef, useState } from 'react'
 import { FIRST_HAND_SIZE, MAX_DECK_SIZE } from '../../constants'
-import {
-  drawFirstHand,
-  drawFromDeck,
-  playSpecialCards,
-} from '../../handDeckUtils'
+import { drawFirstHand, drawFromDeck } from '../../handDeckUtils'
 import { sumObjects } from '../../utils'
 import SimulatorChart from '../reuseable/SimulatorChart'
 
