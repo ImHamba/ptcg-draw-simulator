@@ -23,7 +23,9 @@ export function ShareLinkButton({ onShareLinkClick, disabled }: Props) {
 
       <PopoverContent className="bg-primary w-fit text-white p-2 rounded-md border-0">
         <PopoverArrow className="fill-primary" />
-        <div className="w-fit">Link copied to clipboard!</div>
+        <div className="w-fit font-normal text-sm px-2">
+          Link copied to clipboard!
+        </div>
       </PopoverContent>
     </Popover>
   )
