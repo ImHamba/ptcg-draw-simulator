@@ -15,7 +15,7 @@ const HomePage = () => {
   const numCards = Math.max(Math.floor(screenWidth / 150), 4)
 
   return (
-    <div className="w-screen h-screen col-center bg-[linear-gradient(110deg,_#eae6ff,_#d4f0fc)] p-5 md:p-10 pb-[30vh] overflow-hidden relative">
+    <div className="w-screen h-[100dvh] col-center bg-[linear-gradient(110deg,_#eae6ff,_#d4f0fc)] p-5 md:p-10 pb-[30vh] overflow-hidden relative">
       {/* spacer that shrinks on smaller screens */}
       <div className="flex-1 max-h-[30vh]" />
 

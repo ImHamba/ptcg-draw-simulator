@@ -46,7 +46,7 @@ const GuideDialog = ({ children, cardData }: Props) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="min-w-[90vw] md:min-w-[70vw] xl:min-w-[50vw] max-h-[97vh] md:max-h-[90vh] overflow-y-auto">
+      <DialogContent className="min-w-[90vw] md:min-w-[70vw] xl:min-w-[50vw] max-h-[97vh] md:max-h-[90dvh] overflow-y-auto">
         <DialogHeader className="w-full">
           <DialogTitle className="text-2xl">Draw Simulator Guide</DialogTitle>
         </DialogHeader>
