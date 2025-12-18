@@ -65,6 +65,22 @@ export const not = <T extends (...args: any[]) => boolean>(predicate: T) => {
 }
 
 /**
+ * combines multiple predicates with logical AND
+ */
+export const and =
+  <T extends any[]>(...predicates: Array<(...args: T) => boolean>) =>
+  (...args: T): boolean =>
+    predicates.every((p) => p(...args))
+
+/**
+ * combines multiple predicates with logical OR
+ */
+export const or =
+  <T extends any[]>(...predicates: Array<(...args: T) => boolean>) =>
+  (...args: T): boolean =>
+    predicates.some((p) => p(...args))
+
+/**
  * Adds the corresponding keys of two objects together
  */
 export const sumObjects = (

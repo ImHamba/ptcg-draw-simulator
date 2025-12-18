@@ -13,10 +13,9 @@ import { useCallback, useMemo } from 'react'
 import { generateShareLink } from '../../appUtils'
 import { otherCardFilter } from '../../cardFilters'
 import {
+  CARD_NAMES,
   MAX_COUNT_PER_CARD_NAME,
   MAX_DECK_SIZE,
-  POKEBALL_CARD_NAME,
-  PROFESSORS_RESEARCH_CARD_NAME,
 } from '../../constants'
 import {
   decrementCard,
@@ -34,7 +33,6 @@ import SearchSelect from '../reuseable/SearchSelect'
 import { ShareLinkButton } from '../reuseable/ShareLinkButton'
 
 type Props = {
-  deck: MultiPokeCard[]
   originalDeck: MultiPokeCard[]
   cardData: CardData[]
   targetHands: TargetHands
@@ -45,7 +43,6 @@ type Props = {
 
 // http://localhost:3000/simulator?deck=2.A2a-071_2.A2b-111_2.PROMO-007_2.A2a-050_2.A1-172_2.A2a-009_2.A3-144&target=1.A2a-071_1.A2a-009%7E1.A2a-050_1.A1-172_1.A2a-071_1.A3-144
 const DeckPanel = ({
-  deck,
   originalDeck,
   cardData,
   targetHands,
@@ -103,11 +100,10 @@ const DeckPanel = ({
       saveHandDeckState((card) => {
         return {
           newOriginalDeck: fillDeck(incrementCard(originalDeck, card)),
-          newDeck: fillDeck(incrementCard(deck, card)),
         }
       }, card)()
     },
-    [deck, originalDeck, saveHandDeckState],
+    [ originalDeck, saveHandDeckState],
   )
 
   const decrement = useCallback(
@@ -115,10 +111,9 @@ const DeckPanel = ({
       saveHandDeckState((card) => {
         return {
           newOriginalDeck: fillDeck(decrementCard(originalDeck, card)),
-          newDeck: fillDeck(decrementCard(deck, card)),
         }
       }, card)(),
-    [deck, originalDeck, saveHandDeckState],
+    [ originalDeck, saveHandDeckState],
   )
 
   const onShareLinkClick = () => {
@@ -155,7 +150,8 @@ const DeckPanel = ({
   const promoPokeBall: PokeCard | undefined = useMemo(() => {
     const data = cardData.find(
       (cardData) =>
-        cardData.name === POKEBALL_CARD_NAME && cardData.set_name === 'Promo A',
+        cardData.name === CARD_NAMES.pokeball &&
+        cardData.set_name === 'Promo A',
     )
     if (!data) {
       return undefined
@@ -168,7 +164,7 @@ const DeckPanel = ({
   const promoProfResearch: PokeCard | undefined = useMemo(() => {
     const data = cardData.find(
       (cardData) =>
-        cardData.name === PROFESSORS_RESEARCH_CARD_NAME &&
+        cardData.name === CARD_NAMES.professors_research &&
         cardData.set_name === 'Promo A',
     )
     if (!data) {
@@ -262,7 +258,7 @@ const DeckPanel = ({
       <div className="grow full">
         <div className="w-full">
           <PokeCardsContainer width={deckCardsContainerWidth}>
-            {deck.map((card) => {
+            {originalDeck.map((card) => {
               const disableIncrement =
                 // everything disabled if deck at max capacity
                 originalDeckWithoutOtherSize >= MAX_DECK_SIZE

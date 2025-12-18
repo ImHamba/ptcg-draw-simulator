@@ -6,14 +6,19 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { checkHandMatchesTargetHands } from '@/lib/appUtils'
-import { playSpecialCards } from '@/lib/cardEffects'
+
+import { playTrainerEffectCards } from '@/lib/cardEffects/cardEffectLogic'
 import { basicPokemonFilter } from '@/lib/cardFilters'
-import type { MultiPokeCard, TargetHands } from '@/lib/types'
+import type { DrawState, MultiPokeCard, TargetHands } from '@/lib/types'
 import { useMemo, useRef, useState } from 'react'
-import { FIRST_HAND_SIZE, MAX_DECK_SIZE } from '../../constants'
 import { drawFirstHand, drawFromDeck } from '../../handDeckUtils'
 import { sumObjects } from '../../utils'
 import SimulatorChart from '../reuseable/SimulatorChart'
+
+type CumulativeSimulationResults = Record<
+  string | number,
+  Record<'any' | keyof TargetHands, number>
+>
 
 type Props = {
   originalDeck: MultiPokeCard[]
@@ -28,66 +33,77 @@ const SimulatorPanel = ({ originalDeck, targetHands }: Props) => {
 
   const simulationLimit = 10000
 
-  // initialise simulation results data structure.
-  // the top level holds a key for each possible number of draws (until deck is depleted).
-  // each value holds the cumulative sums of each target hand that was matched first in a simulation at the
-  // given number of draws.
-  // e.g. target hand X was the first target hand to be matched 150 times at the 4th draw of the game
-  const initialCumulativeSimulationResults: Record<
-    string,
-    Record<'any' | keyof TargetHands, number>
-  > = Object.fromEntries([
-    ...Array.from({ length: MAX_DECK_SIZE - FIRST_HAND_SIZE + 1 }, (_, i) => [
-      i,
-      {
-        ...Object.fromEntries(
-          Object.entries(targetHands).map(([targetHandId, _]) => {
-            return [targetHandId, 0]
-          }),
-        ),
+  /**
+   * function to access the simulation results data structure by key,
+   * with initialisation of defaults if key doesn't exist.
+   * The resulting structure of the results is as follows:
+   * - the top level holds a key for each possible number of draws (until deck is depleted).
+   * - each value holds the cumulative sums of each target hand that was matched first in a simulation at the
+   * given number of draws.
+   *   - e.g. target hand X was the first target hand to be matched 150 times at the 4th draw of the game
+   */
+  const accessCumulativeSimulationResults = (
+    simResults: CumulativeSimulationResults,
+    key: string | number,
+  ) => {
+    // if simulation results already have the key, just return it
+    return key in simResults
+      ? simResults[key]
+      : // otherwise return an initialised object starting at 0 count
+        {
+          ...Object.fromEntries(
+            Object.entries(targetHands).map(([targetHandId, _]) => {
+              return [targetHandId, 0]
+            }),
+          ),
 
-        // additional property to track when any hand is matched
-        // since multiple hands can match on the same draw.
-        // the value of these properties from all the draw counts should sum
-        // to the total number of simulations done.
-        anyMatch: 0,
-      },
-    ]),
-  ])
+          // additional property to track when any hand is matched
+          // since multiple hands can match on the same draw.
+          // the value of these properties from all the draw counts should sum
+          // to the total number of simulations done.
+          anyMatch: 0,
+        }
+  }
 
   const [cumulativeSimulationResults, setCumulativeSimulationResults] =
-    useState(initialCumulativeSimulationResults)
+    useState<CumulativeSimulationResults>({})
 
   const setDoSimulation = (value: boolean) => {
     doSimulationRef.current = value
     _setDoSimulation(value)
   }
 
-  // simulates a single round of drawing from the full deck until at least 1 target hand is matched
-  // returns an obj indicating which target hand was first matched (could be multiple) and how many draws
+  // Simulates a single round of drawing from the full deck until at least 1 target hand is matched.
+  // Returns an obj indicating which target hand was first matched (could be multiple) and how many draws
   // it took (first hand is 0 draws)
-  const drawSimulation = () => {
-    let hand: MultiPokeCard[]
-    let deck = originalDeck
-    let drawCount = 0
+  const drawSimulation = (
+    drawState: DrawState = {
+      hand: [], // start with empty hand
+      deck: originalDeck, // start with full deck
+    },
+    drawCount: number = 0,
+  ) => {
+    // Draw cards depending on whether it's the first hand or subsequent draws
+    const resultAfterDraw =
+      drawCount === 0 ? drawFirstHand(drawState.deck) : drawFromDeck(drawState)
 
-    // check matches after drawing first hand and using special cards
-    ;({ newHand: hand, newDeck: deck } = drawFirstHand(deck))
-    ;({ newHand: hand, newDeck: deck } = playSpecialCards(hand, deck))
+    const newDrawState = playTrainerEffectCards(
+      resultAfterDraw.drawState,
+      targetHands,
+    )
 
-    let targetHandMatches = checkHandMatchesTargetHands(hand, targetHands)
+    const targetHandMatches = checkHandMatchesTargetHands(
+      newDrawState.hand,
+      targetHands,
+    )
 
-    // if not matching, repeat drawing and using any special cards
-    while (!targetHandMatches.anyMatch) {
-      ;({ newHand: hand, newDeck: deck } = drawFromDeck(hand, deck))
-      ;({ newHand: hand, newDeck: deck } = playSpecialCards(hand, deck))
-
-      targetHandMatches = checkHandMatchesTargetHands(hand, targetHands)
-
-      drawCount++
+    // base case: If a match is found, return the result
+    if (targetHandMatches.anyMatch) {
+      return { targetHandMatches, drawCount }
     }
 
-    return { targetHandMatches, drawCount }
+    // recursive case: Continue drawing and checking
+    return drawSimulation(newDrawState, drawCount + 1)
   }
 
   const simulate = async () => {
@@ -97,7 +113,7 @@ const SimulatorPanel = ({ originalDeck, targetHands }: Props) => {
     const timeBudgetMs = 10
     let innerLoopCount = 0
 
-    setCumulativeSimulationResults(initialCumulativeSimulationResults)
+    setCumulativeSimulationResults({})
 
     while (doSimulationRef.current && innerLoopCount < simulationLimit) {
       const frameStart = performance.now()
@@ -106,11 +122,16 @@ const SimulatorPanel = ({ originalDeck, targetHands }: Props) => {
         performance.now() - frameStart < timeBudgetMs &&
         innerLoopCount < simulationLimit
       ) {
-        const { targetHandMatches, drawCount } = drawSimulation()
+        const simulationResult = drawSimulation()
+
+        const { targetHandMatches, drawCount } = simulationResult
         setCumulativeSimulationResults((prev) => {
           return {
             ...prev,
-            [drawCount]: sumObjects(targetHandMatches, prev[drawCount]),
+            [drawCount]: sumObjects(
+              targetHandMatches,
+              accessCumulativeSimulationResults(prev, drawCount),
+            ),
           }
         })
         innerLoopCount++

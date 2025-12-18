@@ -16,7 +16,7 @@ import {
 import { fillDeck } from './handDeckUtils'
 import type {
   CardData,
-  CardType,
+  GenericCardType,
   MultiPokeCard,
   PokeCard,
   TargetHands,
@@ -217,6 +217,6 @@ export const imageUrlFromCard = (card: PokeCard) => {
   return `${CARD_IMG_API_URL}${setCode}/${setCode}_${data.number.padStart(3, '0')}_EN.webp`
 }
 
-export const isGenericCardType = (value: string): value is CardType => {
+export const isGenericCardType = (value: string): value is GenericCardType => {
   return (GENERIC_CARD_TYPES as readonly string[]).includes(value)
 }

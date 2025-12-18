@@ -1,8 +1,6 @@
 export const VERSION = '1.0'
 
 export const BASIC_STAGE = 'Basic'
-export const PROFESSORS_RESEARCH_CARD_NAME = 'Professor’s Research'
-export const POKEBALL_CARD_NAME = 'Poké Ball'
 export const MAX_DECK_SIZE = 20
 export const FIRST_HAND_SIZE = 5 // includes first draw
 export const MAX_COUNT_PER_CARD_NAME = 2
@@ -38,6 +36,49 @@ export const CARD_DATA_PROPERTIES = [
   'type',
   'attack',
   'ability',
+  'hp',
+  'prew_stage_name', // previous stage name
 ] as const
 
+// card types that represent a generic card without specific data
+// (placeholder cards used in the deck maker)
 export const GENERIC_CARD_TYPES = ['basicOther', 'other'] as const
+
+// card types (that we care about) that represent specific card categories
+// that come from the card data api
+export const CARD_TYPES = ['Pokemon', 'Pokémon Tool'] as const
+
+export const POKEMON_CARD_NAMES = {
+  type_null: 'Type: Null',
+  silvally: 'Silvally',
+  glameow: 'Glameow',
+  stunky: 'Stunky',
+  croagunk: 'Croagunk',
+  magneton: 'Magneton',
+  heliolisk: 'Heliolisk',
+}
+
+export const SUPPORTER_CARD_NAMES = {
+  professors_research: 'Professor’s Research',
+  gladion: 'Gladion',
+  team_galactic_grunt: 'Team Galactic Grunt',
+  traveling_merchant: 'Traveling Merchant',
+  may: 'May',
+  copycat: 'Copycat',
+  lisia: 'Lisia',
+  iono: 'Iono',
+  serena: 'Serena',
+  clemont: 'Clemont',
+}
+
+export const NON_SUPPORTER_CARD_NAMES = {
+  pokeball: 'Poké Ball',
+  clemonts_backpack: 'Clemont’s Backpack',
+  quick_grow_extract: 'Quick-Grow Extract',
+}
+
+export const CARD_NAMES = {
+  ...POKEMON_CARD_NAMES,
+  ...SUPPORTER_CARD_NAMES,
+  ...NON_SUPPORTER_CARD_NAMES,
+}

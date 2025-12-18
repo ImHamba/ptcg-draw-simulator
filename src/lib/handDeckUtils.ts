@@ -4,6 +4,8 @@ import { FIRST_HAND_SIZE, MAX_DECK_SIZE } from './constants'
 import { isSameCard, isSameNameCard } from './appUtils'
 import type {
   CardFilter,
+  DrawState,
+  HandDeckStateChanger,
   MultiCardWithCumuCount,
   MultiPokeCard,
   PokeCard,
@@ -11,25 +13,30 @@ import type {
 } from './types'
 import { conditionalListItem, getRandomInt, sum } from './utils'
 
-export const drawFromDeck = (
-  hand: MultiPokeCard[],
-  deck: MultiPokeCard[],
-  filter?: CardFilter,
-) => {
+/**
+ * Draws a random card from the deck, optionally filtered by a card filter condition.
+ */
+export const drawFromDeck = (drawState: DrawState, filter?: CardFilter) => {
+  const hand = drawState.hand
+  const deck = drawState.deck
+
   if (deck.length === 0) {
     throw Error(`Tried to draw from empty deck.`)
   }
 
   // calculate cumulative counts of cards through the deck
-  const deckWithCumuCounts = deck.reduce((acc, card) => {
-    const includeCard = filter?.(card) ?? true
-    const previousCount = acc.at(-1)?.cumuCount ?? 0
+  const deckWithCumuCounts = deck.reduce<MultiCardWithCumuCount[]>(
+    (acc, card) => {
+      const includeCard = filter?.(card) ?? true
+      const previousCount = acc.at(-1)?.cumuCount ?? 0
 
-    // if cumulative count only increments for included cards, then they won't
-    // be able to be selected later on
-    const cumuCount = previousCount + (includeCard ? card.count : 0)
-    return [...acc, { ...card, cumuCount: cumuCount }]
-  }, [] as MultiCardWithCumuCount[])
+      // if cumulative count only increments for included cards, then they won't
+      // be able to be selected later on
+      const cumuCount = previousCount + (includeCard ? card.count : 0)
+      return [...acc, { ...card, cumuCount: cumuCount }]
+    },
+    [],
+  )
 
   // pick a random number within the size of the deck
   const deckSize = deckWithCumuCounts.at(-1)?.cumuCount ?? 0
@@ -84,30 +91,63 @@ export const drawFromDeck = (
     ? incrementedHand
     : [...hand, { ...drawnCard, count: 1 }]
 
-  return { newDeck, newHand, drawnCard }
+  return { drawState: { deck: newDeck, hand: newHand }, drawnCard }
 }
 
+/**
+ * Draws a number of cards from the deck, optionally filtered by a card filter condition.
+ * Can also draw in reverse, meaning cards are sent from hand to deck instead.
+ */
 export const drawMany = (
-  hand: MultiPokeCard[],
-  deck: MultiPokeCard[],
+  drawState: DrawState,
   numberOfCards: number = 1,
   filter?: CardFilter,
+  reverse: boolean = false,
 ) => {
+  // if reverse, temporarily swap the hand and deck for the following reduce logic
+  const initialDrawState = reverse
+    ? { hand: drawState.deck, deck: drawState.hand }
+    : drawState
+
   const arr: number[] = Array(numberOfCards).fill(0)
-  return arr.reduce(
-    ({ newHand, newDeck, drawnCards }, _) => {
-      const drawResult = drawFromDeck(newHand, newDeck, filter)
+  const drawResult = arr.reduce(
+    ({ drawState, drawnCards }, _) => {
+      // cannot draw more if deck is empty or has no more cards left that match the filter
+      if (
+        drawState.deck.length === 0 ||
+        (filter && !drawState.deck.some(filter))
+      ) {
+        return { drawState, drawnCards }
+      }
+
+      const drawResult = drawFromDeck(drawState, filter)
+      const drawnCardsResult = addCardToCardList(
+        drawResult.drawnCard,
+        drawnCards,
+        1,
+      )
+
       return {
-        ...drawResult,
-        drawnCards: [...drawnCards, drawResult.drawnCard],
+        drawState: drawResult.drawState,
+        drawnCards: drawnCardsResult,
       }
     },
     {
-      newDeck: deck,
-      newHand: hand,
-      drawnCards: [] as PokeCard[],
+      drawState: initialDrawState,
+      drawnCards: [] as MultiPokeCard[],
     },
   )
+
+  // if reverse, swap the hand and deck back
+  return reverse
+    ? {
+        drawState: {
+          hand: drawResult.drawState.deck,
+          deck: drawResult.drawState.hand,
+        },
+        drawnCards: drawResult.drawnCards,
+      }
+    : drawResult
 }
 
 export const drawFirstHand = (deck: MultiPokeCard[]) => {
@@ -115,20 +155,18 @@ export const drawFirstHand = (deck: MultiPokeCard[]) => {
     throw Error('Tried to draw first hand from deck without basics.')
   }
 
-  let firstHand: MultiPokeCard[] = []
-  let deckAfterFirstHand: MultiPokeCard[] = deck
+  const initialDrawState = { hand: [], deck: deck }
+  let drawState: DrawState = initialDrawState
 
-  while (!firstHand.some(basicPokemonFilter)) {
-    firstHand = []
+  // keep drawing first hand until at least one basic is drawn
+  while (!drawState.hand.some(basicPokemonFilter)) {
+    drawState = initialDrawState
 
-    const drawResult = drawMany(firstHand, deck, FIRST_HAND_SIZE)
-    firstHand = drawResult.newHand
-    deckAfterFirstHand = drawResult.newDeck
+    const firstDrawResult = drawMany(drawState, FIRST_HAND_SIZE)
+    drawState = firstDrawResult.drawState
   }
 
-  const { newHand, newDeck } = drawFromDeck(firstHand, deckAfterFirstHand)
-
-  return { newHand, newDeck }
+  return drawFromDeck(drawState)
 }
 
 export const decrementCardByCondition = (
@@ -185,23 +223,22 @@ export const sumCardCount = (cards: MultiPokeCard[], filter?: CardFilter) => {
 }
 
 export const drawByFilter = (
-  hand: MultiPokeCard[],
-  deck: MultiPokeCard[],
+  drawState: DrawState,
   cardFilter: CardFilter,
-) => {
-  const matchingCardsInDeck = sumCardCount(deck, cardFilter)
+): { drawState: DrawState; drawnCard?: PokeCard } => {
+  const matchingCardsInDeck = sumCardCount(drawState.deck, cardFilter)
 
   if (matchingCardsInDeck === 0) {
-    return { newDeck: deck, newHand: hand }
+    return { drawState }
   }
 
-  return drawFromDeck(hand, deck, cardFilter)
+  return drawFromDeck(drawState, cardFilter)
 }
 
-export const drawBasic = (hand: MultiPokeCard[], deck: MultiPokeCard[]) =>
-  drawByFilter(hand, deck, basicPokemonFilter)
+export const drawBasic = (drawState: DrawState) =>
+  drawByFilter(drawState, basicPokemonFilter)
 
-const addCardToCardList = (
+export const addCardToCardList = (
   card: PokeCard,
   cardList: MultiPokeCard[],
   numberToAdd: number,
@@ -288,30 +325,40 @@ export const initialTargetHands: TargetHands = {}
 
 export const initialHand: MultiPokeCard[] = []
 
-export const resetDeckAndHand = (originalDeck: MultiPokeCard[]) => {
+export const resetDeckAndHand = (originalDeck: MultiPokeCard[]): DrawState => {
   return {
-    newDeck: originalDeck,
-    newHand: initialHand,
+    deck: originalDeck,
+    hand: initialHand,
   }
 }
 
-export const resetOriginalDeck = () => {
+export const resetOriginalDeck: HandDeckStateChanger = () => {
   return {
-    newDeck: fillDeck([]),
+    drawState: {
+      deck: fillDeck([]),
+      hand: [],
+    },
     newOriginalDeck: fillDeck([]),
-    newHand: [],
   }
 }
 
-export const resetAllAndAddCard = (
+export const resetAllAndAddCard: HandDeckStateChanger = (
   card: PokeCard,
   originalDeck: MultiPokeCard[],
   numberToAdd: number = 1,
 ) => {
-  const { newHand, newDeck } = resetDeckAndHand(originalDeck)
+  const newState = adaptToFullState(resetDeckAndHand)(originalDeck)
+
+  const { newDeck, newOriginalDeck } = addCardToDeck(
+    card,
+    newState.drawState.deck,
+    originalDeck,
+    numberToAdd,
+  )
+
   return {
-    ...addCardToDeck(card, newDeck, originalDeck, numberToAdd),
-    newHand: newHand,
+    newOriginalDeck,
+    drawState: { hand: newState.drawState.hand, deck: newDeck },
   }
 }
 
@@ -341,30 +388,44 @@ export const addTargetCard = (
   }
 }
 
-type PlayCard = (
-  hand: MultiPokeCard[],
-  deck: MultiPokeCard[],
-) => {
-  newHand: MultiPokeCard[]
-  newDeck: MultiPokeCard[]
-}
-
-export const playAllCards = (
-  hand: MultiPokeCard[],
-  deck: MultiPokeCard[],
-  playCard: PlayCard,
-  cardFilter: CardFilter,
-) => {
-  let newHand = hand
-  let newDeck = deck
-  while (newHand.some(cardFilter)) {
-    ;({ newHand, newDeck } = playCard(newHand, newDeck))
-  }
-
-  return { newHand, newDeck }
-}
-
 export const cardListHasCard = (
   cardList: MultiPokeCard[],
   hasCardFilter: CardFilter,
 ) => Boolean(cardList.find(hasCardFilter))
+
+export const countInCardListByFilter = (
+  cardList: MultiPokeCard[],
+  hasCardFilter: CardFilter,
+) =>
+  cardList.reduce((count, card) => {
+    return hasCardFilter(card) ? count + card.count : count
+  }, 0)
+
+/**
+ * Convenience function to wrap a function returning `DrawState` into a function returning
+ * an object compatible with `Partial<FullState>` for use in state management
+ */
+export const adaptToFullState = (
+  fn: (...args: any[]) => DrawState,
+): ((...args: any[]) => { drawState: DrawState }) => {
+  return (...args) => ({ drawState: fn(...args) })
+}
+
+export const targetHandsHaveCard = (
+  targetHands: TargetHands,
+  hasCardFilter: CardFilter,
+) =>
+  Object.values(targetHands).some((hand) =>
+    cardListHasCard(hand, hasCardFilter),
+  )
+
+export const returnHandToDeck = (drawState: DrawState): DrawState => {
+  // add all cards from hand back to deck
+  const deckAfterReturn = drawState.hand.reduce(
+    (deck, handCard) => addCardToCardList(handCard, deck, handCard.count),
+    drawState.deck,
+  )
+
+  // hand is now empty
+  return { hand: [], deck: deckAfterReturn }
+}

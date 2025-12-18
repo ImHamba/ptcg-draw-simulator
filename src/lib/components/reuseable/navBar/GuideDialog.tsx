@@ -70,7 +70,6 @@ const GuideDialog = ({ children, cardData }: Props) => {
                 <div className="row-center">
                   <div className="w-full lg:w-4/5">
                     <DeckPanel
-                      deck={dummyDeck}
                       originalDeck={dummyDeck}
                       cardData={cardData}
                       targetHands={dummyTargetHands}

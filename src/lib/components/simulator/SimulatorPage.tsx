@@ -4,11 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { isSameCard } from '../../appUtils'
 import { CARD_DATA_PROPERTIES, CARD_DATA_PROXY_URL } from '../../constants'
-import {
-  initialDeck,
-  initialHand,
-  initialTargetHands,
-} from '../../handDeckUtils'
+import { initialDeck, initialTargetHands } from '../../handDeckUtils'
 import { pick } from '../../utils'
 import NavBar from '../reuseable/navBar/NavBar'
 import Separator from '../reuseable/Separator'
@@ -23,10 +19,6 @@ const SimulatorPage = () => {
   // stores the original state of deck, updated by user adding cards to it
   const [originalDeck, setOriginalDeck] = useState<MultiPokeCard[]>(initialDeck)
 
-  // stores current state of deck for hand draw simulation
-  const [deck, setDeck] = useState<MultiPokeCard[]>(originalDeck)
-
-  const [hand, setHand] = useState<MultiPokeCard[]>(initialHand)
   const [targetHands, setTargetHands] = useState(initialTargetHands)
 
   const targetHandsRef = useRef(targetHands)
@@ -41,10 +33,9 @@ const SimulatorPage = () => {
   const saveHandDeckState: SaveHandDeckState = useCallback(
     (handDeckStateChangeFn, ...args) =>
       () => {
-        const { newHand, newDeck, newOriginalDeck, newTargetHands } =
-          handDeckStateChangeFn(...args)
-        newHand && setHand(newHand)
-        newDeck && setDeck(newDeck)
+        const { newOriginalDeck, newTargetHands } = handDeckStateChangeFn(
+          ...args,
+        )
         newOriginalDeck && setOriginalDeck(newOriginalDeck)
 
         // if originalDeck wasnt changed, and target hands was, then simply set it
@@ -54,7 +45,7 @@ const SimulatorPage = () => {
 
         // when originalDeck changes, we want to ensure target hands doesn't end up with a higher
         // count for any cards than are in the deck. We do this here rather than in a useEffect
-        // elsewhere to reduce additional rerenders. The cap on target hands car counts is essentially
+        // elsewhere to reduce additional rerenders. The cap on target hands card counts is essentially
         // a hard limit enforced at the state saving stage.
         else if (newOriginalDeck) {
           const currentTargetHands = newTargetHands ?? targetHandsRef.current
@@ -141,7 +132,6 @@ const SimulatorPage = () => {
         <div className="flex flex-col md:flex-row gap-5 md:gap-10 lg:gap-20 px-5 md:px-10 pb-10">
           <div className="w-full md:w-1/2 h-full md:sticky md:top-0 pt-5">
             <DeckPanel
-              deck={deck}
               originalDeck={originalDeck}
               cardData={cardData}
               targetHands={targetHands}
