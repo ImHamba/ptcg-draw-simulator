@@ -7,6 +7,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { nonSupporterEffectCards } from '@/lib/cardEffects/nonSupporterCardEffects'
+import { supporterEffectCards } from '@/lib/cardEffects/supporterCardEffect'
 import {
   dummyChartData,
   dummyChartDataKeys,
@@ -127,6 +129,53 @@ const GuideDialog = ({ children, cardData }: Props) => {
                     )}
                   </div>
                 </div>
+              </div>
+            </li>
+            <li>
+              <div className="flex flex-col gap-2">
+                <h5>Special Draw Effect Cards</h5>
+                <p>
+                  The simulator will play certain Trainer cards which draw or
+                  search from the deck. On each turn, it will play all valid
+                  non-Supporter cards, then one valid Supporter card, and then
+                  all non-Supporter cards again (in case some were just drawn).
+                </p>
+                <p>
+                  Below are all the cards that are currently implemented, and
+                  the condition under which they may be played. They are
+                  prioritised according to the order shown.
+                </p>
+                {[nonSupporterEffectCards, supporterEffectCards].map(
+                  (effectCardsList, i) => {
+                    return (
+                      <p className="mt-3" key={i}>
+                        <ul className="list-disc list-inside">
+                          {i === 0
+                            ? 'Non-Supporter Trainer cards:'
+                            : 'Supporter cards:'}
+                          {effectCardsList.map((card, j) => {
+                            return (
+                              <li className="mt-1" key={j}>
+                                <b>{card.name}</b> -{' '}
+                                <span>{card.playConditionDescription}</span>
+                                {card.notes && (
+                                  <ul>
+                                    <li
+                                      className="ps-5 list-inside"
+                                      style={{ listStyleType: 'circle' }}
+                                    >
+                                      Note: {card.notes}
+                                    </li>
+                                  </ul>
+                                )}
+                              </li>
+                            )
+                          })}
+                        </ul>
+                      </p>
+                    )
+                  },
+                )}
               </div>
             </li>
           </ol>

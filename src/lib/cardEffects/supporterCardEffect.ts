@@ -206,7 +206,7 @@ const searchSupporterEffectCards: EffectCard[] = searchSupporterCardDefs.map(
   (def) => ({
     name: def.name,
     playCondition: simpleSearchEffectCardPlayCondition(...def.searchCards),
-    playConditionDescription: `Deck has a ${
+    playConditionDescription: `Deck currently has a ${
       def.searchCards.length > 1
         ? def.searchCards.slice(0, -1).join(', ') +
           ', or ' +
@@ -224,24 +224,41 @@ export const supporterEffectCards: EffectCard[] = [
   {
     name: CARD_NAMES.professors_research,
     playCondition: (drawState) => drawState.deck.length >= 1,
-    playConditionDescription: 'Deck has at least 1 card',
+    playConditionDescription: 'Deck currently has at least 1 card',
     playEffect: professorsResearchEffect,
   },
   {
-    name: CARD_NAMES.may,
-    playCondition: mayCondition,
+    name: CARD_NAMES.lisia,
+    playCondition: (drawState) => drawState.deck.some(lisiaFilter),
     playConditionDescription:
-      'Deck has at least 1 target Pokémon and hand has at least 1 non-target Pokémon',
-    notes:
-      'This effect will only swap non-target Pokémon in hand for target Pokémon in deck',
-    playEffect: mayEffect,
+      'Deck currently has at least 1 basic Pokémon with 50 HP or less',
+    playEffect: lisiaEffect,
   },
   {
     name: CARD_NAMES.serena,
     playCondition: (drawState) =>
       drawState.deck.some(megaEvolutionExPokemonFilter),
-    playConditionDescription: 'Deck has at least 1 Mega Evolution Pokémon ex',
+    playConditionDescription:
+      'Deck currently has at least 1 Mega Evolution Pokémon ex',
     playEffect: serenaEffect,
+  },
+  ...searchSupporterEffectCards,
+  {
+    name: CARD_NAMES.may,
+    playCondition: mayCondition,
+    playConditionDescription:
+      'Deck currently has at least 1 target Pokémon and hand has at least 1 non-target Pokémon',
+    notes:
+      'May will attempt to swap as many non-target Pokémon in hand for target Pokémon in deck',
+    playEffect: mayEffect,
+  },
+  {
+    name: CARD_NAMES.copycat,
+    playCondition: handHasNoTargetCardsCondition,
+    playConditionDescription: 'Hand has no target cards',
+    notes:
+      'Copycat will shuffle the hand into the deck and draw 3 cards (this represents an average draw)',
+    playEffect: copycatEffect,
   },
   {
     name: CARD_NAMES.iono,
@@ -250,26 +267,9 @@ export const supporterEffectCards: EffectCard[] = [
     playEffect: ionoEffect,
   },
   {
-    name: CARD_NAMES.copycat,
-    playCondition: handHasNoTargetCardsCondition,
-    playConditionDescription: 'Hand has no target cards',
-    notes:
-      'Shuffles hand into deck and draws 3 cards (represents an average draw situation)',
-    playEffect: copycatEffect,
-  },
-  {
-    name: CARD_NAMES.lisia,
-    playCondition: (drawState) => drawState.deck.some(lisiaFilter),
-    playConditionDescription:
-      'Deck has at least 1 basic Pokémon with 50 HP or less',
-    playEffect: lisiaEffect,
-  },
-  {
     name: CARD_NAMES.traveling_merchant,
     playCondition: (drawState) => drawState.deck.some(toolFilter),
-    playConditionDescription: 'Deck has at least 1 tool card',
+    playConditionDescription: 'Deck currently has at least 1 tool card',
     playEffect: travelingMerchantEffect,
   },
-
-  ...searchSupporterEffectCards,
 ]

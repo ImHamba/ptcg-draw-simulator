@@ -44,7 +44,7 @@ export const nonSupporterEffectCards: EffectCard[] = [
     name: CARD_NAMES.quick_grow_extract,
     playCondition: quickGrowExtractCondition,
     playConditionDescription:
-      'Hand has at least 1 basic Grass Pokémon and deck contains its evolution',
+      'Hand has at least 1 basic Grass Pokémon and deck contains at least 1 of their evolutions',
     notes:
       'For the purposes of simulation, this just adds the evolution to your hand',
     playEffect: quickGrowExtractEffect,
