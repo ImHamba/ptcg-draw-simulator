@@ -1,3 +1,5 @@
+import type { PokemonColor } from './types'
+
 export const VERSION = '1.0'
 
 export const BASIC_STAGE = 'Basic'
@@ -48,6 +50,19 @@ export const GENERIC_CARD_TYPES = ['basicOther', 'other'] as const
 // that come from the card data api
 export const CARD_TYPES = ['Pokemon', 'Pokémon Tool'] as const
 
+export const POKE_COLORS = {
+  grass: 'Grass',
+  fire: 'Fire',
+  water: 'Water',
+  lightning: 'Lightning',
+  psychic: 'Psychic',
+  fighting: 'Fighting',
+  darkness: 'Darkness',
+  metal: 'Metal',
+  dragon: 'Dragon',
+  colorless: 'Colorless',
+} satisfies Record<string, PokemonColor>
+
 export const POKEMON_CARD_NAMES = {
   type_null: 'Type: Null',
   silvally: 'Silvally',
@@ -59,7 +74,7 @@ export const POKEMON_CARD_NAMES = {
 }
 
 export const SUPPORTER_CARD_NAMES = {
-  professors_research: 'Professor’s Research',
+  professors_research: "Professor's Research",
   gladion: 'Gladion',
   team_galactic_grunt: 'Team Galactic Grunt',
   traveling_merchant: 'Traveling Merchant',
@@ -73,7 +88,7 @@ export const SUPPORTER_CARD_NAMES = {
 
 export const NON_SUPPORTER_CARD_NAMES = {
   pokeball: 'Poké Ball',
-  clemonts_backpack: 'Clemont’s Backpack',
+  clemonts_backpack: "Clemont's Backpack",
   quick_grow_extract: 'Quick-Grow Extract',
 }
 

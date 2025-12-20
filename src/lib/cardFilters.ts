@@ -1,6 +1,6 @@
 import { isEquivalentCard } from './appUtils'
-import { BASIC_STAGE, CARD_NAMES } from './constants'
-import type { CardFilter, PokeCard, PokemonColor } from './types'
+import { BASIC_STAGE, CARD_NAMES, POKE_COLORS } from './constants'
+import type { CardFilter, DrawState, PokeCard, PokemonColor } from './types'
 import { and } from './utils'
 
 // generates a filter that matches a card by names
@@ -64,3 +64,23 @@ export const createEvolvesIntoFilter = (
 }
 
 export const lisiaFilter = and(basicPokemonFilter, createPokemonHpFilter(0, 50))
+
+/** returns filters for grass evolution pokemon of any grass pokemon in hand */
+export const getQuickGrowExtractEvolveFilters = (drawState: DrawState) => {
+  const grassesInHand = drawState.hand.filter(
+    createPokemonColorFilter(POKE_COLORS.grass),
+  )
+  const grassInHandNames = grassesInHand.flatMap(
+    (card) => card.data?.name || [],
+  )
+
+  // filters for the grass evolutions of the basic grass Pokémon in hand
+  const evolvesIntoFilters = grassInHandNames.map((name) =>
+    and(
+      createPokemonColorFilter(POKE_COLORS.grass),
+      createEvolvesIntoFilter(name),
+    ),
+  )
+
+  return evolvesIntoFilters
+}

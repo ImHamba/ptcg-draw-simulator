@@ -12,11 +12,7 @@ import { LoaderCircle } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
 import { generateShareLink } from '../../appUtils'
 import { otherCardFilter } from '../../cardFilters'
-import {
-  CARD_NAMES,
-  MAX_COUNT_PER_CARD_NAME,
-  MAX_DECK_SIZE,
-} from '../../constants'
+import { MAX_COUNT_PER_CARD_NAME, MAX_DECK_SIZE } from '../../constants'
 import {
   decrementCard,
   fillDeck,
@@ -103,7 +99,7 @@ const DeckPanel = ({
         }
       }, card)()
     },
-    [ originalDeck, saveHandDeckState],
+    [originalDeck, saveHandDeckState],
   )
 
   const decrement = useCallback(
@@ -113,7 +109,7 @@ const DeckPanel = ({
           newOriginalDeck: fillDeck(decrementCard(originalDeck, card)),
         }
       }, card)(),
-    [ originalDeck, saveHandDeckState],
+    [originalDeck, saveHandDeckState],
   )
 
   const onShareLinkClick = () => {
@@ -148,11 +144,7 @@ const DeckPanel = ({
   )
 
   const promoPokeBall: PokeCard | undefined = useMemo(() => {
-    const data = cardData.find(
-      (cardData) =>
-        cardData.name === CARD_NAMES.pokeball &&
-        cardData.set_name === 'Promo A',
-    )
+    const data = cardData.find((cardData) => cardData.id === 'PROMO-005')
     if (!data) {
       return undefined
     }
@@ -162,11 +154,7 @@ const DeckPanel = ({
   }, [cardData])
 
   const promoProfResearch: PokeCard | undefined = useMemo(() => {
-    const data = cardData.find(
-      (cardData) =>
-        cardData.name === CARD_NAMES.professors_research &&
-        cardData.set_name === 'Promo A',
-    )
+    const data = cardData.find((cardData) => cardData.id === 'PROMO-007')
     if (!data) {
       return undefined
     }
