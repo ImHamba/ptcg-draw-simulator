@@ -112,6 +112,7 @@ export const dummyTargetHands: TargetHands = {
 export const dummyChartData: Record<string, number>[] = [
   {
     name: '1',
+    drawCount: 0,
     '819a53b9-b683-465b-95ac-b3a714a7d419': 24.38,
     'cd4e0d57-0684-4f8c-9309-880e538a96e4': 13.56,
     anyMatch: 31.979999999999997,
@@ -119,6 +120,7 @@ export const dummyChartData: Record<string, number>[] = [
   },
   {
     name: '2',
+    drawCount: 1,
     '819a53b9-b683-465b-95ac-b3a714a7d419': 12.15,
     'cd4e0d57-0684-4f8c-9309-880e538a96e4': 7.04,
     anyMatch: 15.629999999999999,
@@ -126,6 +128,7 @@ export const dummyChartData: Record<string, number>[] = [
   },
   {
     name: '3',
+    drawCount: 2,
     '819a53b9-b683-465b-95ac-b3a714a7d419': 10.040000000000001,
     'cd4e0d57-0684-4f8c-9309-880e538a96e4': 6.239999999999999,
     anyMatch: 12.889999999999999,
@@ -133,6 +136,7 @@ export const dummyChartData: Record<string, number>[] = [
   },
   {
     name: '4',
+    drawCount: 3,
     '819a53b9-b683-465b-95ac-b3a714a7d419': 9.64,
     'cd4e0d57-0684-4f8c-9309-880e538a96e4': 6.279999999999999,
     anyMatch: 11.899999999999999,
@@ -140,6 +144,7 @@ export const dummyChartData: Record<string, number>[] = [
   },
   {
     name: '5',
+    drawCount: 4,
     '819a53b9-b683-465b-95ac-b3a714a7d419': 8.53,
     'cd4e0d57-0684-4f8c-9309-880e538a96e4': 5.88,
     anyMatch: 10.12,
@@ -147,6 +152,7 @@ export const dummyChartData: Record<string, number>[] = [
   },
   {
     name: '6',
+    drawCount: 5,
     '819a53b9-b683-465b-95ac-b3a714a7d419': 6.36,
     'cd4e0d57-0684-4f8c-9309-880e538a96e4': 4.53,
     anyMatch: 7.1,
@@ -154,6 +160,7 @@ export const dummyChartData: Record<string, number>[] = [
   },
   {
     name: '7',
+    drawCount: 6,
     '819a53b9-b683-465b-95ac-b3a714a7d419': 4.82,
     'cd4e0d57-0684-4f8c-9309-880e538a96e4': 3.9899999999999998,
     anyMatch: 5.28,
@@ -161,6 +168,7 @@ export const dummyChartData: Record<string, number>[] = [
   },
   {
     name: '8',
+    drawCount: 7,
     '819a53b9-b683-465b-95ac-b3a714a7d419': 3.1399999999999997,
     'cd4e0d57-0684-4f8c-9309-880e538a96e4': 2.58,
     anyMatch: 3.2199999999999998,
@@ -168,6 +176,7 @@ export const dummyChartData: Record<string, number>[] = [
   },
   {
     name: '9',
+    drawCount: 8,
     '819a53b9-b683-465b-95ac-b3a714a7d419': 1.37,
     'cd4e0d57-0684-4f8c-9309-880e538a96e4': 1.31,
     anyMatch: 1.4000000000000001,
@@ -175,6 +184,7 @@ export const dummyChartData: Record<string, number>[] = [
   },
   {
     name: '10',
+    drawCount: 9,
     '819a53b9-b683-465b-95ac-b3a714a7d419': 0.44,
     'cd4e0d57-0684-4f8c-9309-880e538a96e4': 0.41000000000000003,
     anyMatch: 0.44,
@@ -182,6 +192,7 @@ export const dummyChartData: Record<string, number>[] = [
   },
   {
     name: '11',
+    drawCount: 10,
     '819a53b9-b683-465b-95ac-b3a714a7d419': 0.04,
     'cd4e0d57-0684-4f8c-9309-880e538a96e4': 0.04,
     anyMatch: 0.04,
