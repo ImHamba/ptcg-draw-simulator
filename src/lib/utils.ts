@@ -172,3 +172,32 @@ export const useElementSize = (ref: React.RefObject<HTMLElement | null>) => {
 
   return size
 }
+
+export const getAndValidateNumberFromLocalStorage = (
+  key: string,
+): number | null => {
+  const localStorageStr = localStorage.getItem(key)
+
+  if (!localStorageStr) {
+    return null
+  }
+
+  try {
+    const parsedValue = JSON.parse(localStorageStr)
+
+    // Ensure the parsed value is a valid number
+    if (typeof parsedValue === 'number' && !isNaN(parsedValue)) {
+      return parsedValue
+    }
+
+    // Handle cases where the value is a string that can be converted to a number
+    const numericValue = Number(parsedValue)
+    if (!isNaN(numericValue)) {
+      return numericValue
+    }
+
+    return null
+  } catch {
+    return null
+  }
+}

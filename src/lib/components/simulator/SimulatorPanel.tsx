@@ -9,10 +9,12 @@ import { checkHandMatchesTargetHands } from '@/lib/appUtils'
 
 import { playTrainerEffectCards } from '@/lib/cardEffects/cardEffectLogic'
 import { basicPokemonFilter } from '@/lib/cardFilters'
+import { LOCAL_STORAGE_KEYS } from '@/lib/constants'
 import type { DrawState, MultiPokeCard, TargetHands } from '@/lib/types'
+import type { ChangeEvent } from 'react'
 import { useMemo, useRef, useState } from 'react'
 import { drawFirstHand, drawFromDeck } from '../../handDeckUtils'
-import { sumObjects } from '../../utils'
+import { getAndValidateNumberFromLocalStorage, sumObjects } from '../../utils'
 import SimulatorChart from '../reuseable/SimulatorChart'
 
 type CumulativeSimulationResults = Record<
@@ -28,10 +30,14 @@ type Props = {
 const SimulatorPanel = ({ originalDeck, targetHands }: Props) => {
   // ref so simulation loop can access the value in real time that may be changed by user interaction
   const doSimulationRef = useRef(false)
+  const simulationLimitInputRef = useRef<HTMLInputElement>(null)
   const [doSimulation, _setDoSimulation] = useState(doSimulationRef.current)
   const [simulationCount, setSimulationCount] = useState(0)
 
-  const simulationLimit = 10000
+  const [simulationLimit, setSimulationLimit] = useState<number>(
+    getAndValidateNumberFromLocalStorage(LOCAL_STORAGE_KEYS.simulationLimit) ??
+      10000,
+  )
 
   /**
    * function to access the simulation results data structure by key,
@@ -166,6 +172,7 @@ const SimulatorPanel = ({ originalDeck, targetHands }: Props) => {
           const chartBar: Record<string, number | string> = {
             // transform draw count to turns past
             name: (Number(drawCount) + 1).toString(),
+            drawCount: Number(drawCount),
             ...Object.fromEntries(
               Object.entries(targetHandMatches).map(
                 ([targetHandId, matchCount]) => {
@@ -199,10 +206,10 @@ const SimulatorPanel = ({ originalDeck, targetHands }: Props) => {
 
   const placeholderChartData = useMemo(
     () =>
-      Array(8)
+      Array(5)
         .fill(0)
         .map((_, i) => {
-          return { name: i + 1, anyMatch: 0 }
+          return { name: i + 1, drawCount: i, anyMatch: 0 }
         }),
     [],
   )
@@ -228,21 +235,52 @@ const SimulatorPanel = ({ originalDeck, targetHands }: Props) => {
   const showSimulationProgressBar =
     simulationCount > 0 && simulationCount < simulationLimit
 
+  const handleSimulationLimitChange = (
+    event: ChangeEvent<HTMLInputElement>,
+  ) => {
+    const value = event.target.value
+    const hasNonDigits = /[^0-9]/.test(value)
+    if (hasNonDigits) {
+      return
+    }
+    setSimulationLimit(Number(value))
+
+    // save to local storage
+    localStorage.setItem(
+      LOCAL_STORAGE_KEYS.simulationLimit,
+      JSON.stringify(Number(value)),
+    )
+  }
   return (
     <div className="full col-center gap-3">
       <div className="col-center gap-1">
         <div className="text-2xl">Draw Simulator</div>
       </div>
       <div>
-        <span className="relative">
-          {simulationCount}/{simulationLimit} simulations
+        <button
+          title="Edit max simulation limit"
+          onClick={() => simulationLimitInputRef.current?.focus()}
+          className="relative group cursor-pointer before:absolute before:pointer-events-none before:-inset-x-2 before:-inset-y-0.5 before:rounded-sm before:bg-black/5 before:opacity-0 hover:before:opacity-100 before:transition-opacity"
+        >
+          {simulationCount} /{' '}
+          <input
+            className="group-hover:underline underline-offset-3 group-hover:decoration-dashed group-hover:decoration-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 rounded-[2px]"
+            value={simulationLimit}
+            onChange={handleSimulationLimitChange}
+            style={{ width: `${simulationLimit.toString().length}ch` }}
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            ref={simulationLimitInputRef}
+          />{' '}
+          simulations
           <div
             className={`absolute -bottom-1 left-0 bg-green-300 h-0.5 rounded-full transition-opacity ${showSimulationProgressBar ? 'opacity-100' : 'duration-600 opacity-0'}`}
             style={{
               width: `${(simulationCount / simulationLimit) * 100}%`,
             }}
           />
-        </span>
+        </button>
       </div>
       <TooltipProvider>
         <Tooltip>

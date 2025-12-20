@@ -113,13 +113,18 @@ const GuideDialog = ({ children, cardData }: Props) => {
                   drawn any of your target hands. Poke Balls and Professor's
                   Research will be used as they are drawn.
                 </p>
-                <p className="mb-5">
+                <p>
                   The results chart will show the probability of each target
                   hand being the first target hand achieved in that simulation,
                   and the cumulative line shows the probability on each turn of
                   having achieved any of your target hands.
                 </p>
-                <div className="row-center">
+                <p>
+                  You can change the number of simulations run by clicking on
+                  the simulation count. A higher number gives more accurate
+                  results but takes longer.
+                </p>
+                <div className="row-center mt-5">
                   <div className="h-80 w-full max-w-160">
                     {showHeavyContent && (
                       <SimulatorChart

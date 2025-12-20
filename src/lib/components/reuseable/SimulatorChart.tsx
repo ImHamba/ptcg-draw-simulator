@@ -18,16 +18,52 @@ type Props = {
 }
 
 const SimulatorChart = ({ chartData, targetHandIds }: Props) => {
+  const maxDrawCount = Math.max(...chartData.map((data) => data.drawCount))
+  const dataMap = new Map(chartData.map((data) => [data.drawCount, data]))
+
+  // fill in any gaps in the chart data for turn counts that didnt eventuate during the simulation
+  const filledInChartData = Array.from(
+    { length: Math.max(maxDrawCount, 5) + 1 },
+    (_, i) => i,
+  ).reduce(
+    (acc, drawCount) => {
+      const currentTurnData = dataMap.get(drawCount)
+      const prevValidTurnData = currentTurnData ?? acc.prevValidTurnData
+      const turnData = currentTurnData
+        ? { ...currentTurnData, name: drawCount }
+        : {
+            name: drawCount,
+            anyMatch: 0,
+            cumulative: prevValidTurnData?.cumulative ?? 0,
+            ...Object.fromEntries(targetHandIds.map((id) => [id, 0])),
+          }
+      return {
+        filledChartData: [...acc.filledChartData, turnData],
+        prevValidTurnData,
+      }
+    },
+    {
+      filledChartData: [],
+      prevValidTurnData: null,
+    } as {
+      filledChartData: Record<string, number>[]
+      prevValidTurnData: Record<string, number> | null
+    },
+  ).filledChartData
+
+  console.log(
+    filledInChartData,
+    Array.from({ length: Math.min(maxDrawCount, 5) + 1 }, (_, i) => i),
+  )
+
   return (
     <ResponsiveContainer>
-      <ComposedChart data={chartData}>
+      <ComposedChart data={filledInChartData}>
         <CartesianGrid />
         <Tooltip
           formatter={(value: number) => `${value.toFixed(1)}%`}
           labelFormatter={(turn) => (
-            <b>
-              {`Turn ${turn} (${parseInt(turn) + 5} natural draws)`}
-            </b>
+            <b>{`Turn ${turn} (${parseInt(turn) + 5} natural draws)`}</b>
           )}
         />
         <Legend />

@@ -63,6 +63,10 @@ export const POKE_COLORS = {
   colorless: 'Colorless',
 } satisfies Record<string, PokemonColor>
 
+export const LOCAL_STORAGE_KEYS = {
+  simulationLimit: 'simulation_limit',
+}
+
 export const POKEMON_CARD_NAMES = {
   type_null: 'Type: Null',
   silvally: 'Silvally',
