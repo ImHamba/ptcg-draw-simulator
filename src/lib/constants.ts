@@ -1,6 +1,6 @@
 import type { PokemonColor } from './types'
 
-export const VERSION = '1.0'
+export const VERSION = '1.01'
 
 export const BASIC_STAGE = 'Basic'
 export const MAX_DECK_SIZE = 20
@@ -15,9 +15,10 @@ export const DECK_SEARCH_PARAM = 'deck'
 export const TARGET_HANDS_SEARCH_PARAM = 'target'
 
 // card data fetching
-const CORS_PROXY_URL = 'https://corsproxy.io/?url=' // 'https://api.cors.lol/?url='
+const CORS_PROXY_URL =
+  'https://cloudflare-cors-anywhere.callmehamba.workers.dev/?'
 export const CARD_DATA_API_URL =
-  'https://api.dotgg.gg/cgfw/getcards?game=pokepocket'
+  'https://api.dotgg.gg/cgfw/getcards?game=pokepocket&mode=indexed'
 export const CARD_DATA_PROXY_URL = CORS_PROXY_URL + CARD_DATA_API_URL
 
 export const CARD_IMG_API_URL =

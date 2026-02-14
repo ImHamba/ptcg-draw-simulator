@@ -87,6 +87,21 @@ const SimulatorPage = () => {
     [],
   )
 
+  /**
+   * Reconstructs compressed data format back to full card data object.
+   * Taken from dotgg.gg/api docs
+   */
+  const reconstructIndexedCardData = (data: any) => {
+    return data.data.map((cardArray: any) => {
+      return Object.fromEntries(
+        data.names.map((fieldName: string, index: number) => [
+          fieldName,
+          cardArray[index],
+        ]),
+      )
+    })
+  }
+
   const cardDataQuery = useQuery({
     queryKey: ['query'],
     queryFn: async () => {
@@ -96,7 +111,9 @@ const SimulatorPage = () => {
           throw new Error('Network response was not ok')
         }
 
-        const data = await res.json()
+        const indexedData = await res.json()
+
+        const data = reconstructIndexedCardData(indexedData)
         const properties = CARD_DATA_PROPERTIES.map((x) => x)
         return data.map((card: CardData) => pick(card, properties))
       })

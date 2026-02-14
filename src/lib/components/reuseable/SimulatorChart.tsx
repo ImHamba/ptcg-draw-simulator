@@ -51,11 +51,6 @@ const SimulatorChart = ({ chartData, targetHandIds }: Props) => {
     },
   ).filledChartData
 
-  console.log(
-    filledInChartData,
-    Array.from({ length: Math.min(maxDrawCount, 5) + 1 }, (_, i) => i),
-  )
-
   return (
     <ResponsiveContainer>
       <ComposedChart data={filledInChartData}>

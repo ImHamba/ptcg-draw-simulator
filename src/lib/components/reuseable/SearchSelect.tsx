@@ -30,6 +30,10 @@ const SearchSelect = ({
         searchPlaceholderValue: 'Search for a card...',
         placeholderValue: 'Search for a card...',
         itemSelectText: undefined,
+        searchResultLimit: -1,
+        fuseOptions: {
+          threshold: 0.2,
+        },
       })
 
       choicesInstance.current.removeActiveItems()
